@@ -1,13 +1,13 @@
 ﻿@page "/fetchdata"
 
 @using HackTheClimate.Data
-@inject WeatherForecastService ForecastService
+@inject LawOrPolicyService LawOrPolicyService
 
 <h1>Weather forecast</h1>
 
 <p>This component demonstrates fetching data from a service.</p>
 
-@if (forecasts == null)
+@if (lawsAndPolicies == null)
 {
     <p><em>Loading...</em></p>
 }
@@ -18,29 +18,27 @@ else
             <tr>
                 <th>Date</th>
                 <th>Temp. (C)</th>
-                <th>Temp. (F)</th>
                 <th>Summary</th>
             </tr>
         </thead>
         <tbody>
-            @foreach (var forecast in forecasts)
+            @foreach (var lawOrPolicy in lawsAndPolicies)
             {
-                <tr>
-                    <td>@forecast.Date.ToShortDateString()</td>
-                    <td>@forecast.TemperatureC</td>
-                    <td>@forecast.TemperatureF</td>
-                    <td>@forecast.Summary</td>
-                </tr>
+            <tr>
+                <td>@lawOrPolicy.Title</td>
+                <td>@lawOrPolicy.Geography</td>
+                <td>@lawOrPolicy.Description</td>
+            </tr>
             }
         </tbody>
     </table>
 }
 
 @code {
-    private WeatherForecast[] forecasts;
+    private IEnumerable<LawOrPolicy> lawsAndPolicies;
 
     protected override async Task OnInitializedAsync()
     {
-        forecasts = await ForecastService.GetForecastAsync(DateTime.Now);
+        lawsAndPolicies = LawOrPolicyService.GetLawsAndPolicies();
     }
 }
