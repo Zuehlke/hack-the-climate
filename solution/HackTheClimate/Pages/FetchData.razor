@@ -14,11 +14,11 @@
 }
 else
 {
-    <ul>
+    <ul class="laws-and-policies">
         @foreach (var lawOrPolicy in _data.Results)
         {
             <li>
-                <h5 class="title">@lawOrPolicy.Title</h5>
+                <h2 class="title">@lawOrPolicy.Title</h2>
                 <div class="meta">@lawOrPolicy.Geography / @lawOrPolicy.Type </div>
                 <div class="description">@StripHtmlAndShorten(lawOrPolicy.Description)</div>
             </li>
@@ -61,7 +61,7 @@ else
 
     protected string StripHtmlAndShorten(string input)
     {
-        var stripped = Regex.Replace(input, "<[a-zA-Z/]*?>", string.Empty);
+        var stripped = Regex.Replace(input, "<.*?>", string.Empty);
         return stripped.Substring(0, Math.Min(175, stripped.Length)) + "...";
     }
 

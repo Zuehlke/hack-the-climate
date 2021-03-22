@@ -181,3 +181,22 @@ app {
         display: block;
     }
 }
+
+.laws-and-policies li {
+    list-style-type: none;
+}
+
+.laws-and-policies h2 {
+    color: red;
+    font-size: 1.5rem;
+    margin-bottom: 2px;
+    padding-top: 20px;
+}
+
+.laws-and-policies .meta {
+    color: gray;
+    font-size: 0.8rem;
+}
+
+.laws-and-policies .description {
+}
