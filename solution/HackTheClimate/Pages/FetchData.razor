@@ -1,44 +1,65 @@
 ﻿@page "/fetchdata"
-
 @using HackTheClimate.Data
+@using BlazorPagination
+@using System.Linq
 @inject LawOrPolicyService LawOrPolicyService
 
-<h1>Weather forecast</h1>
+<h1>Laws and policies</h1>
 
-<p>This component demonstrates fetching data from a service.</p>
-
-@if (lawsAndPolicies == null)
+@if (_data == null)
 {
-    <p><em>Loading...</em></p>
+    <p>
+        <em>Loading...</em>
+    </p>
 }
 else
 {
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Date</th>
-                <th>Temp. (C)</th>
-                <th>Summary</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var lawOrPolicy in lawsAndPolicies)
-            {
-            <tr>
-                <td>@lawOrPolicy.Title</td>
-                <td>@lawOrPolicy.Geography</td>
-                <td>@lawOrPolicy.Description</td>
-            </tr>
-            }
-        </tbody>
-    </table>
+    <ul>
+        @foreach (var lawOrPolicy in _data.Results)
+        {
+            <li>
+                <h5 class="title">@lawOrPolicy.Title</h5>
+                <div class="meta">@lawOrPolicy.Geography / @lawOrPolicy.Type </div>
+                <div class="description">@lawOrPolicy.Description</div>
+            </li>
+        }
+    </ul>
+
+    <BlazorPager CurrentPage="@_data.CurrentPage"
+                 PageCount="@_data.PageCount"
+                 OnPageChanged="(async (e) => { LoadPageData(e);})"
+                 ShowFirstLast="false"
+                 ShowPageNumbers="true"
+                 VisiblePages="10"
+                 FirstText="First"
+                 LastText="Last" />
 }
 
 @code {
     private IEnumerable<LawOrPolicy> lawsAndPolicies;
+    private PagedResult<LawOrPolicy> _data;
+    
 
     protected override async Task OnInitializedAsync()
     {
+
         lawsAndPolicies = LawOrPolicyService.GetLawsAndPolicies();
+        LoadPageData(0);
     }
+
+    protected void LoadPageData(int currentPage)
+    {
+        const int pageSize = 10;
+        _data = new PagedResult<LawOrPolicy>
+        {
+            CurrentPage = currentPage,
+            PageCount = lawsAndPolicies.Count() / pageSize,
+            PageSize = pageSize,
+            RowCount = lawsAndPolicies.Count(),
+            Results = lawsAndPolicies.Skip(currentPage * pageSize).Take(pageSize).ToArray()
+        };
+
+    }
+
+
 }
