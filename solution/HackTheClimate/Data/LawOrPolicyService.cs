@@ -50,7 +50,7 @@ namespace HackTheClimate.Data
                 ShortenedDescription = StripHtmlAndShorten(row.Description),
                 DocumentTypes = row.DocumentTypes,
                 Documents = row.Documents,
-                Events = row.Events,
+                Events = row.Events.Split(";").Select(Event.TryParse).OrderBy(e => e.Date),
                 Frameworks = ExtractFrameworks(row.Frameworks),
                 Geography = row.Geography,
                 GeographyIso = row.GeographyIso,

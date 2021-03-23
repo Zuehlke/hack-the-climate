@@ -197,5 +197,15 @@ app {
     font-size: 0.8rem;
 }
 
-.laws-and-policies .description {
+.laws-and-policies .meta div {
+    width: 150px;
+    display: inline-block;
+}
+
+.laws-and-policies .meta div:nth-child(3) {
+    text-align: right;
+}
+
+.laws-and-policies .meta div:nth-child(4) {
+    text-align: right;
 }

@@ -16,7 +16,7 @@ namespace HackTheClimate.Data
         public string NaturalHazards { get; set; }
         public IList<string> Keywords { get; set; }
         public IList<string> Sectors { get; set; }
-        public string Events { get; set; }
+        public IEnumerable<Event> Events { get; set; }
         public string Documents { get; set; }
         public string ParentLegislation { get; set; }
         public string Description { get; set; }
