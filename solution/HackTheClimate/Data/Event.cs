@@ -2,13 +2,16 @@
 
 namespace HackTheClimate.Data
 {
-    // i.e. 26/08/2011|Law passed||
     public class Event
     {
         public DateTime Date;
         public string Description;
         public string ThirdField;
 
+        /// <summary>
+        /// </summary>
+        /// <param name="input">i.e. 26/08/2011|Law passed||</param>
+        /// <returns></returns>
         public static Event TryParse(string input)
         {
             var fields = input.Split("|");

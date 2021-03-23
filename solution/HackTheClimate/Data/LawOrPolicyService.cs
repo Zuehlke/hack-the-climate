@@ -53,7 +53,7 @@ namespace HackTheClimate.Data
                 Description = row.Description,
                 ShortenedDescription = StripHtmlAndShorten(row.Description),
                 DocumentTypes = row.DocumentTypes,
-                Documents = row.Documents,
+                Documents = ExtractDocuments(row.Documents),
                 Events = row.Events.Split(";").Select(Event.TryParse).OrderBy(e => e.Date),
                 Frameworks = ExtractFrameworks(row.Frameworks),
                 Geography = row.Geography,
@@ -66,6 +66,12 @@ namespace HackTheClimate.Data
                 Sectors = row.Sectors.Split(",").Select(e => e.Trim()).ToList(),
                 Type = ExtractType(row.Type)
             };
+        }
+
+        private IEnumerable<Document> ExtractDocuments(string rowDocuments)
+        {
+            var documents = rowDocuments.Split(";");
+            return documents.Select(Document.TryParse);
         }
 
         private LawOrPolicyTypes ExtractType(string rowType)

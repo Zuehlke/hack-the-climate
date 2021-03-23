@@ -39,7 +39,6 @@ else
     </p>
 
     <h2>Timeline of Events</h2>
-
     <table>
         @foreach (var e in lawOrPolicy.Events)
         {
@@ -47,8 +46,17 @@ else
                 <td style="width: 200px">@e.Date.ToString("MMMM yyyy")</td><td>@e.Description</td>
             </tr>
         }
-
     </table>
+
+    <h2>Documents</h2>
+    <ul>
+        @foreach (var d in lawOrPolicy.Documents)
+        {
+            <li><a href="@d.Uri.ToString()">@d.Description @(string.IsNullOrEmpty(d.Language) ? "" : "("+@d.Language+")")</a></li>
+        }
+    </ul>
+
+
 }
 
 @code {
