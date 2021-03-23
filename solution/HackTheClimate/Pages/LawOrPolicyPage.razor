@@ -10,7 +10,7 @@
 }
 else
 {
-    <img src="@($"/flags/{lawOrPolicy.GeographyIso.ToUpperInvariant()}.svg")"/> @lawOrPolicy.Geography
+    <img src="@($"/flags/{lawOrPolicy.GeographyIso.ToUpperInvariant()}.svg")" alt="@lawOrPolicy.GeographyIso"/> @lawOrPolicy.Geography
 
     <hr />
 
@@ -20,7 +20,7 @@ else
 
 
         <div>
-            <img src="@($"{lawOrPolicy.Type.ToString().ToLowerInvariant()}.svg")"/>@lawOrPolicy.Type
+            <img src="@($"{lawOrPolicy.Type.ToString().ToLowerInvariant()}.svg")" alt="@lawOrPolicy.Type"/>@lawOrPolicy.Type
         </div>
 
         <div>
