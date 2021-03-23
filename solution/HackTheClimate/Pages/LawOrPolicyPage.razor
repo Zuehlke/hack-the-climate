@@ -2,8 +2,6 @@
 @using HackTheClimate.Data
 @inject LawOrPolicyService LawOrPolicyService
 
-<h1>Laws and policies</h1>
-
 @if (lawOrPolicy == null)
 {
     <p>
@@ -12,9 +10,34 @@
 }
 else
 {
+    <img src="@($"/flags/{lawOrPolicy.GeographyIso.ToUpperInvariant()}.svg")"/> @lawOrPolicy.Geography
+
+    <hr />
+
     <h2>@lawOrPolicy.Title</h2>
 
-                          @lawOrPolicy.Events;
+    <div class="meta">
+
+
+        <div>
+            <img src="@($"{lawOrPolicy.Type.ToString().ToLowerInvariant()}.svg")"/>@lawOrPolicy.Type
+        </div>
+
+        <div>
+            @lawOrPolicy.DocumentTypes
+        </div>
+
+        @foreach (var framework in lawOrPolicy.Frameworks)
+        {
+            <div>
+                @(framework) Framework
+            </div>
+        }
+
+        <div>
+            Passed in @(lawOrPolicy.Events.First().Date.Year)
+        </div>
+    </div>
 }
 
 @code {

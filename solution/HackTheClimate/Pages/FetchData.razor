@@ -29,11 +29,11 @@ else
                         <img src="@($"{lawOrPolicy.Type.ToString().ToLowerInvariant()}.svg")"/>@lawOrPolicy.Type
                     </div>
 
-                    <div>
+                    <div className="right">
                         @lawOrPolicy.Events.First().Date.Year
                     </div>
 
-                    <div>
+                    <div className="right">
                         @(lawOrPolicy.Events.Count() > 1 ? $"Last change in {lawOrPolicy.Events.Last().Date.Year}" : "")
                     </div>
                 </div>

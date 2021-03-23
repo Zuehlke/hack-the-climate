@@ -2,7 +2,7 @@
 {
     public enum Frameworks
     {
-        Adaption,
+        Adaptation,
         Mitigation,
         DisasterRecoveryManagementOrDisasterRiskReduction,
         Unknown
