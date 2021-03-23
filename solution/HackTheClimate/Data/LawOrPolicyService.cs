@@ -78,14 +78,19 @@ namespace HackTheClimate.Data
             var entries = frameworks.Split(",");
             return entries.Select(e =>
             {
-                return e.Trim() switch
+                switch (e.Trim())
                 {
-                    "Adaptation" => Frameworks.Adaptation,
-                    "Mitigation" => Frameworks.Mitigation,
-                    "DRM/DRR" => Frameworks.DisasterRecoveryManagementOrDisasterRiskReduction,
-                    _ => Frameworks.Unknown
-                };
-            }).ToList();
+                    case "Adaptation":
+                        return Frameworks.Adaptation;
+                    case "Mitigation":
+                        return Frameworks.Mitigation;
+                    case "DRM/DRR":
+                        return Frameworks.DisasterRecoveryManagementOrDisasterRiskReduction;
+                    default:
+                        if (!string.IsNullOrEmpty(e)) Console.WriteLine($"Cannot parse framework with value '{e}'");
+                        return Frameworks.Unknown;
+                }
+            }).Where(e => e != Frameworks.Unknown).ToList();
         }
 
         private int CreateId(string title)
