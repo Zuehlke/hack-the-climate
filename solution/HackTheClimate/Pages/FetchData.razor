@@ -17,11 +17,11 @@ else
     <ul class="laws-and-policies">
         @foreach (var lawOrPolicy in _data.Results)
         {
-            <li>
-                <h2 class="title"><a href="/lawOrPolicy/@lawOrPolicy.Id">@lawOrPolicy.Title</a></h2>
-                <div class="meta">@lawOrPolicy.Geography / @lawOrPolicy.Type </div>
-                <div class="description">@lawOrPolicy.ShortenedDescription</div>
-            </li>
+        <li>
+            <h2 class="title"><a href="/lawOrPolicy/@lawOrPolicy.Id">@lawOrPolicy.Title</a></h2>
+            <div class="meta">@lawOrPolicy.Geography / <img src="@($"{lawOrPolicy.Type.ToString().ToLowerInvariant()}.svg")" />@lawOrPolicy.Type </div>
+            <div class="description">@lawOrPolicy.ShortenedDescription</div>
+        </li>
         }
     </ul>
 
