@@ -20,7 +20,7 @@ else
             <li>
                 <h2 class="title">@lawOrPolicy.Title</h2>
                 <div class="meta">@lawOrPolicy.Geography / @lawOrPolicy.Type </div>
-                <div class="description">@StripHtmlAndShorten(lawOrPolicy.Description)</div>
+                <div class="description">@lawOrPolicy.ShortenedDescription</div>
             </li>
         }
     </ul>
@@ -58,12 +58,5 @@ else
         };
         StateHasChanged();
     }
-
-    protected string StripHtmlAndShorten(string input)
-    {
-        var stripped = Regex.Replace(input, "<.*?>", string.Empty);
-        return stripped.Substring(0, Math.Min(175, stripped.Length)) + "...";
-    }
-
 
 }

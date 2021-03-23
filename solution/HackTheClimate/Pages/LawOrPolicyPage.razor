@@ -1,0 +1,28 @@
+﻿@page "/lawOrPolicy/{id}"
+@using HackTheClimate.Data
+@inject LawOrPolicyService LawOrPolicyService
+
+<h1>Laws and policies</h1>
+
+@if (lawOrPolicy == null)
+{
+    <p>
+        <em>Loading...</em>
+    </p>
+}
+else
+{
+<h2>@lawOrPolicy.Title</h2>
+}
+
+@code {
+    [Parameter]
+    public string Id { get; set; }
+
+    private Data.LawOrPolicy lawOrPolicy;
+
+    protected override async Task OnInitializedAsync()
+    {
+        lawOrPolicy = LawOrPolicyService.GetLawOrPolicy(Id);
+    }
+}
