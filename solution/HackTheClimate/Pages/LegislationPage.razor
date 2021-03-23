@@ -1,8 +1,8 @@
-﻿@page "/lawOrPolicy/{id}"
+﻿@page "/legislation/{id}"
 @using HackTheClimate.Data
-@inject LawOrPolicyService LawOrPolicyService
+@inject LegislationService LegislationService
 
-@if (lawOrPolicy == null)
+@if (_legislation == null)
 {
     <p>
         <em>Loading...</em>
@@ -10,23 +10,23 @@
 }
 else
 {
-    <img src="@($"/flags/{lawOrPolicy.GeographyIso.ToUpperInvariant()}.svg")" alt="@lawOrPolicy.GeographyIso"/>
-    @lawOrPolicy.Geography
+    <img src="@($"/flags/{_legislation.GeographyIso.ToUpperInvariant()}.svg")" alt="@_legislation.GeographyIso"/>
+    @_legislation.Geography
 
     <hr/>
 
-    <h1>@lawOrPolicy.Title</h1>
+    <h1>@_legislation.Title</h1>
 
     <div class="meta">
         <div>
-            <img src="@($"{lawOrPolicy.Type.ToString().ToLowerInvariant()}.svg")" alt="@lawOrPolicy.Type"/>@lawOrPolicy.Type
+            <img src="@($"{_legislation.Type.ToString().ToLowerInvariant()}.svg")" alt="@_legislation.Type"/>@_legislation.Type
         </div>
 
         <div>
-            @lawOrPolicy.DocumentTypes
+            @_legislation.DocumentTypes
         </div>
 
-        @foreach (var framework in lawOrPolicy.Frameworks)
+        @foreach (var framework in _legislation.Frameworks)
         {
             <div>
                 @(framework) Framework
@@ -35,12 +35,12 @@ else
     </div>
 
     <p>
-        @((MarkupString) lawOrPolicy.Description)
+        @((MarkupString) _legislation.Description)
     </p>
 
     <h2>Timeline of Events</h2>
     <table>
-        @foreach (var e in lawOrPolicy.Events)
+        @foreach (var e in _legislation.Events)
         {
             <tr>
                 <td style="width: 200px">@e.Date.ToString("MMMM yyyy")</td><td>@e.Description</td>
@@ -50,7 +50,7 @@ else
 
     <h2>Documents</h2>
     <ul>
-        @foreach (var d in lawOrPolicy.Documents)
+        @foreach (var d in _legislation.Documents)
         {
             <li><a href="@d.Uri.ToString()">@d.Description @(string.IsNullOrEmpty(d.Language) ? "" : "("+@d.Language+")")</a></li>
         }
@@ -64,11 +64,11 @@ else
     [Parameter]
     public string Id { get; set; }
 
-    private LawOrPolicy lawOrPolicy;
+    private Legislation _legislation;
 
     protected override async Task OnInitializedAsync()
     {
-        lawOrPolicy = LawOrPolicyService.GetLawOrPolicy(Id);
+        _legislation = LegislationService.GetLegislation(Id);
     }
 
 }

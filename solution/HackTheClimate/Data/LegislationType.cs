@@ -1,6 +1,6 @@
 ﻿namespace HackTheClimate.Data
 {
-    public enum LawOrPolicyTypes
+    public enum LegislationType
     {
         Legislative,
         Executive,

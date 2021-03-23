@@ -2,11 +2,11 @@ using System.Collections.Generic;
 
 namespace HackTheClimate.Data
 {
-    public class LawOrPolicy
+    public class Legislation
     {
         public int Id { get; set; }
         public string Title { get; set; }
-        public LawOrPolicyTypes Type { get; set; }
+        public LegislationType Type { get; set; }
         public string Geography { get; set; }
         public string GeographyIso { get; set; }
         public IList<Frameworks> Frameworks { get; set; }

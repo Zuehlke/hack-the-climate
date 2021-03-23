@@ -10,14 +10,14 @@ using CsvHelper;
 
 namespace HackTheClimate.Data
 {
-    public class LawOrPolicyService
+    public class LegislationService
     {
         private static readonly Dictionary<int, string> IdsDictionary = new Dictionary<int, string>();
-        private static IEnumerable<LawOrPolicy> _lawsAndPolicies;
+        private static IEnumerable<Legislation> _legislations;
 
-        public IEnumerable<LawOrPolicy> GetLawsAndPolicies()
+        public IEnumerable<Legislation> GetLegislations()
         {
-            if (_lawsAndPolicies == null)
+            if (_legislations == null)
             {
                 var assembly = Assembly.GetExecutingAssembly();
 
@@ -25,28 +25,28 @@ namespace HackTheClimate.Data
                 using var reader = new StreamReader(stream);
                 using var csv = new CsvReader(reader, CultureInfo.InvariantCulture);
 
-                _lawsAndPolicies = csv.GetRecords<LawOrPolicyRow>().ToList().Select(CreateLawOrPolicy);
+                _legislations = csv.GetRecords<LegislationRow>().ToList().Select(CreateLegislation);
                 /*
-                 * return _lawsAndPolicies.Where(l =>
+                 * return _legislations.Where(l =>
                  *  l.Title == "Executive Order on Tackling the Climate Crisis at Home and Abroad");
                  */
             }
 
-            return _lawsAndPolicies;
+            return _legislations;
         }
 
 
-        public LawOrPolicy GetLawOrPolicy(string id)
+        public Legislation GetLegislation(string id)
         {
-            if (_lawsAndPolicies == null) GetLawsAndPolicies();
+            if (_legislations == null) GetLegislations();
 
             var title = IdsDictionary[int.Parse(id)];
-            return _lawsAndPolicies.FirstOrDefault(e => e.Title == title);
+            return _legislations.FirstOrDefault(e => e.Title == title);
         }
 
-        private LawOrPolicy CreateLawOrPolicy(LawOrPolicyRow row)
+        private Legislation CreateLegislation(LegislationRow row)
         {
-            return new LawOrPolicy
+            return new Legislation
             {
                 Id = CreateId(row.Title),
                 Title = row.Title,
@@ -74,11 +74,11 @@ namespace HackTheClimate.Data
             return documents.Select(Document.TryParse);
         }
 
-        private LawOrPolicyTypes ExtractType(string rowType)
+        private LegislationType ExtractType(string rowType)
         {
-            if (Enum.TryParse(rowType, true, out LawOrPolicyTypes type))
+            if (Enum.TryParse(rowType, true, out LegislationType type))
                 return type;
-            return LawOrPolicyTypes.Unknown;
+            return LegislationType.Unknown;
         }
 
         private IList<Frameworks> ExtractFrameworks(string frameworks)
@@ -125,7 +125,7 @@ namespace HackTheClimate.Data
 
         // ReSharper disable once ClassNeverInstantiated.Local
         [SuppressMessage("ReSharper", "UnusedAutoPropertyAccessor.Local")]
-        private class LawOrPolicyRow
+        private class LegislationRow
         {
             public string Title { get; set; }
             public string Type { get; set; }

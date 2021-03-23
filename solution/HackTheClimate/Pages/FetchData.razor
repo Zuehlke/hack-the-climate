@@ -1,7 +1,7 @@
 ﻿@page "/fetchdata"
 @using HackTheClimate.Data
 @using BlazorPagination
-@inject LawOrPolicyService LawOrPolicyService
+@inject LegislationService LegislationService
 
 <h1>Laws and policies</h1>
 
@@ -14,30 +14,30 @@
 else
 {
     <ul class="laws-and-policies">
-        @foreach (var lawOrPolicy in _data.Results)
+        @foreach (var legislation in _data.Results)
         {
             <li>
                 <h2 class="title">
-                    <a href="/lawOrPolicy/@lawOrPolicy.Id">@lawOrPolicy.Title</a>
+                    <a href="/legislation/@legislation.Id">@legislation.Title</a>
                 </h2>
                 <div class="meta">
                     <div>
-                        <img src="@($"/flags/{lawOrPolicy.GeographyIso.ToUpperInvariant()}.svg")"/> @lawOrPolicy.Geography
+                        <img src="@($"/flags/{legislation.GeographyIso.ToUpperInvariant()}.svg")"/> @legislation.Geography
                     </div>
 
                     <div>
-                        <img src="@($"{lawOrPolicy.Type.ToString().ToLowerInvariant()}.svg")"/>@lawOrPolicy.Type
+                        <img src="@($"{legislation.Type.ToString().ToLowerInvariant()}.svg")"/>@legislation.Type
                     </div>
 
                     <div className="right">
-                        @lawOrPolicy.Events.First().Date.Year
+                        @legislation.Events.First().Date.Year
                     </div>
 
                     <div className="right">
-                        @(lawOrPolicy.Events.Count() > 1 ? $"Last change in {lawOrPolicy.Events.Last().Date.Year}" : "")
+                        @(legislation.Events.Count() > 1 ? $"Last change in {legislation.Events.Last().Date.Year}" : "")
                     </div>
                 </div>
-                <div class="description">@lawOrPolicy.ShortenedDescription</div>
+                <div class="description">@legislation.ShortenedDescription</div>
             </li>
         }
     </ul>
@@ -53,19 +53,19 @@ else
 }
 
 @code {
-    private IEnumerable<LawOrPolicy> _lawsAndPolicies;
-    private PagedResult<LawOrPolicy> _data;
+    private IEnumerable<Legislation> _lawsAndPolicies;
+    private PagedResult<Legislation> _data;
 
     protected override async Task OnInitializedAsync()
     {
-        _lawsAndPolicies = LawOrPolicyService.GetLawsAndPolicies();
+        _lawsAndPolicies = LegislationService.GetLegislations();
         LoadPageData(1);
     }
 
     protected void LoadPageData(int currentPage)
     {
         const int pageSize = 10;
-        _data = new PagedResult<LawOrPolicy>
+        _data = new PagedResult<Legislation>
         {
             CurrentPage = currentPage,
             PageCount = _lawsAndPolicies.Count() / pageSize,
