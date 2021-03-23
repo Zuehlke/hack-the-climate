@@ -26,8 +26,10 @@ namespace HackTheClimate.Data
                 using var csv = new CsvReader(reader, CultureInfo.InvariantCulture);
 
                 _lawsAndPolicies = csv.GetRecords<LawOrPolicyRow>().ToList().Select(CreateLawOrPolicy);
-                return _lawsAndPolicies.Where(l =>
-                    l.Title == "Executive Order on Tackling the Climate Crisis at Home and Abroad");
+                /*
+                 * return _lawsAndPolicies.Where(l =>
+                 *  l.Title == "Executive Order on Tackling the Climate Crisis at Home and Abroad");
+                 */
             }
 
             return _lawsAndPolicies;

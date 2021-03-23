@@ -17,8 +17,6 @@ else
     <h2>@lawOrPolicy.Title</h2>
 
     <div class="meta">
-
-
         <div>
             <img src="@($"{lawOrPolicy.Type.ToString().ToLowerInvariant()}.svg")" alt="@lawOrPolicy.Type"/>@lawOrPolicy.Type
         </div>
@@ -33,11 +31,11 @@ else
                 @(framework) Framework
             </div>
         }
-
-        <div>
-            Passed in @(lawOrPolicy.Events.First().Date.Year)
-        </div>
     </div>
+
+    <p>
+        @((MarkupString)lawOrPolicy.Description)
+    </p>
 }
 
 @code {
