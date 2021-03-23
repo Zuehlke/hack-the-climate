@@ -10,11 +10,12 @@
 }
 else
 {
-    <img src="@($"/flags/{lawOrPolicy.GeographyIso.ToUpperInvariant()}.svg")" alt="@lawOrPolicy.GeographyIso"/> @lawOrPolicy.Geography
+    <img src="@($"/flags/{lawOrPolicy.GeographyIso.ToUpperInvariant()}.svg")" alt="@lawOrPolicy.GeographyIso"/>
+    @lawOrPolicy.Geography
 
-    <hr />
+    <hr/>
 
-    <h2>@lawOrPolicy.Title</h2>
+    <h1>@lawOrPolicy.Title</h1>
 
     <div class="meta">
         <div>
@@ -34,18 +35,32 @@ else
     </div>
 
     <p>
-        @((MarkupString)lawOrPolicy.Description)
+        @((MarkupString) lawOrPolicy.Description)
     </p>
+
+    <h2>Timeline of Events</h2>
+
+    <table>
+        @foreach (var e in lawOrPolicy.Events)
+        {
+            <tr>
+                <td style="width: 200px">@e.Date.ToString("MMMM yyyy")</td><td>@e.Description</td>
+            </tr>
+        }
+
+    </table>
 }
 
 @code {
+
     [Parameter]
     public string Id { get; set; }
 
-    private Data.LawOrPolicy lawOrPolicy;
+    private LawOrPolicy lawOrPolicy;
 
     protected override async Task OnInitializedAsync()
     {
         lawOrPolicy = LawOrPolicyService.GetLawOrPolicy(Id);
     }
+
 }
