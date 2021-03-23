@@ -19,7 +19,7 @@ else
         {
         <li>
             <h2 class="title"><a href="/lawOrPolicy/@lawOrPolicy.Id">@lawOrPolicy.Title</a></h2>
-            <div class="meta">@lawOrPolicy.Geography / <img src="@($"{lawOrPolicy.Type.ToString().ToLowerInvariant()}.svg")" />@lawOrPolicy.Type </div>
+            <div class="meta"><img src="@($"/flags/{lawOrPolicy.GeographyIso.ToUpperInvariant()}.svg")" /> @lawOrPolicy.Geography / <img src="@($"{lawOrPolicy.Type.ToString().ToLowerInvariant()}.svg")" />@lawOrPolicy.Type </div>
             <div class="description">@lawOrPolicy.ShortenedDescription</div>
         </li>
         }
