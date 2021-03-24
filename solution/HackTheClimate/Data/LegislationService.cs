@@ -72,35 +72,39 @@ namespace HackTheClimate.Data
 
         private Legislation CreateLegislation(LawAndPoliciesRow row)
         {
+            return new Legislation
+            {
+                Id = GetIdByTitle(row.Title),
+                Title = row.Title,
+                Description = row.Description,
+                ShortenedDescription = StripHtmlAndShorten(row.Description),
+                DocumentTypes = row.DocumentTypes,
+                Documents = ExtractDocuments(row.Documents),
+                Events = ExtractEvents(row.Events),
+                Frameworks = ExtractFrameworks(row.Frameworks),
+                Geography = row.Geography,
+                GeographyIso = row.GeographyIso,
+                Instruments = row.Instruments.Split(",").Select(e => e.Trim()).ToList(),
+                Keywords = row.Keywords.Split(",").Select(e => e.Trim()).ToList(),
+                NaturalHazards = row.NaturalHazards,
+                ParentLegislation = row.ParentLegislation,
+                Responses = row.Responses,
+                Sectors = row.Sectors.Split(",").Select(e => e.Trim()).ToList(),
+                Type = ExtractType(row.Type)
+            };
+        }
+
+        private IEnumerable<Event> ExtractEvents(string rowEvents)
+        {
             try
             {
-                return new Legislation
-                {
-                    Id = GetIdByTitle(row.Title),
-                    Title = row.Title,
-                    Description = row.Description,
-                    ShortenedDescription = StripHtmlAndShorten(row.Description),
-                    DocumentTypes = row.DocumentTypes,
-                    Documents = ExtractDocuments(row.Documents),
-                    Events = row.Events.Split(";").Select(Event.TryParse).OrderBy(e => e.Date),
-                    Frameworks = ExtractFrameworks(row.Frameworks),
-                    Geography = row.Geography,
-                    GeographyIso = row.GeographyIso,
-                    Instruments = row.Instruments.Split(",").Select(e => e.Trim()).ToList(),
-                    Keywords = row.Keywords.Split(",").Select(e => e.Trim()).ToList(),
-                    NaturalHazards = row.NaturalHazards,
-                    ParentLegislation = row.ParentLegislation,
-                    Responses = row.Responses,
-                    Sectors = row.Sectors.Split(",").Select(e => e.Trim()).ToList(),
-                    Type = ExtractType(row.Type)
-                };
+                return rowEvents.Split(";").Select(Event.TryParse).OrderBy(e => e.Date);
             }
-            catch (NullReferenceException e)
+            catch (NullReferenceException)
             {
-                Console.WriteLine(e);
-                Console.WriteLine("Row was: " + row);
-                Console.WriteLine("Row.Events was: " + row.Events);
-                throw e;
+                Console.WriteLine($"Cannot extract events from: '{rowEvents}'");
+                return new List<Event>
+                    {new Event {Date = new DateTime(2000, 0, 0), Description = "Data Quality Issue"}};
             }
         }
 
