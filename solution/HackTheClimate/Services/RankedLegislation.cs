@@ -2,7 +2,7 @@
 
 namespace HackTheClimate.Services
 {
-    public class RankedLegislation : Legislation
+    public class RankedLegislation
     {
         public RankedLegislation(double rank, Legislation legislation)
         {

@@ -22,12 +22,12 @@ namespace HackTheClimate.Services
             _legislationService = legislationService;
         }
 
-        public async Task<Graph<RankedLegislation>> SearchAsync(string searchTerm)
+        public async Task<SearchResult> SearchAsync(string searchTerm)
         {
-            var graph = new Graph<RankedLegislation>();
+            var graph = new Graph();
 
             // get search results and add nodes
-            var legislations = new HashSet<GraphNode<RankedLegislation>>();
+            var rankedLegislations = new List<RankedLegislation>();
             var fullTextSearchResult = await _searchService.SearchAsync(searchTerm);
             foreach (var (id, rank) in fullTextSearchResult)
             {
@@ -35,8 +35,8 @@ namespace HackTheClimate.Services
                 if (legislation != null)
                 {
                     var rankedLegislation = new RankedLegislation(rank, legislation);
-                    graph.AddNode(rankedLegislation);
-                    legislations.Add(new GraphNode<RankedLegislation>(rankedLegislation));
+                    rankedLegislations.Add(rankedLegislation);
+                    graph.Nodes.Add(new Node(legislation.Id, rank));
                 }
                 else
                 {
@@ -46,19 +46,29 @@ namespace HackTheClimate.Services
 
             // calculate similarities and add edges
             var calculatedCombinations = new HashSet<string>();
-            foreach (var outer in legislations)
-            foreach (var inner in legislations)
-                if (!calculatedCombinations.Contains(outer.Value.Id + inner.Value.Id))
+            foreach (var outer in rankedLegislations)
+            foreach (var inner in rankedLegislations)
+                if (!calculatedCombinations.Contains(outer.Legislation.Id + inner.Legislation.Id))
                 {
-                    var similarity = _similarityService.CalculateSimilarity(outer.Value, inner.Value);
-                    graph.AddUndirectedEdge(outer, inner, similarity.Similarity);
+                    var similarity = _similarityService.CalculateSimilarity(outer.Legislation, inner.Legislation);
+                    graph.Links.Add(new Link(outer.Legislation.Id, inner.Legislation.Id, similarity.Similarity));
 
-                    calculatedCombinations.Add(outer.Value.Id + inner.Value.Id);
-                    calculatedCombinations.Add(inner.Value.Id + outer.Value.Id);
+                    calculatedCombinations.Add(outer.Legislation.Id + inner.Legislation.Id);
+                    calculatedCombinations.Add(inner.Legislation.Id + outer.Legislation.Id);
                 }
 
 
-            return graph;
+            return new SearchResult
+            {
+                Graph = graph,
+                RankedLegislations = rankedLegislations
+            };
         }
+    }
+
+    public class SearchResult
+    {
+        public IEnumerable<RankedLegislation> RankedLegislations;
+        public Graph Graph { set; get; }
     }
 }

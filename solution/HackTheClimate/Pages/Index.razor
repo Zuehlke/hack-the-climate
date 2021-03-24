@@ -1,10 +1,12 @@
 ﻿@page "/"
+@using HackTheClimate.Services
 @inject IJSRuntime JS;
+@inject GraphService GraphService;
 
 <h1>Search</h1>
 
 <div class="input-group">
-    <input type="text" class="form-control" placeholder="Search laws and policies" @onkeyup="OnInputKeyUp">
+    <input bind="@SearchTerm" type="text" class="form-control" placeholder="Search laws and policies" @onkeyup="OnInputKeyUp">
     <div class="input-group-append">
         <button class="btn btn-secondary" type="button" @onclick="Search">
             <i class="oi oi-magnifying-glass"></i>
@@ -16,6 +18,7 @@
 
 @code {
     private ElementReference _renderTo;
+    protected string SearchTerm { get; set;}
 
     private async Task OnInputKeyUp(KeyboardEventArgs e)
     {
@@ -27,9 +30,11 @@
 
     private async Task Search()
     {
-        var diagramModule = await JS
-            .InvokeAsync<IJSObjectReference>("import", "/diagram.js");
+        var graph = await GraphService.SearchAsync(SearchTerm);
 
-        await diagramModule.InvokeVoidAsync("renderDiagram2", _renderTo);
+        var diagramModule = await JS
+        .InvokeAsync<IJSObjectReference>("import", "/diagram.js");
+
+        await diagramModule.InvokeVoidAsync("renderDiagram", _renderTo, graph.Graph);
     }
 }

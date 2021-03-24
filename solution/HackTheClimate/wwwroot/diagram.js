@@ -1,12 +1,9 @@
-﻿export async function renderDiagram2(element) {
-    const data = await d3.json(
-            "https://gist.githubusercontent.com/mbostock/4062045/raw/5916d145c8c048a6e3086915a6be464467391c62/miserables.json");
-    const nodes = data.nodes;
+﻿export async function renderDiagram(element, data) {
     const height = 500;
     const width = 500;
     const color = d3.scaleOrdinal(d3.schemeCategory10);
 
-    const index = new Map(nodes.map(d => [d.id, d]));
+    const index = new Map(data.nodes.map(d => [d.id, d]));
     const links = data.links.map(d => Object.assign(Object.create(d), {
         source: index.get(d.source),
         target: index.get(d.target)
@@ -16,7 +13,7 @@
 
     const layout = cola.d3adaptor(d3)
         .size([width, height])
-        .nodes(nodes)
+        .nodes(data.nodes)
         .links(links)
         .jaccardLinkLengths(40, 0.7)
         .start(30);
@@ -33,7 +30,7 @@
         .attr("stroke", "#fff")
         .attr("stroke-width", 1.5)
         .selectAll("circle")
-        .data(nodes)
+        .data(data.nodes)
         .enter().append("circle")
         .attr("r", 5)
         .attr("fill", d => color(d.group))

@@ -17,10 +17,39 @@ namespace HackTheClimate.Data
         private static IEnumerable<LegislationRow> _ids;
         private static IEnumerable<Legislation> _legislations;
 
-        public IEnumerable<Legislation> GetLegislations()
+        private IEnumerable<LegislationRow> Ids
         {
-            if (_legislations == null)
+            get
             {
+                if (_ids != null) return _ids;
+
+                var assembly = Assembly.GetExecutingAssembly();
+
+                using var stream = assembly.GetManifestResourceStream("HackTheClimate.Data.ids.csv");
+                using var reader = new StreamReader(stream, Encoding.UTF8);
+                var config = new CsvConfiguration(CultureInfo.InvariantCulture);
+                using var csv = new CsvReader(reader, config);
+
+                _ids = csv.GetRecords<LegislationRow>().ToList()
+                    .Select(e =>
+                    {
+                        if (int.TryParse(e.Id, out var id))
+                            // Console.WriteLine($"{e.Id};\"{e.Title}\"");
+                            return new LegislationRow {Id = e.Id, Title = e.Title};
+
+                        return null;
+                    }).Where(e => e != null).ToList();
+
+                return _ids;
+            }
+        }
+
+        public IEnumerable<Legislation> Legislations
+        {
+            get
+            {
+                if (_legislations != null) return _legislations;
+
                 var assembly = Assembly.GetExecutingAssembly();
 
                 using var stream = assembly.GetManifestResourceStream("HackTheClimate.Data.laws_and_policies.csv");
@@ -28,17 +57,18 @@ namespace HackTheClimate.Data
                 using var csv = new CsvReader(reader, CultureInfo.InvariantCulture);
 
                 _legislations = csv.GetRecords<LawAndPoliciesRow>().ToList().Select(CreateLegislation);
-            }
 
-            return _legislations;
+                return _legislations;
+            }
         }
 
 
         public Legislation GetLegislation(string id)
         {
-            var title = _ids.First(e => e.Id == id).Title;
-            return _legislations.FirstOrDefault(e => e.Title == title);
+            var title = Ids.First(e => e.Id == id).Title;
+            return Legislations.FirstOrDefault(e => e.Title == title);
         }
+
 
         private Legislation CreateLegislation(LawAndPoliciesRow row)
         {
@@ -99,27 +129,7 @@ namespace HackTheClimate.Data
 
         private string GetIdByTitle(string title)
         {
-            if (_ids == null)
-            {
-                var assembly = Assembly.GetExecutingAssembly();
-
-                using var stream = assembly.GetManifestResourceStream("HackTheClimate.Data.ids.csv");
-                using var reader = new StreamReader(stream, Encoding.UTF8);
-                var config = new CsvConfiguration(CultureInfo.InvariantCulture);
-                using var csv = new CsvReader(reader, config);
-
-                _ids = csv.GetRecords<LegislationRow>().ToList()
-                    .Select(e =>
-                    {
-                        if (int.TryParse(e.Id, out var id))
-                            // Console.WriteLine($"{e.Id};\"{e.Title}\"");
-                            return new LegislationRow {Id = e.Id, Title = e.Title};
-
-                        return null;
-                    }).Where(e => e != null).ToList();
-            }
-
-            var id = _ids.FirstOrDefault(e => e.Title == title);
+            var id = Ids.FirstOrDefault(e => e.Title == title);
             if (id == null)
             {
                 Console.WriteLine("No id found for: " + title);

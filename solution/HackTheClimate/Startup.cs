@@ -26,7 +26,6 @@ namespace HackTheClimate
             services.AddSingleton<WeatherForecastService>();
             services.AddSingleton<LegislationService>();
 
-            services.AddSingleton<SearchOrchestrationService>();
             services.AddSingleton<SearchService>();
             services.AddSingleton<SimilarityService>();
             services.AddSingleton<GraphService>();
