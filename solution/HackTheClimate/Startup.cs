@@ -32,6 +32,7 @@ namespace HackTheClimate
             services.AddSingleton<GraphService>();
 
             services.AddTransient<AzureSearchFacade>();
+            // services.AddTransient<FakeSearchService>();
 
             services.Configure<AzureSearchConfiguration>(Configuration.GetSection(Constants.Configuration.Search));
         }
