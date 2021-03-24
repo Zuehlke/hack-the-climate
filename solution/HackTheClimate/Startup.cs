@@ -1,3 +1,4 @@
+using CurrieTechnologies.Razor.Clipboard;
 using HackTheClimate.Data;
 using HackTheClimate.Services;
 using HackTheClimate.Services.Search;
@@ -34,8 +35,9 @@ namespace HackTheClimate
 
             services.AddTransient<AzureSearchFacade>();
 
-
             services.Configure<AzureSearchConfiguration>(Configuration.GetSection(Constants.Configuration.Search));
+
+            services.AddClipboard();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

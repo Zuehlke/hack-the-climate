@@ -1,7 +1,10 @@
 ﻿@page "/"
 @using HackTheClimate.Services
+@using CurrieTechnologies.Razor.Clipboard
+@using System.Text.Json
 @inject IJSRuntime JS;
-@inject GraphService GraphService;
+@inject GraphService graphService;
+@inject ClipboardService clipboardService;
 
 <h1>Search</h1>
 
@@ -30,6 +33,9 @@ else
 
 @if (_searchResult != null && _searchResult.RankedLegislations.Any())
 {
+
+    <button type="button" class="btn btn-outline-secondary" @onclick="CopyGraphDataToClipboard">Copy Graph Data to Clipboard</button>
+
     <ul class="laws-and-policies">
         @foreach (var legislation in _searchResult.RankedLegislations.OrderBy(r => r.ConfidenceScore))
         {
@@ -58,6 +64,8 @@ else
             </li>
         }
     </ul>
+
+    <button type="button" class="btn btn-outline-secondary" @onclick="CopySearchResultToClipboard">Copy Search Result Data to Clipboard</button>
 }
 
 @if (_searchResult != null && !_searchResult.RankedLegislations.Any())
@@ -88,7 +96,7 @@ else
     {
         _searching = true;
 
-        _searchResult = await GraphService.SearchAsync(SearchTerm);
+        _searchResult = await graphService.SearchAsync(SearchTerm);
 
         if (_searchResult.RankedLegislations.Any())
         {
@@ -100,5 +108,27 @@ else
         }
 
         _searching = false;
+    }
+
+    private async Task CopyGraphDataToClipboard()
+    {
+        if (clipboardService != null)
+        {
+            await clipboardService.WriteTextAsync(JsonSerializer.Serialize(_searchResult.Graph, new JsonSerializerOptions
+            {
+                WriteIndented = true,
+            }));
+        }
+    }
+
+    private async Task CopySearchResultToClipboard()
+    {
+        if (clipboardService != null)
+        {
+            await clipboardService.WriteTextAsync(JsonSerializer.Serialize(_searchResult.RankedLegislations, new JsonSerializerOptions
+            {
+                WriteIndented = true,
+            }));
+        }
     }
 }
