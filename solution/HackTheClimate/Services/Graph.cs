@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 
 namespace HackTheClimate.Services
 {
+    // source: https://gist.github.com/SourceCode/d3b3346329a20e8f693d0019f5b99b5d
     public class Graph<T> : IEnumerable<Node<T>>
     {
         private readonly NodeList<T> nodeSet;
