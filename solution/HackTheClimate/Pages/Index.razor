@@ -18,6 +18,6 @@
         var diagramModule = await JS
             .InvokeAsync<IJSObjectReference>("import", "/diagram.js");
 
-        await diagramModule.InvokeVoidAsync("renderDiagram", _renderTo);
+        await diagramModule.InvokeVoidAsync("renderDiagram2", _renderTo);
     }
 }
