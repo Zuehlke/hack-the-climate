@@ -54,6 +54,7 @@
             .attr("cy", d => d.y);
     });
 
+    // TODO invalidation is undefined
     // invalidation.then(() => layout.stop());
 
     return svg.node();
