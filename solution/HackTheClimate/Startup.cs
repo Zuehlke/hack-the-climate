@@ -1,5 +1,6 @@
 using HackTheClimate.Data;
 using HackTheClimate.Services;
+using HackTheClimate.Services.Search;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -26,10 +27,13 @@ namespace HackTheClimate
             services.AddSingleton<WeatherForecastService>();
             services.AddSingleton<LegislationService>();
 
-            services.AddSingleton<SearchOrchestrationService>();
             services.AddSingleton<SearchService>();
             services.AddSingleton<SimilarityService>();
             services.AddSingleton<GraphService>();
+
+            services.AddTransient<AzureSearchFacade>();
+
+            services.Configure<AzureSearchConfiguration>(Configuration.GetSection(Constants.Configuration.Search));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
