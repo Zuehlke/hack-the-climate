@@ -14,11 +14,19 @@
     </div>
 </div>
 
+@if (_searching)
+{
+    <div class="spinner-border" role="status">
+        <span class="sr-only">Loading...</span>
+    </div>
+}
+
 <svg @ref="_renderTo" height="450" width="600"></svg>
 
 @code {
     private ElementReference _renderTo;
     protected string SearchTerm { get; set;}
+    protected bool _searching = false;
 
     private async Task OnInputKeyUp(KeyboardEventArgs e)
     {
@@ -30,11 +38,15 @@
 
     private async Task Search()
     {
+        _searching = true;
+
         var graph = await GraphService.SearchAsync(SearchTerm);
 
         var diagramModule = await JS
         .InvokeAsync<IJSObjectReference>("import", "/diagram.js");
 
         await diagramModule.InvokeVoidAsync("renderDiagram", _renderTo, graph.Graph);
+
+        _searching = false;
     }
 }
