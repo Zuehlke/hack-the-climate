@@ -19,23 +19,31 @@ namespace HackTheClimate.Services
 
             double instrumentsWeight = 1;
             var instrumentsSimilarity = ListSimilarity(a.Frameworks, b.Frameworks);
+
+            double naturalHazardsWeight = 1;
+            var naturalHazardsSimilarity = ListSimilarity(a.NaturalHazards, b.NaturalHazards);
             
-            // NaturalHazards -- not a list yet
-            // DocumentTypes -- not a list yet
-            // Responses -- not a list yet
+            double documentTypesWeight = 1;
+            var documentTypesSimilarity = ListSimilarity(a.DocumentTypes, b.DocumentTypes);
+            
+            double responsesWeight = 1;
+            var responsesSimilarity = ListSimilarity(a.Responses, b.Responses);
 
             double locationWeight = 0.5;
             var locationSimilarity = PropertySimilarity(a.Geography, b.Geography);
-            
+
             double typeWeight = 0.5;
             var typeSimilarity = PropertySimilarity(a.Type, b.Type);
-            
+
             return new SimilarityResult
             {
-                Similarity = keywordWeight * keywordSimilarity 
+                Similarity = keywordWeight * keywordSimilarity
                              + sectorsWeight * sectorSimilarity
-                             + frameworksWeight * frameworksSimilarity 
+                             + frameworksWeight * frameworksSimilarity
                              + instrumentsWeight * instrumentsSimilarity
+                             + naturalHazardsWeight * naturalHazardsSimilarity
+                             + documentTypesWeight * documentTypesSimilarity
+                             + responsesWeight * responsesSimilarity
                              + locationWeight * locationSimilarity
                              + typeWeight * typeSimilarity
             };

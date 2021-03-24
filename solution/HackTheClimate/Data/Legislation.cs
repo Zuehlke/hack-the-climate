@@ -10,10 +10,10 @@ namespace HackTheClimate.Data
         public string Geography { get; set; }
         public string GeographyIso { get; set; }
         public IList<Frameworks> Frameworks { get; set; }
-        public string Responses { get; set; }
+        public List<string> Responses { get; set; }
         public IList<string> Instruments { get; set; }
-        public string DocumentTypes { get; set; }
-        public string NaturalHazards { get; set; }
+        public List<string> DocumentTypes { get; set; }
+        public List<string> NaturalHazards { get; set; }
         public IList<string> Keywords { get; set; }
         public IList<string> Sectors { get; set; }
         public IEnumerable<Event> Events { get; set; }
