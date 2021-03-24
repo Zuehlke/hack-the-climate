@@ -1,5 +1,6 @@
 ﻿@page "/legislation/{id}"
 @using HackTheClimate.Data
+@using System.Text.RegularExpressions
 @inject LegislationService LegislationService
 
 @if (_legislation == null)
@@ -54,9 +55,8 @@ else
         {
             <li><a href="@d.Uri.ToString()">@d.Description @(string.IsNullOrEmpty(d.Language) ? "" : "("+@d.Language+")")</a></li>
         }
+        <li><a href="@GetClimateLawUrl(_legislation)">Climate Laws Website</a></li>
     </ul>
-
-
 }
 
 @code {
@@ -69,6 +69,25 @@ else
     protected override async Task OnInitializedAsync()
     {
         _legislation = LegislationService.GetLegislation(Id);
+    }
+
+    /// <summary>
+    /// Creates URL like https://climate-laws.org/geographies/taiwan/laws/electricity-act
+    /// or https://climate-laws.org/geographies/afghanistan/policies/energy-sector-strategy-1387-1391-2007-8-2012-3
+    /// Tax Reform Act 2020 (Steuerreformgesetz 2020 – StRefG 2020 - 984/A)
+    /// becomes
+    /// tax-reform-act-2020-steuerreformgesetz-2020-strefg-2020-984-a
+    /// </summary>
+    /// <param name="legislation"></param>
+    /// <returns></returns>
+    private static string GetClimateLawUrl(Legislation legislation)
+    {
+        var titleIdRegex = new Regex("[^a-zA-Z0-9 -/]");
+        var title = titleIdRegex.Replace(legislation.Title, string.Empty).Replace("/", "-").Replace(" ", "-").Replace("(", string.Empty).Replace(")", string.Empty).ToLowerInvariant();
+
+        var type = legislation.Type == LegislationType.Legislative ? "laws" : "policies"; // no idea whether that's correct
+
+        return $"https://climate-laws.org/geographies/{legislation.Geography.ToLower()}/{type}/{title}";
     }
 
 }

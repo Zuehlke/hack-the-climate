@@ -5,14 +5,16 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Text;
 using System.Text.RegularExpressions;
 using CsvHelper;
+using CsvHelper.Configuration;
 
 namespace HackTheClimate.Data
 {
     public class LegislationService
     {
-        private static readonly Dictionary<int, string> IdsDictionary = new Dictionary<int, string>();
+        private static IEnumerable<LegislationRow> _ids;
         private static IEnumerable<Legislation> _legislations;
 
         public IEnumerable<Legislation> GetLegislations()
@@ -22,14 +24,10 @@ namespace HackTheClimate.Data
                 var assembly = Assembly.GetExecutingAssembly();
 
                 using var stream = assembly.GetManifestResourceStream("HackTheClimate.Data.laws_and_policies.csv");
-                using var reader = new StreamReader(stream);
+                using var reader = new StreamReader(stream, Encoding.UTF8);
                 using var csv = new CsvReader(reader, CultureInfo.InvariantCulture);
 
-                _legislations = csv.GetRecords<LegislationRow>().ToList().Select(CreateLegislation);
-                /*
-                 * return _legislations.Where(l =>
-                 *  l.Title == "Executive Order on Tackling the Climate Crisis at Home and Abroad");
-                 */
+                _legislations = csv.GetRecords<LawAndPoliciesRow>().ToList().Select(CreateLegislation);
             }
 
             return _legislations;
@@ -38,17 +36,15 @@ namespace HackTheClimate.Data
 
         public Legislation GetLegislation(string id)
         {
-            if (_legislations == null) GetLegislations();
-
-            var title = IdsDictionary[int.Parse(id)];
+            var title = _ids.First(e => e.Id == id).Title;
             return _legislations.FirstOrDefault(e => e.Title == title);
         }
 
-        private Legislation CreateLegislation(LegislationRow row)
+        private Legislation CreateLegislation(LawAndPoliciesRow row)
         {
             return new Legislation
             {
-                Id = CreateId(row.Title),
+                Id = GetIdByTitle(row.Title),
                 Title = row.Title,
                 Description = row.Description,
                 ShortenedDescription = StripHtmlAndShorten(row.Description),
@@ -71,7 +67,7 @@ namespace HackTheClimate.Data
         private IEnumerable<Document> ExtractDocuments(string rowDocuments)
         {
             var documents = rowDocuments.Split(";");
-            return documents.Select(Document.TryParse);
+            return documents.Select(Document.TryParse).Where(e => e != null);
         }
 
         private LegislationType ExtractType(string rowType)
@@ -101,20 +97,36 @@ namespace HackTheClimate.Data
             }).Where(e => e != Frameworks.Unknown).ToList();
         }
 
-        private int CreateId(string title)
+        private string GetIdByTitle(string title)
         {
-            if (!IdsDictionary.ContainsValue(title))
+            if (_ids == null)
             {
-                var id = IdsDictionary.Count;
-                IdsDictionary.Add(id, title);
-                return id;
+                var assembly = Assembly.GetExecutingAssembly();
+
+                using var stream = assembly.GetManifestResourceStream("HackTheClimate.Data.ids.csv");
+                using var reader = new StreamReader(stream, Encoding.UTF8);
+                var config = new CsvConfiguration(CultureInfo.InvariantCulture);
+                using var csv = new CsvReader(reader, config);
+
+                _ids = csv.GetRecords<LegislationRow>().ToList()
+                    .Select(e =>
+                    {
+                        if (int.TryParse(e.Id, out var id))
+                            // Console.WriteLine($"{e.Id};\"{e.Title}\"");
+                            return new LegislationRow {Id = e.Id, Title = e.Title};
+
+                        return null;
+                    }).Where(e => e != null).ToList();
             }
 
-            foreach (var entry in IdsDictionary)
-                if (entry.Value == title)
-                    return entry.Key;
+            var id = _ids.FirstOrDefault(e => e.Title == title);
+            if (id == null)
+            {
+                Console.WriteLine("No id found for: " + title);
+                return "";
+            }
 
-            throw new Exception("Dictionary should contain title.");
+            return id.Id;
         }
 
         protected string StripHtmlAndShorten(string description)
@@ -126,6 +138,14 @@ namespace HackTheClimate.Data
         // ReSharper disable once ClassNeverInstantiated.Local
         [SuppressMessage("ReSharper", "UnusedAutoPropertyAccessor.Local")]
         private class LegislationRow
+        {
+            public string Id { get; set; }
+            public string Title { get; set; }
+        }
+
+        // ReSharper disable once ClassNeverInstantiated.Local
+        [SuppressMessage("ReSharper", "UnusedAutoPropertyAccessor.Local")]
+        private class LawAndPoliciesRow
         {
             public string Title { get; set; }
             public string Type { get; set; }

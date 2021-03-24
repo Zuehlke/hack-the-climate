@@ -5,6 +5,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Data\ids.csv" />
     <None Remove="Data\laws_and_policies.csv" />
   </ItemGroup>
 
@@ -14,6 +15,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <EmbeddedResource Include="Data\ids.csv" />
     <EmbeddedResource Include="Data\laws_and_policies.csv" />
   </ItemGroup>
 

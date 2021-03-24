@@ -4,7 +4,7 @@ namespace HackTheClimate.Data
 {
     public class Legislation
     {
-        public int Id { get; set; }
+        public string Id { get; set; }
         public string Title { get; set; }
         public LegislationType Type { get; set; }
         public string Geography { get; set; }
