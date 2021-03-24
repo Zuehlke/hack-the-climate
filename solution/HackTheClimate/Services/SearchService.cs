@@ -1,4 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace HackTheClimate.Services
 {
@@ -11,9 +14,23 @@ namespace HackTheClimate.Services
         /// </summary>
         /// <param name="searchTerm"></param>
         /// <returns>array of id/rank mapping</returns>
-        public Tuple<string, double>[] Search(string searchTerm)
+        public async Task<IEnumerable<Tuple<string, double>>> SearchAsync(string searchTerm)
         {
-            return null;
+            var ids = new[]
+            {
+                "1571",
+                "9771",
+                "9769",
+                "8127",
+                "9363",
+                "1292",
+                "9369",
+                "9768",
+                "8646"
+            };
+
+            var rand = new Random();
+            return ids.Select(id => new Tuple<string, double>(id, rand.NextDouble()));
         }
     }
 }

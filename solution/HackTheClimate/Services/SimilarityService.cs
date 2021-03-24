@@ -1,4 +1,5 @@
-﻿using HackTheClimate.Data;
+﻿using System;
+using HackTheClimate.Data;
 
 namespace HackTheClimate.Services
 {
@@ -6,7 +7,10 @@ namespace HackTheClimate.Services
     {
         public SimilarityResult CalculateSimilarity(Legislation a, Legislation b)
         {
-            return null;
+            return new SimilarityResult
+            {
+                Similarity = new Random().NextDouble()
+            };
         }
     }
 

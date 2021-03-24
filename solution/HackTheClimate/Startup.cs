@@ -1,4 +1,5 @@
 using HackTheClimate.Data;
+using HackTheClimate.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -24,6 +25,11 @@ namespace HackTheClimate
             services.AddServerSideBlazor();
             services.AddSingleton<WeatherForecastService>();
             services.AddSingleton<LegislationService>();
+
+            services.AddSingleton<SearchOrchestrationService>();
+            services.AddSingleton<SearchService>();
+            services.AddSingleton<SimilarityService>();
+            services.AddSingleton<GraphService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
