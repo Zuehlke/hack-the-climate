@@ -10,6 +10,8 @@ namespace HackTheClimate.Services
     /// </summary>
     public class GraphService
     {
+        private const double SilimarityThreshold = 0.9;
+
         private readonly LegislationService _legislationService;
         private readonly SearchService _searchService;
         private readonly SimilarityService _similarityService;
@@ -51,12 +53,12 @@ namespace HackTheClimate.Services
                 if (!calculatedCombinations.Contains(outer.Legislation.Id + inner.Legislation.Id))
                 {
                     var similarity = _similarityService.CalculateSimilarity(outer.Legislation, inner.Legislation);
-                    graph.Links.Add(new Link(outer.Legislation.Id, inner.Legislation.Id, similarity.Similarity));
-
                     calculatedCombinations.Add(outer.Legislation.Id + inner.Legislation.Id);
                     calculatedCombinations.Add(inner.Legislation.Id + outer.Legislation.Id);
-                }
 
+                    if (similarity.Similarity > SilimarityThreshold)
+                        graph.Links.Add(new Link(outer.Legislation.Id, inner.Legislation.Id, similarity.Similarity));
+                }
 
             return new SearchResult
             {

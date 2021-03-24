@@ -28,11 +28,13 @@ namespace HackTheClimate
             services.AddSingleton<LegislationService>();
 
             services.AddSingleton<SearchService>();
+            services.AddTransient<FakeSearchService>();
+
             services.AddSingleton<SimilarityService>();
             services.AddSingleton<GraphService>();
 
             services.AddTransient<AzureSearchFacade>();
-            // services.AddTransient<FakeSearchService>();
+
 
             services.Configure<AzureSearchConfiguration>(Configuration.GetSection(Constants.Configuration.Search));
         }
