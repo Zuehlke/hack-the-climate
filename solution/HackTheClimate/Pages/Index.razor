@@ -1,19 +1,31 @@
 ﻿@page "/"
 @inject IJSRuntime JS;
 
-<h1>Call JavaScript Function Example</h1>
+<h1>Search</h1>
 
-<button type="button" class="btn btn-primary" @onclick="DrawDiagram">
-    Search
-</button>
+<div class="input-group">
+    <input type="text" class="form-control" placeholder="Search laws and policies" @onkeyup="OnInputKeyUp">
+    <div class="input-group-append">
+        <button class="btn btn-secondary" type="button" @onclick="Search">
+            <i class="oi oi-magnifying-glass"></i>
+        </button>
+    </div>
+</div>
 
 <svg @ref="_renderTo" height="450" width="600"></svg>
 
 @code {
     private ElementReference _renderTo;
 
+    private async Task OnInputKeyUp(KeyboardEventArgs e)
+    {
+        if (e.Key == "Enter" || e.Code == "13")
+        {
+            await Search();
+        }
+    }
 
-    private async Task DrawDiagram()
+    private async Task Search()
     {
         var diagramModule = await JS
             .InvokeAsync<IJSObjectReference>("import", "/diagram.js");
