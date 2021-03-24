@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Globalization;
 
 namespace HackTheClimate.Data
 {
@@ -15,10 +16,17 @@ namespace HackTheClimate.Data
         public static Event TryParse(string input)
         {
             var fields = input.Split("|");
-            if (DateTime.TryParse(fields[0], out var date))
+
+            try
+            {
+                var date = DateTime.ParseExact(fields[0], "dd/MM/yyyy", CultureInfo.InvariantCulture);
                 return new Event
                     {Date = date, Description = fields[1], ThirdField = fields.Length > 2 ? fields[2] : ""};
-            return null;
+            }
+            catch
+            {
+                return new Event {Date = new DateTime(2000, 1, 1), Description = "Data Quality Issue in " + input};
+            }
         }
     }
 }

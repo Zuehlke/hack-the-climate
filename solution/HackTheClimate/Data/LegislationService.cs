@@ -80,7 +80,7 @@ namespace HackTheClimate.Data
                 ShortenedDescription = StripHtmlAndShorten(row.Description),
                 DocumentTypes = row.DocumentTypes,
                 Documents = ExtractDocuments(row.Documents),
-                Events = ExtractEvents(row.Events),
+                Events = ExtractEvents(row, row.Events),
                 Frameworks = ExtractFrameworks(row.Frameworks),
                 Geography = row.Geography,
                 GeographyIso = row.GeographyIso,
@@ -94,18 +94,16 @@ namespace HackTheClimate.Data
             };
         }
 
-        private IEnumerable<Event> ExtractEvents(string rowEvents)
+        private IEnumerable<Event> ExtractEvents(LawAndPoliciesRow row, string rowEvents)
         {
-            try
+            if (string.IsNullOrEmpty(rowEvents))
             {
-                return rowEvents.Split(";").Select(Event.TryParse).OrderBy(e => e.Date);
-            }
-            catch (NullReferenceException)
-            {
-                Console.WriteLine($"Cannot extract events from: '{rowEvents}'");
+                Console.WriteLine("No events for " + row.Title);
                 return new List<Event>
-                    {new Event {Date = new DateTime(2000, 0, 0), Description = "Data Quality Issue"}};
+                    {new Event {Date = new DateTime(2000, 1, 1), Description = "Data Quality Issue in: " + row.Title}};
             }
+
+            return rowEvents.Split(";").Select(Event.TryParse).OrderBy(e => e.Date);
         }
 
         private IEnumerable<Document> ExtractDocuments(string rowDocuments)
