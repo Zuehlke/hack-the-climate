@@ -33,7 +33,7 @@
         .data(data.nodes)
         .enter().append("circle")
         .attr("r", 5)
-        .attr("fill", d => color(d.group))
+        .attr("fill", d => color(d.confidenceScore))
         .call(layout.drag);
 
     node.append("title")

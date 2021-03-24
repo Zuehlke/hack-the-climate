@@ -16,14 +16,14 @@ namespace HackTheClimate.Services
 
     public class Node
     {
-        public Node(string id, double group)
+        public Node(string id, double confidenceScore)
         {
             Id = id;
-            Group = group;
+            ConfidenceScore = confidenceScore;
         }
 
         public string Id { get; set; }
-        public double Group { get; set; }
+        public double ConfidenceScore { get; set; }
     }
 
     public class Link
