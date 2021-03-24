@@ -24,7 +24,10 @@ else
         </div>
 
         <div>
-            @_legislation.DocumentTypes
+            @foreach (var d in _legislation.DocumentTypes)
+            {
+               <span>@(d), </span>
+            }
         </div>
 
         @foreach (var framework in _legislation.Frameworks)
