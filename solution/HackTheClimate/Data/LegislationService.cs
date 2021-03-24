@@ -80,7 +80,7 @@ namespace HackTheClimate.Data
                     Title = row.Title,
                     Description = row.Description,
                     ShortenedDescription = StripHtmlAndShorten(row.Description),
-                    DocumentTypes = row.DocumentTypes,
+                    DocumentTypes = row.DocumentTypes.Split(",").Select(e => e.Trim()).ToList(),
                     Documents = ExtractDocuments(row.Documents),
                     Events = row.Events.Split(";").Select(Event.TryParse).OrderBy(e => e.Date),
                     Frameworks = ExtractFrameworks(row.Frameworks),
@@ -88,9 +88,9 @@ namespace HackTheClimate.Data
                     GeographyIso = row.GeographyIso,
                     Instruments = row.Instruments.Split(",").Select(e => e.Trim()).ToList(),
                     Keywords = row.Keywords.Split(",").Select(e => e.Trim()).ToList(),
-                    NaturalHazards = row.NaturalHazards,
+                    NaturalHazards = row.NaturalHazards.Split(",").Select(e => e.Trim()).ToList(),
                     ParentLegislation = row.ParentLegislation,
-                    Responses = row.Responses,
+                    Responses = row.Responses.Split(",").Select(e => e.Trim()).ToList(),
                     Sectors = row.Sectors.Split(",").Select(e => e.Trim()).ToList(),
                     Type = ExtractType(row.Type)
                 };
