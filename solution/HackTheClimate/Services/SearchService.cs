@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using HackTheClimate.Services.Search;
@@ -28,7 +27,7 @@ namespace HackTheClimate.Services
         {
             var searchResult = await _azureSearchFacade.QueryAsync(searchTerm, NumberOfResults);
             return searchResult.Select(result =>
-                (DocumentId: result.DocumentId, ConfidenceScore: result.ConfidenceScore));
+                (result.DocumentId, result.ConfidenceScore));
         }
     }
 }

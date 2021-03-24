@@ -153,7 +153,7 @@ namespace HackTheClimate.Data
 
         protected string StripHtmlAndShorten(string description)
         {
-            var stripped = Regex.Replace(description, "<.*?>", string.Empty);
+            var stripped = Regex.Replace(description, "<.*?>", string.Empty).Replace("&nbsp;", string.Empty);
             return stripped.Substring(0, Math.Min(175, stripped.Length)) + "...";
         }
 

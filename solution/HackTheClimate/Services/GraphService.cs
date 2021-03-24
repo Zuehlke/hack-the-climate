@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using HackTheClimate.Data;
+using HackTheClimate.Services.Search;
 
 namespace HackTheClimate.Services
 {
@@ -10,7 +11,7 @@ namespace HackTheClimate.Services
     /// </summary>
     public class GraphService
     {
-        private const double SilimarityThreshold = 0.9;
+        private const double SilimarityThreshold = 0.5;
 
         private readonly LegislationService _legislationService;
         private readonly SearchService _searchService;
@@ -26,11 +27,19 @@ namespace HackTheClimate.Services
 
         public async Task<SearchResult> SearchAsync(string searchTerm)
         {
+            var fake = searchTerm == "fake";
+
+            if (string.IsNullOrEmpty(searchTerm)) throw new Exception("Don't search for nothing.");
+
+            var fakeSearchService = new FakeSearchService();
+            var fakeSimilarityService = new FakeSimilarityService();
+
             var graph = new Graph();
 
             // get search results and add nodes
             var rankedLegislations = new List<RankedLegislation>();
-            var fullTextSearchResult = await _searchService.SearchAsync(searchTerm);
+            var fullTextSearchResult =
+                fake ? await fakeSearchService.SearchAsync(searchTerm) : await _searchService.SearchAsync(searchTerm);
             foreach (var (id, rank) in fullTextSearchResult)
             {
                 var legislation = _legislationService.GetLegislation(id);
@@ -52,7 +61,9 @@ namespace HackTheClimate.Services
             foreach (var inner in rankedLegislations)
                 if (!calculatedCombinations.Contains(outer.Legislation.Id + inner.Legislation.Id))
                 {
-                    var similarity = _similarityService.CalculateSimilarity(outer.Legislation, inner.Legislation);
+                    var similarity = fake
+                        ? fakeSimilarityService.CalculateSimilarity(outer.Legislation, inner.Legislation)
+                        : _similarityService.CalculateSimilarity(outer.Legislation, inner.Legislation);
                     calculatedCombinations.Add(outer.Legislation.Id + inner.Legislation.Id);
                     calculatedCombinations.Add(inner.Legislation.Id + outer.Legislation.Id);
 

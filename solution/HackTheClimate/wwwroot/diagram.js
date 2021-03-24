@@ -1,6 +1,6 @@
 ﻿export async function renderDiagram(element, data) {
-    const height = 500;
-    const width = 500;
+    const height = 350;
+    const width = 600;
     const color = d3.scaleOrdinal(d3.schemeCategory10);
 
     const index = new Map(data.nodes.map(d => [d.id, d]));
@@ -10,6 +10,7 @@
     }));
 
     const svg = d3.select(element);
+    svg.selectAll("*").remove();
 
     const layout = cola.d3adaptor(d3)
         .size([width, height])

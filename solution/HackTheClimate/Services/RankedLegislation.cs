@@ -4,13 +4,13 @@ namespace HackTheClimate.Services
 {
     public class RankedLegislation
     {
-        public RankedLegislation(double rank, Legislation legislation)
+        public RankedLegislation(double confidenceScore, Legislation legislation)
         {
-            Rank = rank;
+            ConfidenceScore = confidenceScore;
             Legislation = legislation;
         }
 
-        public double Rank { get; }
+        public double ConfidenceScore { get; }
         public Legislation Legislation { get; }
     }
 }
