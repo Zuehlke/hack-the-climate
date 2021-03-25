@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using HackTheClimate.Data;
 
 namespace HackTheClimate.Services
@@ -29,32 +28,32 @@ namespace HackTheClimate.Services
             double responsesWeight = 1;
             var responsesSimilarity = ListSimilarity(a.Responses, b.Responses);
 
-            double locationWeight = 0.5;
+            var locationWeight = 0.5;
             var locationSimilarity = PropertySimilarity(a.Geography, b.Geography);
 
-            double typeWeight = 0.5;
+            var typeWeight = 0.5;
             var typeSimilarity = PropertySimilarity(a.Type, b.Type);
 
             return new SimilarityResult
             {
-                Similarity = (keywordWeight * keywordSimilarity
-                              + sectorsWeight * sectorSimilarity
-                              + frameworksWeight * frameworksSimilarity
-                              + instrumentsWeight * instrumentsSimilarity
-                              + naturalHazardsWeight * naturalHazardsSimilarity
-                              + documentTypesWeight * documentTypesSimilarity
-                              + responsesWeight * responsesSimilarity
-                              + locationWeight * locationSimilarity
-                              + typeWeight * typeSimilarity)
-                             / (keywordWeight
-                                + sectorsWeight
-                                + frameworksWeight
-                                + instrumentsWeight
-                                + naturalHazardsWeight
-                                + documentTypesWeight
-                                + responsesWeight
-                                + locationWeight
-                                + typeWeight)
+                SimilarityScore = (keywordWeight * keywordSimilarity
+                                   + sectorsWeight * sectorSimilarity
+                                   + frameworksWeight * frameworksSimilarity
+                                   + instrumentsWeight * instrumentsSimilarity
+                                   + naturalHazardsWeight * naturalHazardsSimilarity
+                                   + documentTypesWeight * documentTypesSimilarity
+                                   + responsesWeight * responsesSimilarity
+                                   + locationWeight * locationSimilarity
+                                   + typeWeight * typeSimilarity)
+                                  / (keywordWeight
+                                     + sectorsWeight
+                                     + frameworksWeight
+                                     + instrumentsWeight
+                                     + naturalHazardsWeight
+                                     + documentTypesWeight
+                                     + responsesWeight
+                                     + locationWeight
+                                     + typeWeight)
             };
         }
 
@@ -77,12 +76,8 @@ namespace HackTheClimate.Services
         {
             var matches = 0;
             foreach (var keyword in a)
-            {
                 if (b.Contains(keyword))
-                {
                     matches++;
-                }
-            }
 
             return matches;
         }
@@ -90,7 +85,7 @@ namespace HackTheClimate.Services
 
     public class SimilarityResult
     {
-        public double Similarity { get; set; }
+        public double SimilarityScore { get; set; }
 
         // which keyword match
         // which ... match

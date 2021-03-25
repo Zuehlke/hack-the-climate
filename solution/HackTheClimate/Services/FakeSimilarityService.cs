@@ -9,7 +9,7 @@ namespace HackTheClimate.Services
         {
             return new SimilarityResult
             {
-                Similarity = new Random().NextDouble()
+                SimilarityScore = new Random().NextDouble()
             };
         }
     }

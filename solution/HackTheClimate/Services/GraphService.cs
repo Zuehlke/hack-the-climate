@@ -67,8 +67,9 @@ namespace HackTheClimate.Services
                     calculatedCombinations.Add(outer.Legislation.Id + inner.Legislation.Id);
                     calculatedCombinations.Add(inner.Legislation.Id + outer.Legislation.Id);
 
-                    if (similarity.Similarity > SilimarityThreshold)
-                        graph.Links.Add(new Link(outer.Legislation.Id, inner.Legislation.Id, similarity.Similarity));
+                    if (similarity.SimilarityScore > SilimarityThreshold)
+                        graph.Links.Add(
+                            new Link(outer.Legislation.Id, inner.Legislation.Id, similarity.SimilarityScore));
                 }
 
             return new SearchResult
