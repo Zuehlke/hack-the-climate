@@ -25,11 +25,9 @@ namespace HackTheClimate
         {
             services.AddRazorPages();
             services.AddServerSideBlazor();
-            services.AddSingleton<WeatherForecastService>();
+
             services.AddSingleton<LegislationService>();
-
             services.AddSingleton<SearchService>();
-
             services.AddSingleton<SimilarityService>();
             services.AddSingleton<GraphService>();
 
