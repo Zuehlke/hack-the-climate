@@ -13,16 +13,16 @@ export async function renderDiagram(element, data) {
     const largestConfidenceScore = data.nodes.map(n => n.confidenceScore).reduce((a, b) => Math.max(a, b));
     const radiusScale = d3.scaleLinear()
         .domain([smallestConfidenceScore, largestConfidenceScore])
-        .range([3, 10]);
+        .range([10, 30]);
 
     const smallestSimilarityScore = data.links.map(l => l.similarityScore).reduce((a, b) => Math.min(a, b));
     const largestSimilarityScore = data.links.map(l => l.similarityScore).reduce((a, b) => Math.max(a, b));
     const linkColorScale = d3.scaleSequential([smallestSimilarityScore - ((largestSimilarityScore - smallestSimilarityScore) / 3), largestSimilarityScore], d3.interpolateBlues);
-    const linkWidthScale = d3.scaleLinear([smallestSimilarityScore, largestSimilarityScore], [1, 2]);
+    const linkWidthScale = d3.scaleLinear([smallestSimilarityScore, largestSimilarityScore], [5, 10]);
 
     const simulation = d3.forceSimulation()
         .force("link", d3.forceLink().id(function(d) { return d.id; }))
-        .force("charge", d3.forceManyBody())
+        .force("charge", d3.forceManyBody().strength(-200))
         .force("center", d3.forceCenter(width / 2, height / 2));
 
     const svg = d3.select(element);
@@ -33,7 +33,7 @@ export async function renderDiagram(element, data) {
         }));
 
     const link = svg.append("g")
-        .attr("stroke-opacity", 0.6)
+        // .attr("stroke-opacity", 0.6)
         .selectAll("line")
         .data(data.links)
         .enter().append("line")

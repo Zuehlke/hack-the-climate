@@ -222,6 +222,10 @@ app {
     color: #aaa;
 }
 
+.search-results ul {
+    padding-left: 20px;
+}
+
 .search-results li {
     list-style-type: none;
     padding-left: 0;
