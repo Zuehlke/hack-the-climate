@@ -1,19 +1,19 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using HackTheClimate.Services.Search;
+using HackTheClimate.Services.Search.Azure;
 
-namespace HackTheClimate.Services
+namespace HackTheClimate.Services.Search
 {
     /// <summary>
     ///     Calls the full text search.
     /// </summary>
-    public class SearchService
+    public class DocumentSearchService : IDocumentSearchService
     {
         private const int NumberOfResults = 50;
         private readonly AzureSearchFacade _azureSearchFacade;
 
-        public SearchService(AzureSearchFacade azureSearchFacade)
+        public DocumentSearchService(AzureSearchFacade azureSearchFacade)
         {
             _azureSearchFacade = azureSearchFacade;
         }

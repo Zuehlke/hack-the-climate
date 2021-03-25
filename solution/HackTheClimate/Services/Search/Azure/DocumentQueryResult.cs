@@ -1,4 +1,4 @@
-﻿namespace HackTheClimate.Services.Search
+﻿namespace HackTheClimate.Services.Search.Azure
 {
     public class DocumentQueryResult
     {

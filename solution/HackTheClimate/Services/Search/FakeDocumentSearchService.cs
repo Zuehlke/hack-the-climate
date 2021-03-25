@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 namespace HackTheClimate.Services.Search
 {
     // For faster local development
-    public class FakeSearchService
+    public class FakeDocumentSearchService : IDocumentSearchService
     {
-        public async Task<IEnumerable<(string DocumentId, double ConfidenceScore)>> SearchAsync(string searchTerm)
+        public Task<IEnumerable<(string DocumentId, double ConfidenceScore)>> SearchAsync(string searchTerm)
         {
             var ids = new[]
             {
@@ -28,7 +28,7 @@ namespace HackTheClimate.Services.Search
             };
 
             var rand = new Random();
-            return ids.Select(id => (DocumentId: id, ConfidenceScore: rand.NextDouble()));
+            return Task.FromResult(ids.Select(id => (DocumentId: id, ConfidenceScore: rand.NextDouble())));
         }
     }
 }

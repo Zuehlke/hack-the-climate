@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using HackTheClimate.Data;
 using HackTheClimate.Services.Search;
+using HackTheClimate.Services.Similarity;
 
 namespace HackTheClimate.Services
 {
@@ -14,32 +15,25 @@ namespace HackTheClimate.Services
         private const double SimilarityThreshold = 0.3;
 
         private readonly LegislationService _legislationService;
-        private readonly SearchService _searchService;
-        private readonly SimilarityService _similarityService;
+        private readonly IDocumentSearchService _documentSearchService;
+        private readonly ISimilarityService _similarityService;
 
-        public GraphService(SearchService searchService, SimilarityService similarityService,
-            LegislationService legislationService)
+        public GraphService(LegislationService legislationService, IDocumentSearchService documentSearchService, ISimilarityService similarityService)
         {
-            _searchService = searchService;
-            _similarityService = similarityService;
             _legislationService = legislationService;
+            _documentSearchService = documentSearchService;
+            _similarityService = similarityService;
         }
 
         public async Task<SearchResult> SearchAsync(string searchTerm, SimilarityWeights weights)
         {
-            var fake = searchTerm == "fake";
-
             if (string.IsNullOrEmpty(searchTerm)) throw new Exception("Don't search for nothing.");
-
-            var fakeSearchService = new FakeSearchService();
-            var fakeSimilarityService = new FakeSimilarityService();
 
             var graph = new Graph();
 
             // get search results and add nodes
             var rankedLegislations = new List<RankedLegislation>();
-            var fullTextSearchResult =
-                fake ? await fakeSearchService.SearchAsync(searchTerm) : await _searchService.SearchAsync(searchTerm);
+            var fullTextSearchResult = await _documentSearchService.SearchAsync(searchTerm);
             foreach (var (id, rank) in fullTextSearchResult)
             {
                 var legislation = _legislationService.GetLegislation(id);
@@ -62,9 +56,7 @@ namespace HackTheClimate.Services
             foreach (var inner in rankedLegislations)
                 if (!calculatedCombinations.Contains(outer.Legislation.Id + inner.Legislation.Id))
                 {
-                    var similarity = fake
-                        ? fakeSimilarityService.CalculateSimilarity(outer.Legislation, inner.Legislation)
-                        : _similarityService.CalculateSimilarity(outer.Legislation, inner.Legislation, weights);
+                    var similarity = _similarityService.CalculateSimilarity(outer.Legislation, inner.Legislation);
                     calculatedCombinations.Add(outer.Legislation.Id + inner.Legislation.Id);
                     calculatedCombinations.Add(inner.Legislation.Id + outer.Legislation.Id);
 

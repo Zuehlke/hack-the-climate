@@ -1,9 +1,9 @@
 ﻿using System;
 using HackTheClimate.Data;
 
-namespace HackTheClimate.Services
+namespace HackTheClimate.Services.Similarity
 {
-    public class FakeSimilarityService
+    public class FakeSimilarityService : ISimilarityService
     {
         public SimilarityResult CalculateSimilarity(Legislation a, Legislation b)
         {

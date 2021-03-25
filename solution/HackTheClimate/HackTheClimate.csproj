@@ -23,6 +23,7 @@
   <ItemGroup>
     <EmbeddedResource Include="Data\ids.csv" />
     <EmbeddedResource Include="Data\laws_and_policies.csv" />
+    <EmbeddedResource Include="Data\topics.json" />
   </ItemGroup>
 
 </Project>

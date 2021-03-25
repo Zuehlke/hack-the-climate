@@ -1,13 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection.Metadata.Ecma335;
 using System.Threading.Tasks;
 using Azure;
 using Azure.Search.Documents;
 using Microsoft.Extensions.Options;
 
-namespace HackTheClimate.Services.Search
+namespace HackTheClimate.Services.Search.Azure
 {
     public class AzureSearchFacade
     {

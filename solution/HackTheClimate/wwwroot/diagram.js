@@ -47,6 +47,10 @@ export async function renderDiagram(element, data) {
         .data(data.nodes)
         .enter().append("g");
 
+    var nodeInformationDiv = d3.select("body").append("div")
+        .attr("class", "node-information")
+        .style("opacity", 0);
+
     const toggleColor = (function () {
         return function (node) {
             // connected nodes 
@@ -80,6 +84,33 @@ export async function renderDiagram(element, data) {
             });
 
             DotNet.invokeMethodAsync('HackTheClimate', 'OnNodeSelected', node.id);
+
+            var currentValue = nodeInformationDiv.style("opacity");
+
+            var xCord = d3.event.pageX;
+            var yCord = d3.event.pageY;
+
+            DotNet.invokeMethodAsync('HackTheClimate','GetDetails', node.id)
+                .then(data => {
+                    nodeInformationDiv.transition().style("opacity", 1 - currentValue);
+
+                    var flag = '<img src="/flags/' + data.countryCode.toUpperCase() + '.svg" alt="' + data.countryCode.toUpperCase() + '"/>';
+                    var topics = [];
+                    for (var i = 0; i < Math.min(5, data.topics.length); i++) {
+                        topics.push('<span class="badge bg-secondary">' + data.topics[i] + '</span>');
+                    }
+
+                    var titleLink = '<a href="/legislation/' +
+                        node.id +
+                        '" title="' +
+                        data.title +
+                        '">' +
+                        data.title.substr(0, Math.min(data.title.length, 30)) +
+                        '</a>';
+                    nodeInformationDiv.html('<div>' + flag + titleLink +'<div>' + topics.join()+'</div></div>')
+                        .style("left", (xCord) + "px")
+                        .style("top", (yCord) + "px");
+                });
         }
     })();
 

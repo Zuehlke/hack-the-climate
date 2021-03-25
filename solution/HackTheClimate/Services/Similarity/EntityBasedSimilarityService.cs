@@ -6,16 +6,15 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using HackTheClimate.Data;
-using HackTheClimate.Services.Similarity;
 
-namespace HackTheClimate.Services
+namespace HackTheClimate.Services.Similarity
 {
-    public class SimilarityService
+    public class EntityBasedSimilarityService : ISimilarityService
     {
         private static Dictionary<string, double> _precomputed;
         private readonly EntityRecognitionService _entityRecognitionService;
 
-        public SimilarityService(EntityRecognitionService entityRecognitionService)
+        public EntityBasedSimilarityService(EntityRecognitionService entityRecognitionService)
         {
             _entityRecognitionService = entityRecognitionService;
         }

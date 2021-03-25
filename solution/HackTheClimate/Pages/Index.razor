@@ -4,9 +4,11 @@
 @using System.Timers
 @using System.Text.Json
 @using System.Diagnostics
+@using HackTheClimate.Data
 @inject IJSRuntime JS;
 @inject GraphService graphService;
 @inject ClipboardService clipboardService;
+@inject DocumentService documentService;
 @inject DialogService DialogService;
 
 <div class="row justify-content-between">
@@ -168,6 +170,12 @@ else
         SearchTerm = (string) e.Value;
     }
 
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+        GetDetailsAsyncAction = GetDetailsPrivate;
+    }
+
     private async Task Search()
     {
         var searchTerm = SearchTerm;
@@ -207,6 +215,17 @@ else
 
         SearchTerm = searchTerm;
         _searching = false;
+    }
+
+    [JSInvokableAttribute("GetDetails")]
+    public static async Task<DocumentDetails> GetDetails(string documentId)
+    {
+        return await GetDetailsAsyncAction(documentId);
+    }
+
+    private async Task<DocumentDetails> GetDetailsPrivate(string documentId)
+    {
+        return await documentService.GetDetailsAsync(documentId);
     }
 
     private async Task CopySearchResultToClipboard()

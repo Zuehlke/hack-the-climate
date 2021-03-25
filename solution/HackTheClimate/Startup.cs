@@ -2,6 +2,7 @@ using CurrieTechnologies.Razor.Clipboard;
 using HackTheClimate.Data;
 using HackTheClimate.Services;
 using HackTheClimate.Services.Search;
+using HackTheClimate.Services.Search.Azure;
 using HackTheClimate.Services.Similarity;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -14,6 +15,7 @@ namespace HackTheClimate
 {
     public class Startup
     {
+        private const bool UseFake = false;
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
@@ -29,17 +31,27 @@ namespace HackTheClimate
             services.AddServerSideBlazor();
             services.AddScoped<DialogService>();
 
-            services.AddSingleton<LegislationService>();
-            services.AddSingleton<SearchService>();
+            services.AddTransient<LegislationService>();
 
             services.AddSingleton<EntityRecognitionService>();
-            services.AddSingleton<SimilarityService>();
-            services.AddSingleton<GraphService>();
+            services.AddTransient<GraphService>();
 
             services.AddTransient<AzureSearchFacade>();
+            services.AddTransient<DocumentService>();
 
             services.Configure<AzureSearchConfiguration>(Configuration.GetSection(Constants.Configuration.Search));
             services.Configure<AzureBlobEntitiesConfiguration>(Configuration.GetSection(Constants.Configuration.BlobEntities));
+
+            if (UseFake)
+            {
+                services.AddTransient<ISimilarityService, FakeSimilarityService>();
+                services.AddTransient<IDocumentSearchService, FakeDocumentSearchService>();
+            }
+            else
+            {
+                services.AddTransient<IDocumentSearchService, DocumentSearchService>();
+                services.AddTransient<ISimilarityService, EntityBasedSimilarityService>();
+            }
 
             services.AddClipboard();
         }
