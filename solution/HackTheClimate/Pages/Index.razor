@@ -3,6 +3,7 @@
 @using CurrieTechnologies.Razor.Clipboard
 @using System.Timers
 @using System.Text.Json
+@using System.Diagnostics
 @inject IJSRuntime JS;
 @inject GraphService graphService;
 @inject ClipboardService clipboardService;
@@ -48,7 +49,7 @@ else
         <ul class="search-results">
             @foreach (var legislation in _searchResult.RankedLegislations.OrderBy(r => r.ConfidenceScore))
                 {
-            <li>
+            <li class="@GetSimilarityClass(@legislation.Legislation.Id)">
                 <a href="/legislation/@legislation.Legislation.Id" title="@legislation.Legislation.Title">@legislation.Legislation.Title</a>
                 <img src="@($"/flags/{legislation.Legislation.GeographyIso.ToUpperInvariant()}.svg")" alt="@legislation.Legislation.Geography" /> @legislation.Legislation.Events.First().Date.Year <span class="oi oi-align-left" title="@legislation.Legislation.ShortenedDescription"></span>
             </li>
@@ -71,6 +72,7 @@ else
 
 
 @code {
+
     protected ElementReference _renderTo;
     protected string SearchTerm { get; set; }
     protected List<string> _searchUpdates;
@@ -78,8 +80,76 @@ else
 
     protected bool _searching;
     protected SearchResult _searchResult;
+    private static Action<string> _onNodeSelectedAction;
+    private Dictionary<string, string> _similarityClass = new Dictionary<string, string>();
 
     private static readonly List<string> GenericSearchUpdates = new List<string> {"Performing a full text search in 2128 documents", "Calculating similarity of legislations based on metadata", "Calculating similarity of legislations based on text-analysis", "... wait for it", "... almost there", "... just one last thing"};
+
+    protected override void OnInitialized()
+    {
+        _onNodeSelectedAction = OnNodeSelectedCallback;
+    }
+
+    private void OnNodeSelectedCallback(string id)
+    {
+        _similarityClass = new Dictionary<string, string>();
+
+        foreach (var link in _searchResult.Graph.Links)
+        {
+            if (link.Source == id || link.Target == id)
+            {
+                var key = link.Source == id ? link.Target : link.Source;
+                string value = "";
+                switch (link.SimilarityScore)
+                {
+                    case < 0.1:
+                        value = "similarity-10";
+                        break;
+
+                    case < 0.2:
+                        value = "similarity-20";
+                        break;
+
+                    case < 0.3:
+                        value = "similarity-30";
+                        break;
+
+                    case < 0.4:
+                        value = "similarity-40";
+                        break;
+
+                    case < 0.5:
+                        value = "similarity-50";
+                        break;
+
+                    case < 0.6:
+                        value = "similarity-60";
+                        break;
+
+                    case < 0.7:
+                        value = "similarity-70";
+                        break;
+
+                    case < 0.8:
+                        value = "similarity-80";
+                        break;
+
+
+                    case < 0.9:
+                        value = "similarity-90";
+                        break;
+
+                    default:
+                        value = "similarity-100";
+                        break;
+                }
+
+                _similarityClass.Add(key, value);
+            }
+        }
+
+        StateHasChanged();
+    }
 
     private async Task OnInputKeyUp(KeyboardEventArgs e)
     {
@@ -101,6 +171,7 @@ else
         _searchUpdates = new List<string> {"Searching for '" + SearchTerm + "'"};
         _searchUpdatesIndex = 0;
         _searchResult = null;
+        _similarityClass = new Dictionary<string, string>();
 
         var timer = new Timer(3000);
         timer.Elapsed += (sender, args) =>
@@ -144,6 +215,31 @@ else
                 WriteIndented = true
             }));
         }
+    }
+
+    [JSInvokable]
+    public static void OnNodeSelected(string id)
+    {
+        _onNodeSelectedAction.Invoke(id);
+    }
+
+    private string GetSimilarityClass(string legislationId)
+    {
+        if (_similarityClass.Any())
+        {
+            if (_similarityClass.TryGetValue(legislationId, out var clazz))
+            {
+                return clazz;
+            } else
+            {
+                return "similarity-10";
+            }
+        }
+        else
+        {
+            return string.Empty;
+        }
+
     }
 
 }

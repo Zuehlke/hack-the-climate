@@ -4,7 +4,7 @@
 }
 
 export async function renderDiagram(element, data) {
-    const nodeColor = "#3a0647";
+    const nodeColor = "grey";
 
     console.log(data);
 
@@ -19,8 +19,8 @@ export async function renderDiagram(element, data) {
 
     const smallestSimilarityScore = data.links.map(l => l.similarityScore).reduce((a, b) => Math.min(a, b));
     const largestSimilarityScore = data.links.map(l => l.similarityScore).reduce((a, b) => Math.max(a, b));
-    const linkColorScale = d3.scaleSequential([smallestSimilarityScore - ((largestSimilarityScore - smallestSimilarityScore) / 3), largestSimilarityScore], d3.interpolateBlues);
-    const selectedLinkColorScale = d3.scaleSequential([smallestSimilarityScore - ((largestSimilarityScore - smallestSimilarityScore) / 3), largestSimilarityScore], d3.interpolateYlOrBr);
+    const linkColorScale = d3.scaleSequential([smallestSimilarityScore - ((largestSimilarityScore - smallestSimilarityScore) / 3), largestSimilarityScore], d3.interpolateGreys);
+    const selectedLinkColorScale = d3.scaleSequential([smallestSimilarityScore - ((largestSimilarityScore - smallestSimilarityScore) / 3), largestSimilarityScore], d3.interpolateBlues);
     const linkWidthScale = d3.scaleLinear([smallestSimilarityScore, largestSimilarityScore], [5, 10]);
 
     const simulation = d3.forceSimulation()
@@ -48,10 +48,22 @@ export async function renderDiagram(element, data) {
 
     const toggleColor = (function () {
         return function (node) {
+            // connected nodes 
+            const connectedNodes = data.links.filter(l => l.target.id === node.id || l.source.id === node.id)
+                .map(l => {
+                    return {
+                        id: l.target.id === node.id ? l.source.id : l.target.id,
+                        similarityScore: l.similarityScore
+                    }
+                });
+
             // nodes
             d3.select(this.farthestViewportElement).selectAll("circle").attr("fill", d => {
+                let connectedNode = connectedNodes.find(l => d.id === l.id);
                 if (d.id === node.id) {
-                    return "#662506";
+                    return "blue";
+                } else if (connectedNode) {
+                    return selectedLinkColorScale(connectedNode.similarityScore);
                 } else {
                     return nodeColor;
                 }
@@ -65,6 +77,8 @@ export async function renderDiagram(element, data) {
                     return linkColorScale(d.similarityScore);
                 }
             });
+
+            DotNet.invokeMethodAsync('HackTheClimate', 'OnNodeSelected', node.id);
         }
     })();
 
