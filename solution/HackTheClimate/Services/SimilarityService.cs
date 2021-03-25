@@ -1,10 +1,18 @@
 ﻿using System.Collections.Generic;
 using HackTheClimate.Data;
+using HackTheClimate.Services.Similarity;
 
 namespace HackTheClimate.Services
 {
     public class SimilarityService
     {
+        private readonly EntityRecognitionService _entityRecognitionService;
+
+        public SimilarityService(EntityRecognitionService entityRecognitionService)
+        {
+            _entityRecognitionService = entityRecognitionService;
+        }
+
         public SimilarityResult CalculateSimilarity(Legislation a, Legislation b)
         {
             double keywordWeight = 1;
@@ -28,11 +36,23 @@ namespace HackTheClimate.Services
             double responsesWeight = 1;
             var responsesSimilarity = ListSimilarity(a.Responses, b.Responses);
 
-            var locationWeight = 0.5;
+            var locationWeight = 0.3;
             var locationSimilarity = PropertySimilarity(a.Geography, b.Geography);
 
-            var typeWeight = 0.5;
+            var typeWeight = 0.2;
             var typeSimilarity = PropertySimilarity(a.Type, b.Type);
+
+            double entitySkillWeight = 1;
+            var entitySkillSimilarity = EntityCategorySimilarity(a, b, "Skill");
+            
+            double entityProductWeight = 2;
+            var entityProductSimilarity = EntityCategorySimilarity(a, b, "Product");
+
+            double entityEventWeight = 1;
+            var entityEventSimilarity = EntityCategorySimilarity(a, b, "Event");
+
+            double entityLocationWeight = 0.5;
+            var entityLocationSimilarity = EntityCategorySimilarity(a, b, "Location");
 
             return new SimilarityResult
             {
@@ -44,7 +64,11 @@ namespace HackTheClimate.Services
                                    + documentTypesWeight * documentTypesSimilarity
                                    + responsesWeight * responsesSimilarity
                                    + locationWeight * locationSimilarity
-                                   + typeWeight * typeSimilarity)
+                                   + typeWeight * typeSimilarity
+                                   + entityProductWeight * entityProductSimilarity
+                                   + entitySkillWeight * entitySkillSimilarity
+                                   + entityEventWeight * entityEventSimilarity
+                                   + entityLocationWeight * entityLocationSimilarity)
                                   / (keywordWeight
                                      + sectorsWeight
                                      + frameworksWeight
@@ -53,8 +77,19 @@ namespace HackTheClimate.Services
                                      + documentTypesWeight
                                      + responsesWeight
                                      + locationWeight
-                                     + typeWeight)
+                                     + typeWeight
+                                     + entityProductWeight
+                                     + entitySkillWeight
+                                     + entityEventWeight
+                                     + entityLocationWeight)
             };
+        }
+
+        private double EntityCategorySimilarity(Legislation a, Legislation b, string category)
+        {
+            var entitiesSkillA = _entityRecognitionService.GetEntitiesForCategory(a, category);
+            var entitiesSkillB = _entityRecognitionService.GetEntitiesForCategory(b, category);
+            return ListSimilarity(entitiesSkillA, entitiesSkillB);
         }
 
         private static int PropertySimilarity<T>(T a, T b)
@@ -62,7 +97,7 @@ namespace HackTheClimate.Services
             return a.Equals(b) ? 1 : 0;
         }
 
-        private static double ListSimilarity<T>(IList<T> a, IList<T> b)
+        private static double ListSimilarity<T>(ICollection<T> a, ICollection<T> b)
         {
             var matches = 0;
             matches += CountMatchingEntries(a, b);
@@ -72,7 +107,7 @@ namespace HackTheClimate.Services
             return totalEntries > 0 ? matches / totalEntries : 0;
         }
 
-        private static int CountMatchingEntries<T>(IList<T> a, IList<T> b)
+        private static int CountMatchingEntries<T>(ICollection<T> a, ICollection<T> b)
         {
             var matches = 0;
             foreach (var keyword in a)

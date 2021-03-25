@@ -11,7 +11,7 @@ namespace HackTheClimate.Services
     /// </summary>
     public class GraphService
     {
-        private const double SilimarityThreshold = 0.4;
+        private const double SimilarityThreshold = 0.2;
 
         private readonly LegislationService _legislationService;
         private readonly SearchService _searchService;
@@ -68,7 +68,7 @@ namespace HackTheClimate.Services
                     calculatedCombinations.Add(outer.Legislation.Id + inner.Legislation.Id);
                     calculatedCombinations.Add(inner.Legislation.Id + outer.Legislation.Id);
 
-                    if (similarity.SimilarityScore > SilimarityThreshold)
+                    if (similarity.SimilarityScore > SimilarityThreshold)
                         graph.Links.Add(
                             new Link(outer.Legislation.Id, inner.Legislation.Id, similarity.SimilarityScore));
                 }
