@@ -221,3 +221,17 @@ app {
     pointer-events: none;
     color: #aaa;
 }
+
+.search-results li {
+    list-style-type: none;
+    padding-left: 0;
+    padding-top: 20px;
+}
+
+.search-results li a {
+    display: block;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    width: 500px;
+}

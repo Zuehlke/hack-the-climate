@@ -6,8 +6,8 @@
 export async function renderDiagram(element, data) {
     console.log(data);
 
-    const height = 350;
-    const width = 1000;
+    const height = 900;
+    const width = 900;
 
     const smallestConfidenceScore = data.nodes.map(n => n.confidenceScore).reduce((a, b) => Math.min(a, b));
     const largestConfidenceScore = data.nodes.map(n => n.confidenceScore).reduce((a, b) => Math.max(a, b));
