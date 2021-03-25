@@ -47,6 +47,48 @@ export async function renderDiagram(element, data) {
         .data(data.nodes)
         .enter().append("g");
 
+    var nodeInformationDiv = d3.select("body").append("div")
+        .attr("class", "node-information")
+        .style("opacity", 0);
+
+    svg.on("click", function() {
+        nodeInformationDiv.transition().duration(200).style("opacity", 0);
+    })
+
+        const onMouseOver = (function () {
+        return function(node) {
+
+            var xCord = d3.event.pageX;
+            var yCord = d3.event.pageY;
+
+            DotNet.invokeMethodAsync('HackTheClimate', 'GetDetails', node.id)
+                .then(data => {
+                    nodeInformationDiv.transition().duration(200).style("opacity", 0.9);
+
+                    var flag = '<img src="/flags/' +
+                        data.countryCode.toUpperCase() +
+                        '.svg" alt="' +
+                        data.countryCode.toUpperCase() +
+                        '"/>';
+                    var topics = [];
+                    for (var i = 0; i < Math.min(5, data.topics.length); i++) {
+                        topics.push('<span class="badge bg-secondary">' + data.topics[i] + '</span>');
+                    }
+
+                    var titleLink = '<a href="/legislation/' +
+                        node.id +
+                        '" title="' +
+                        data.title +
+                        '">' +
+                        data.title.substr(0, Math.min(data.title.length, 30)) +
+                        '</a>';
+                    nodeInformationDiv.html('<div>' + flag + titleLink + '<div>' + topics.join() + '</div></div>')
+                        .style("left", (xCord) + "px")
+                        .style("top", (yCord) + "px");
+                });
+        }
+    })();
+
     const toggleColor = (function () {
         return function (node) {
             // connected nodes 
@@ -83,10 +125,13 @@ export async function renderDiagram(element, data) {
         }
     })();
 
+
+
     const circles = node.append("circle")
         .attr("r", d => radiusScale(d.confidenceScore))
         .attr("fill", nodeColor)
         .on("click", toggleColor)
+        .on("mouseover", onMouseOver)
         .call(d3.drag()
             .on("start", d => dragstarted(d, simulation))
             .on("drag", d => dragged(d))
