@@ -15,7 +15,13 @@
 else{
     <p>
         <em @onclick="OnProcess">@($"Click here to start and see file {Path.GetTempPath()}precomputedSimilarities.csv grow.")</em>
+
     </p>
+
+    <div class="alert alert-danger" role="alert">
+        Don't trigger this on the deployed website! 
+        It's costly and you will not be able to read the generated file.
+        </div>
 }
 
 @code {
