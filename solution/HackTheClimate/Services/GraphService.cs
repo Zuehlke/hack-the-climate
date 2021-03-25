@@ -11,7 +11,7 @@ namespace HackTheClimate.Services
     /// </summary>
     public class GraphService
     {
-        private const double SimilarityThreshold = 0.2;
+        private const double SimilarityThreshold = 0.3;
 
         private readonly LegislationService _legislationService;
         private readonly SearchService _searchService;

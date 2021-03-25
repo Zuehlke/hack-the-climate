@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using HackTheClimate.Data;
 using HackTheClimate.Services.Similarity;
 
@@ -89,7 +90,11 @@ namespace HackTheClimate.Services
         {
             var entitiesSkillA = _entityRecognitionService.GetEntitiesForCategory(a, category);
             var entitiesSkillB = _entityRecognitionService.GetEntitiesForCategory(b, category);
-            return ListSimilarity(entitiesSkillA, entitiesSkillB);
+            var rawListSimilarity = ListSimilarity(entitiesSkillA, entitiesSkillB);
+            // As there is usually a big number of entities, the similarities are usually very low.
+            // Thus boosting the value, in case of matches.
+            // See https://www.wolframalpha.com/input/?i=plot+1-e%5E%28-5x%29+where+x%3D0+to+1
+            return 1 - Math.Pow(Math.E, -4 * rawListSimilarity);
         }
 
         private static int PropertySimilarity<T>(T a, T b)
