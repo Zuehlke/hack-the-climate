@@ -4,10 +4,12 @@
 @using System.Timers
 @using System.Text.Json
 @using System.Diagnostics
+@using HackTheClimate.Data
 @inject IJSRuntime JS;
 @inject GraphService graphService;
 @inject ClipboardService clipboardService;
-@inject DialogService DialogService;
+@inject DialogService dialogService;
+@inject DocumentService documentService;
 
 <div class="row justify-content-between">
     <h1 class="col-3">Search</h1>
@@ -85,13 +87,16 @@ else
     protected SearchResult _searchResult;
     private static Action<string> _onNodeSelectedAction;
     private Dictionary<string, string> _similarityClass = new Dictionary<string, string>();
-    protected SimilarityWeights _similarityWeights = SimilarityWeights.DefaultWeights(); 
+    protected SimilarityWeights _similarityWeights = SimilarityWeights.DefaultWeights();
 
     private static readonly List<string> GenericSearchUpdates = new List<string> {"Performing a full text search in 2128 documents", "Calculating Similarity of legislations based on metadata", "Calculating Similarity of legislations based on text-analysis", "... wait for it", "... almost there", "... just one last thing"};
+
+    private static Func<string, Task<DocumentDetails>> _getDetailsAsyncAction;
 
     protected override void OnInitialized()
     {
         _onNodeSelectedAction = OnNodeSelectedCallback;
+        _getDetailsAsyncAction = GetDetailsPrivate;
     }
 
     private void OnNodeSelectedCallback(string id)
@@ -220,6 +225,18 @@ else
         }
     }
 
+    [JSInvokableAttribute("GetDetails")]
+    public static async Task<DocumentDetails> GetDetails(string documentId)
+    {
+        return await _getDetailsAsyncAction(documentId);
+    }
+
+    private async Task<DocumentDetails> GetDetailsPrivate(string documentId)
+    {
+        return await documentService.GetDetailsAsync(documentId);
+    }
+
+
     [JSInvokable]
     public static void OnNodeSelected(string id)
     {
@@ -245,7 +262,7 @@ else
 
     }
 
-    async Task ShowInlineDialog() => await DialogService.OpenAsync("Similarity Weights", ds =>
+    async Task ShowInlineDialog() => await dialogService.OpenAsync("Similarity Weights", ds =>
         @<div>
             <h6>Metadata Simiarities Weigths</h6>
 
