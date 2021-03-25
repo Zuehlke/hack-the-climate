@@ -71,8 +71,9 @@ else
             @foreach (var l in _similarLegislations)
             {
                 <li class="@GetSimilarityClass(@l.Id)">
-                    <a href="/legislation/@l.Id" title="@l.Title">@l.Title</a>
-                    <img src="@($"/flags/{@l.GeographyIso.ToUpperInvariant()}.svg")" alt="@l.Geography"/> @l.Events.First().Date.Year <span class="oi oi-align-left" title="@l.ShortenedDescription"></span>
+                    <a href="/legislation/@l.Id" title="@l.ShortenedDescription">@l.Title</a>
+                    <br />
+                    <img src="@($"/flags/{@l.GeographyIso.ToUpperInvariant()}.svg")" alt="@l.Geography"/> @l.Events.First().Date.Year <a href="/compare/@_legislation.Id/@l.Id"><span class="oi oi-eye" title="Compare"></span></a>
                 </li>
             }
         </ul>
