@@ -1,4 +1,9 @@
-﻿export async function renderDiagram(element, data) {
+﻿export async function clearDiagram(element) {
+    const svg = d3.select(element);
+    svg.selectAll("*").remove();
+}
+
+export async function renderDiagram(element, data) {
     console.log(data);
 
     const height = 350;

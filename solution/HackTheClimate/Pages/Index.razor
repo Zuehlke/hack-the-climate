@@ -40,7 +40,7 @@ else
 
 <svg @ref="_renderTo" height="350" width="1000"></svg>
 
-@if (_searchResult != null && _searchResult.RankedLegislations.Any())
+@if (!_searching && _searchResult != null && _searchResult.RankedLegislations.Any())
 {
     <ul class="laws-and-policies">
         @foreach (var legislation in _searchResult.RankedLegislations.OrderBy(r => r.ConfidenceScore))
@@ -74,7 +74,7 @@ else
     <button type="button" class="btn btn-outline-secondary" @onclick="CopySearchResultToClipboard">Copy Search Result Data to Clipboard</button>
 }
 
-@if (_searchResult != null && !_searchResult.RankedLegislations.Any())
+@if (!_searching && _searchResult != null && !_searchResult.RankedLegislations.Any())
 {
     <p>
         No data found
@@ -108,6 +108,7 @@ else
         _searching = true;
         _searchUpdates = new List<string>(){"Searching for '" + SearchTerm + "'"};
         _searchUpdatesIndex = 0;
+        _searchResult = null;
 
         var timer = new System.Timers.Timer(3000);
         timer.Elapsed += (sender, args) =>
@@ -122,6 +123,12 @@ else
         timer.AutoReset = true;
         timer.Enabled = true;
 
+        var diagramModule = await JS
+                .InvokeAsync<IJSObjectReference>("import", "/diagram.js");
+
+        await diagramModule.InvokeVoidAsync("clearDiagram", _renderTo);
+
+
         _searchResult = await graphService.SearchAsync(SearchTerm);
         timer.Stop();
         timer.Dispose();
@@ -129,10 +136,6 @@ else
 
         if (_searchResult.RankedLegislations.Any())
         {
-
-            var diagramModule = await JS
-                .InvokeAsync<IJSObjectReference>("import", "/diagram.js");
-
             await diagramModule.InvokeVoidAsync("renderDiagram", _renderTo, _searchResult.Graph);
         }
 
