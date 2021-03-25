@@ -30,15 +30,15 @@ namespace HackTheClimate.Services
 
     public class Link
     {
-        public Link(string source, string target, double value)
+        public Link(string source, string target, double similarityScore)
         {
             Source = source;
             Target = target;
-            Value = value;
+            SimilarityScore = similarityScore;
         }
 
         public string Source { get; set; }
         public string Target { get; set; }
-        public double Value { get; set; }
+        public double SimilarityScore { get; set; }
     }
 }

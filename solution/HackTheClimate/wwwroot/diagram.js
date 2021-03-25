@@ -1,4 +1,6 @@
 ﻿export async function renderDiagram(element, data) {
+    console.log(data);
+
     const height = 350;
     const width = 600;
 
@@ -7,6 +9,11 @@
     const radiusScale = d3.scaleLinear()
         .domain([smallestConfidenceScore, largestConfidenceScore])
         .range([3, 10]);
+
+    const smallestSimilarityScore = data.links.map(l => l.similarityScore).reduce((a, b) => Math.min(a, b));
+    const largestSimilarityScore = data.links.map(l => l.similarityScore).reduce((a, b) => Math.max(a, b));
+    const linkColorScale = d3.scaleSequential([smallestSimilarityScore - ((largestSimilarityScore - smallestSimilarityScore) / 3), largestSimilarityScore], d3.interpolateBlues);
+    const linkWidthScale = d3.scaleLinear([smallestSimilarityScore, largestSimilarityScore], [1, 2]);
 
     const simulation = d3.forceSimulation()
         .force("link", d3.forceLink().id(function(d) { return d.id; }))
@@ -21,19 +28,19 @@
         }));
 
     const link = svg.append("g")
-        .attr("stroke", "#999")
         .attr("stroke-opacity", 0.6)
         .selectAll("line")
         .data(data.links)
         .enter().append("line")
-        .attr("stroke-width", d => Math.sqrt(d.value));
+        .attr("stroke-width", d => linkWidthScale(d.similarityScore))
+        .attr("stroke", d => linkColorScale(d.similarityScore));
 
     const node = svg.append("g")
         .attr("stroke", "#fff")
         .attr("stroke-width", 1.5)
         .selectAll("g")
         .data(data.nodes)
-        .enter().append("g")
+        .enter().append("g");
 
     const circles = node.append("circle")
         .attr("r", d => radiusScale(d.confidenceScore))
