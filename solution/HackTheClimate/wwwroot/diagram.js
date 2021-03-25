@@ -67,10 +67,15 @@
             .attr("x2", function (d) { return d.target.x; })
             .attr("y2", function (d) { return d.target.y; });
 
+        const radius = 10;
+
         node
-            .attr("transform", function (d) {
-                return "translate(" + d.x + "," + d.y + ")";
-            })
+            .attr("transform",
+                function (d) {
+                    return "translate(" + d.x + "," + d.y + ")";
+                })
+            .attr("cx", function (d) { return d.x = Math.max(radius, Math.min(width - radius, d.x)); })
+            .attr("cy", function (d) { return d.y = Math.max(radius, Math.min(height - radius, d.y)); });
     }
 }
 
