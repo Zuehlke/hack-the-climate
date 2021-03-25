@@ -1,6 +1,7 @@
 ﻿@page "/"
 @using HackTheClimate.Services
 @using CurrieTechnologies.Razor.Clipboard
+@using System.Timers
 @using System.Text.Json
 @inject IJSRuntime JS;
 @inject GraphService graphService;
@@ -9,78 +10,64 @@
 <h1>Search</h1>
 
 
-
 @if (_searching)
 {
-    <div class="spinner-border" role="status">
-        <span class="sr-only">Loading...</span>
-    </div>
-    <br />
-    <br />
-    <div class="alert alert-primary" role="alert">
-        <ul>
-            @foreach (var info in _searchUpdates)
+<div class="spinner-border" role="status">
+    <span class="sr-only">Loading...</span>
+</div>
+<br />
+<br />
+<div class="alert alert-primary" role="alert">
+    <ul>
+        @foreach (var info in _searchUpdates)
             {
-                <li>@info</li>
+        <li>@info</li>
             }
-        </ul>
-    </div>
+    </ul>
+</div>
 }
 else
 {
-    <div class="input-group">
-        <input @bind="SearchTerm" type="text" class="form-control" placeholder="Search laws and policies" @onkeyup="OnInputKeyUp" @oninput="@((e) => { SearchTerm=(string)e.Value;})">
-        <div class="input-group-append">
-            <button class="btn btn-secondary" type="button" @onclick="Search">
-                <i class="oi oi-magnifying-glass"></i>
-            </button>
-        </div>
+<div class="input-group">
+    <input @bind="SearchTerm" type="text" class="form-control" placeholder="Search laws and policies" @onkeyup="OnInputKeyUp" @oninput="OnInput">
+    <div class="input-group-append">
+        <button class="btn btn-secondary" type="button" @onclick="Search">
+            <i class="oi oi-magnifying-glass"></i>
+        </button>
     </div>
+</div>
 }
 
-<svg @ref="_renderTo" height="350" width="1000"></svg>
-
-@if (_searchResult != null && _searchResult.RankedLegislations.Any())
-{
-    <ul class="laws-and-policies">
-        @foreach (var legislation in _searchResult.RankedLegislations.OrderBy(r => r.ConfidenceScore))
+<div style="display: flex;">
+    <div style="flex: 0 0 900px">
+        <svg @ref="_renderTo" height="900" width="900"></svg>
+    </div>
+    <div style="flex: 1;">
+        @if (!_searching && _searchResult != null && _searchResult.RankedLegislations.Any())
         {
+        <ul class="search-results">
+            @foreach (var legislation in _searchResult.RankedLegislations.OrderBy(r => r.ConfidenceScore))
+                {
             <li>
-                <h2 class="title">
-                    <a href="/legislation/@legislation.Legislation.Id">@legislation.Legislation.Title</a>
-                </h2>
-                <div class="meta">
-                    <div>
-                        <img src="@($"/flags/{legislation.Legislation.GeographyIso.ToUpperInvariant()}.svg")" /> @legislation.Legislation.Geography
-                    </div>
-
-                    <div>
-                        <img src="@($"{legislation.Legislation.Type.ToString().ToLowerInvariant()}.svg")" />@legislation.Legislation.Type
-                    </div>
-
-                    <div className="right">
-                        @legislation.Legislation.Events.First().Date.Year
-                    </div>
-
-                    <div className="right">
-                        @(legislation.Legislation.Events.Count() > 1 ? $"Last change in {legislation.Legislation.Events.Last().Date.Year}" : "")
-                    </div>
-                </div>
-                <div class="description">@legislation.Legislation.ShortenedDescription</div>
+                <a href="/legislation/@legislation.Legislation.Id" title="@legislation.Legislation.Title">@legislation.Legislation.Title</a>
+                <img src="@($"/flags/{legislation.Legislation.GeographyIso.ToUpperInvariant()}.svg")" alt="@legislation.Legislation.Geography" /> @legislation.Legislation.Events.First().Date.Year <span class="oi oi-align-left" title="@legislation.Legislation.ShortenedDescription"></span>
             </li>
+                }
+        </ul>
+
+        <!--
+        <button type="button" class="btn btn-outline-secondary" @onclick="CopySearchResultToClipboard">Copy Search Result Data to Clipboard</button>
+        -->
         }
-    </ul>
 
-    <button type="button" class="btn btn-outline-secondary" @onclick="CopySearchResultToClipboard">Copy Search Result Data to Clipboard</button>
-}
-
-@if (_searchResult != null && !_searchResult.RankedLegislations.Any())
-{
-    <p>
-        No data found
-    </p>
-}
-
+        @if (!_searching && _searchResult != null && !_searchResult.RankedLegislations.Any())
+        {
+        <p>
+            No data found
+        </p>
+        }
+    </div>
+</div>
 
 
 @code {
@@ -89,10 +76,10 @@ else
     protected List<string> _searchUpdates;
     protected int _searchUpdatesIndex;
 
-    protected bool _searching = false;
+    protected bool _searching;
     protected SearchResult _searchResult;
 
-    private static readonly List<string> GenericSearchUpdates = new List<string>(){"Performing a full text search in 2128 documents", "Calculating similarity of legislations based on metadata", "Calculating similarity of legislations based on text-analysis", "... wait for it", "... almost there", "... just one last thing" };
+    private static readonly List<string> GenericSearchUpdates = new List<string> {"Performing a full text search in 2128 documents", "Calculating similarity of legislations based on metadata", "Calculating similarity of legislations based on text-analysis", "... wait for it", "... almost there", "... just one last thing"};
 
     private async Task OnInputKeyUp(KeyboardEventArgs e)
     {
@@ -102,14 +89,20 @@ else
         }
     }
 
+    private void OnInput(ChangeEventArgs e)
+    {
+        SearchTerm = (string) e.Value;
+    }
+
     private async Task Search()
     {
         var searchTerm = SearchTerm;
         _searching = true;
-        _searchUpdates = new List<string>(){"Searching for '" + SearchTerm + "'"};
+        _searchUpdates = new List<string> {"Searching for '" + SearchTerm + "'"};
         _searchUpdatesIndex = 0;
+        _searchResult = null;
 
-        var timer = new System.Timers.Timer(3000);
+        var timer = new Timer(3000);
         timer.Elapsed += (sender, args) =>
         {
             if (_searchUpdatesIndex < GenericSearchUpdates.Count)
@@ -122,6 +115,12 @@ else
         timer.AutoReset = true;
         timer.Enabled = true;
 
+        var diagramModule = await JS
+            .InvokeAsync<IJSObjectReference>("import", "/diagram.js");
+
+        await diagramModule.InvokeVoidAsync("clearDiagram", _renderTo);
+
+
         _searchResult = await graphService.SearchAsync(SearchTerm);
         timer.Stop();
         timer.Dispose();
@@ -129,10 +128,6 @@ else
 
         if (_searchResult.RankedLegislations.Any())
         {
-
-            var diagramModule = await JS
-                .InvokeAsync<IJSObjectReference>("import", "/diagram.js");
-
             await diagramModule.InvokeVoidAsync("renderDiagram", _renderTo, _searchResult.Graph);
         }
 
@@ -146,8 +141,9 @@ else
         {
             await clipboardService.WriteTextAsync(JsonSerializer.Serialize(_searchResult.RankedLegislations, new JsonSerializerOptions
             {
-                WriteIndented = true,
+                WriteIndented = true
             }));
         }
     }
+
 }

@@ -1,34 +1,38 @@
-﻿export async function renderDiagram(element, data) {
+﻿export async function clearDiagram(element) {
+    const svg = d3.select(element);
+    svg.selectAll("*").remove();
+}
+
+export async function renderDiagram(element, data) {
+    const nodeColor = "#3a0647";
+
     console.log(data);
 
-    const height = 350;
-    const width = 1000;
+    const height = 900;
+    const width = 900;
 
     const smallestConfidenceScore = data.nodes.map(n => n.confidenceScore).reduce((a, b) => Math.min(a, b));
     const largestConfidenceScore = data.nodes.map(n => n.confidenceScore).reduce((a, b) => Math.max(a, b));
     const radiusScale = d3.scaleLinear()
         .domain([smallestConfidenceScore, largestConfidenceScore])
-        .range([3, 10]);
+        .range([10, 30]);
 
     const smallestSimilarityScore = data.links.map(l => l.similarityScore).reduce((a, b) => Math.min(a, b));
     const largestSimilarityScore = data.links.map(l => l.similarityScore).reduce((a, b) => Math.max(a, b));
     const linkColorScale = d3.scaleSequential([smallestSimilarityScore - ((largestSimilarityScore - smallestSimilarityScore) / 3), largestSimilarityScore], d3.interpolateBlues);
-    const linkWidthScale = d3.scaleLinear([smallestSimilarityScore, largestSimilarityScore], [1, 2]);
+    const selectedLinkColorScale = d3.scaleSequential([smallestSimilarityScore - ((largestSimilarityScore - smallestSimilarityScore) / 3), largestSimilarityScore], d3.interpolateYlOrBr);
+    const linkWidthScale = d3.scaleLinear([smallestSimilarityScore, largestSimilarityScore], [5, 10]);
 
     const simulation = d3.forceSimulation()
         .force("link", d3.forceLink().id(function(d) { return d.id; }))
-        .force("charge", d3.forceManyBody())
+        .force("charge", d3.forceManyBody().strength(-200))
         .force("center", d3.forceCenter(width / 2, height / 2));
 
     const svg = d3.select(element);
     svg.selectAll("*").remove();
-    svg.call(d3.zoom().on("zoom",
-        function() {
-            svg.attr("transform", d3.event.transform)
-        }));
 
     const link = svg.append("g")
-        .attr("stroke-opacity", 0.6)
+        // .attr("stroke-opacity", 0.6)
         .selectAll("line")
         .data(data.links)
         .enter().append("line")
@@ -42,13 +46,37 @@
         .data(data.nodes)
         .enter().append("g");
 
+    const toggleColor = (function () {
+        return function (node) {
+            // nodes
+            d3.select(this.farthestViewportElement).selectAll("circle").attr("fill", d => {
+                if (d.id === node.id) {
+                    return "#662506";
+                } else {
+                    return nodeColor;
+                }
+            });
+
+            // links
+            d3.select(this.farthestViewportElement).selectAll("line").attr("stroke", d => {
+                if (d.source.id === node.id || d.target.id === node.id) {
+                    return selectedLinkColorScale(d.similarityScore);
+                } else {
+                    return linkColorScale(d.similarityScore);
+                }
+            });
+        }
+    })();
+
     const circles = node.append("circle")
         .attr("r", d => radiusScale(d.confidenceScore))
-        .attr("fill", "#3a0647")
+        .attr("fill", nodeColor)
+        .on("click", toggleColor)
         .call(d3.drag()
             .on("start", d => dragstarted(d, simulation))
             .on("drag", d => dragged(d))
             .on("end", d => dragended(d, simulation)));
+            
 
     node.append("title")
         .text(d => d.title);
@@ -78,6 +106,9 @@
             .attr("cy", function (d) { return d.y = Math.max(radius, Math.min(height - radius, d.y)); });
     }
 }
+
+
+
 
 function dragstarted(d, simulation) {
     if (!d3.event.active) simulation.alphaTarget(0.3).restart();
