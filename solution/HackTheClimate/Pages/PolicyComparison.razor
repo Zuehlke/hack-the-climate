@@ -15,23 +15,50 @@
             else
             {
 
-<div class="container-fluid">
+                <div class="container-fluid comparison-container">
+                    <div class="row">
+                        <div class="col-sm">
+                            <h3>@_document1.Title</h3>
+                            <img src="@($"/flags/{_document1.GeographyIso.ToUpperInvariant()}.svg")" alt="@_document1.GeographyIso" /> @_document1.Geography
+                            <img src="@($"{_document1.Type.ToString().ToLowerInvariant()}.svg")" alt="@_document1.Type" />@_document1.Type
+                        <p>
+                            @_document1.ShortenedDescription
+                            <a href="/legislation/@_document1.Id">more</a>
+                        </p>
+                        </div>
+                        <div class="col-sm">
+                            <span class="oi oi-eye" style="font-size: 100px"></span>
+                            <br />
+                            <h1>@((int)(_similarity.SimilarityScore * 100))%</h1>
+                        </div>
+                        <div class="col-sm">
+                            <h3>@_document2.Title</h3>
+                            <img src="@($"/flags/{_document2.GeographyIso.ToUpperInvariant()}.svg")" alt="@_document2.GeographyIso" /> @_document2.Geography
+                            <img src="@($"{_document2.Type.ToString().ToLowerInvariant()}.svg")" alt="@_document2.Type" />@_document2.Type
+                            <p>
+                                @_document2.ShortenedDescription
+                                <a href="/legislation/@_document2.Id">more</a>
+                            </p>
+                        </div>
+                    </div>
+
+                        <!--
     <div class="row">
         <div class="col-sm">
-            <img src="@($"/flags/{_document1.GeographyIso.ToUpperInvariant()}.svg")" alt="@_document1.GeographyIso" />
+            <img src="@($"/flags/{_document1.GeographyIso.ToUpperInvariant()}.svg")" alt="@_document1.GeographyIso"/>
             @_document1.Geography
 
-            <hr />
+            <hr/>
 
             <h2>@_document1.Title</h2>
 
         </div>
         <div class="col-sm">
 
-            <img src="@($"/flags/{_document2.GeographyIso.ToUpperInvariant()}.svg")" alt="@_document2.GeographyIso" />
+            <img src="@($"/flags/{_document2.GeographyIso.ToUpperInvariant()}.svg")" alt="@_document2.GeographyIso"/>
             @_document2.Geography
 
-            <hr />
+            <hr/>
 
             <h2>@_document2.Title</h2>
         </div>
@@ -40,39 +67,39 @@
         <div class="col-sm">
             <div class="meta">
                 <div>
-                    <img src="@($"{_document1.Type.ToString().ToLowerInvariant()}.svg")" alt="@_document1.Type" />@_document1.Type
+                    <img src="@($"{_document1.Type.ToString().ToLowerInvariant()}.svg")" alt="@_document1.Type"/>@_document1.Type
                 </div>
 
                 <div>
                     @foreach (var d in _document1.DocumentTypes)
                     {
-                <span>@(d), </span>}
+                        <span>@(d), </span>}
                 </div>
 
                 @foreach (var framework in _document1.Frameworks)
                 {
-                <div>
-                     @(framework) Framework
-                </div>}
+                    <div>
+                        @(framework) Framework
+                    </div>}
             </div>
         </div>
         <div class="col-sm">
             <div class="meta">
                 <div>
-                    <img src="@($"{_document2.Type.ToString().ToLowerInvariant()}.svg")" alt="@_document2.Type" />@_document2.Type
+                    <img src="@($"{_document2.Type.ToString().ToLowerInvariant()}.svg")" alt="@_document2.Type"/>@_document2.Type
                 </div>
 
                 <div>
                     @foreach (var d in _document2.DocumentTypes)
                     {
-                <span>@(d), </span>}
-                        </div>
+                        <span>@(d), </span>}
+                </div>
 
-                        @foreach (var framework in _document2.Frameworks)
-                        {
-                <div>
-                    @(framework) Framework
-                </div>}
+                @foreach (var framework in _document2.Frameworks)
+                {
+                    <div>
+                        @(framework) Framework
+                    </div>}
             </div>
         </div>
     </div>
@@ -99,11 +126,11 @@
             <table>
                 @foreach (var e in _document1.Events)
                 {
-        <tr>
-            <td style="width: 200px">@e.Date.ToString("MMMM yyyy")</td>
-            <td>@e.Description</td>
-        </tr>
-}
+                    <tr>
+                        <td style="width: 200px">@e.Date.ToString("MMMM yyyy")</td>
+                        <td>@e.Description</td>
+                    </tr>
+                }
             </table>
         </div>
         <div class="col-sm">
@@ -111,65 +138,25 @@
             <table>
                 @foreach (var e in _document2.Events)
                 {
-        <tr>
-            <td style="width: 200px">@e.Date.ToString("MMMM yyyy")</td>
-            <td>@e.Description</td>
-        </tr>
-}
+                    <tr>
+                        <td style="width: 200px">@e.Date.ToString("MMMM yyyy")</td>
+                        <td>@e.Description</td>
+                    </tr>
+                }
             </table>
         </div>
     </div>
+    -->
 
-    <div class="row">
-        <div class="col-sm">
-            <h3>Documents</h3>
-            <ul>
-                @foreach (var d in _document1.Documents)
-                {
-                    <li><a href="@d.Uri.ToString()">@d.Description @(string.IsNullOrEmpty(d.Language) ? "" : "("+@d.Language+")")</a></li>
-                }
-                <li><a href="@GetClimateLawUrl(_document1)">Climate Laws Website</a></li>
-            </ul>
-        </div>
-        <div class="col-sm">
-            <h3>Documents</h3>
-            <ul>
-                @foreach (var d in _document2.Documents)
-                {
-                    <li><a href="@d.Uri.ToString()">@d.Description @(string.IsNullOrEmpty(d.Language) ? "" : "("+@d.Language+")")</a></li>
-                }
-                <li><a href="@GetClimateLawUrl(_document1)">Climate Laws Website</a></li>
-            </ul>
-        </div>
-    </div>
-    
-    <div class="row">
-        <div class="col-sm">
-        </div>
-        <div class="col-sm">
-            <h2>Keywords (@((int)(_similarity.KeywordSimilarity.Score * 100))%)</h2>
-        </div>
-        <div class="col-sm">
-        </div>
-    </div>
+                        <ListSimilarityResultComponent Title="Keywords" Similarity="@_similarity.KeywordSimilarity" />
+                        <ListSimilarityResultComponent Title="Sectors" Similarity="@_similarity.SectorsSimilarity" />
+                        <ListSimilarityResultComponent Title="Frameworks" Similarity="@_similarity.FrameworksSimilarity.ToStringResult()" />
+                        <ListSimilarityResultComponent Title="Instruments" Similarity="@_similarity.InstrumentsSimilarity" />
+                        <ListSimilarityResultComponent Title="Natural Hazards" Similarity="@_similarity.NaturalHazardsSimilarity" />
+                        <ListSimilarityResultComponent Title="Document Types" Similarity="@_similarity.DocumentTypesSimilarity" />
+                        <ListSimilarityResultComponent Title="Responses" Similarity="@_similarity.ResponsesSimilarity" />
 
-    <div class="row">
-        <div class="col-sm">
-            +@_similarity.KeywordSimilarity.NoMatchA
-        </div>
-        <div class="col-sm">
-            <ul>
-                @foreach (var k in _similarity.KeywordSimilarity.Overlap)
-                {
-                    <li>@k</li>
-                }
-            </ul>
-        </div>
-        <div class="col-sm">
-            +@_similarity.KeywordSimilarity.NoMatchB
-        </div>
-    </div>
-</div>
+                    </div>
 
  }
 

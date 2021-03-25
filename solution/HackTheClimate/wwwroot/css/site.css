@@ -215,3 +215,15 @@ app {
 .similarity-90 { opacity: 90% }
                              
 .similarity-100 { opacity: 100% }
+
+.comparison-container .row div:nth-child(1) {
+    background: linear-gradient(90deg, lavender 0%, lavender 67%, rgba(255,255,255,1) 100%);
+}
+
+.comparison-container .row div:nth-child(2) {
+    text-align: center
+}
+
+.comparison-container .row div:nth-child(3) {
+    background: linear-gradient(90deg, rgba(255,255,255,1) 0%, linen 33%, linen 100%);
+}

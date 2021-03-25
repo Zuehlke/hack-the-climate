@@ -83,7 +83,7 @@ else
     private static Action<string> _onNodeSelectedAction;
     private Dictionary<string, string> _similarityClass = new Dictionary<string, string>();
 
-    private static readonly List<string> GenericSearchUpdates = new List<string> {"Performing a full text search in 2128 documents", "Calculating similarity of legislations based on metadata", "Calculating similarity of legislations based on text-analysis", "... wait for it", "... almost there", "... just one last thing"};
+    private static readonly List<string> GenericSearchUpdates = new List<string> {"Performing a full text search in 2128 documents", "Calculating Similarity of legislations based on metadata", "Calculating Similarity of legislations based on text-analysis", "... wait for it", "... almost there", "... just one last thing"};
 
     protected override void OnInitialized()
     {
@@ -103,44 +103,44 @@ else
                 switch (link.SimilarityScore)
                 {
                     case < 0.1:
-                        value = "similarity-10";
+                        value = "Similarity-10";
                         break;
 
                     case < 0.2:
-                        value = "similarity-20";
+                        value = "Similarity-20";
                         break;
 
                     case < 0.3:
-                        value = "similarity-30";
+                        value = "Similarity-30";
                         break;
 
                     case < 0.4:
-                        value = "similarity-40";
+                        value = "Similarity-40";
                         break;
 
                     case < 0.5:
-                        value = "similarity-50";
+                        value = "Similarity-50";
                         break;
 
                     case < 0.6:
-                        value = "similarity-60";
+                        value = "Similarity-60";
                         break;
 
                     case < 0.7:
-                        value = "similarity-70";
+                        value = "Similarity-70";
                         break;
 
                     case < 0.8:
-                        value = "similarity-80";
+                        value = "Similarity-80";
                         break;
 
 
                     case < 0.9:
-                        value = "similarity-90";
+                        value = "Similarity-90";
                         break;
 
                     default:
-                        value = "similarity-100";
+                        value = "Similarity-100";
                         break;
                 }
 
@@ -232,7 +232,7 @@ else
                 return clazz;
             } else
             {
-                return "similarity-10";
+                return "Similarity-10";
             }
         }
         else

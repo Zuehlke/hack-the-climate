@@ -175,6 +175,17 @@ namespace HackTheClimate.Services
         public IEnumerable<T> Overlap { get; set; }
         public int NoMatchA { get; set; }
         public int NoMatchB { get; set; }
+
+        public ListSimilarityResult<string> ToStringResult()
+        {
+            return new ListSimilarityResult<string>
+            {
+                Score = Score,
+                Overlap = Overlap.Select(e => e.ToString()),
+                NoMatchA = NoMatchA,
+                NoMatchB = NoMatchB
+            };
+        }
     }
 
     public class SimilarityResult
