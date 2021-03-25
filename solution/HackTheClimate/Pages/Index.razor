@@ -29,13 +29,10 @@ else
     </div>
 }
 
-<svg @ref="_renderTo" height="350" width="600"></svg>
+<svg @ref="_renderTo" height="350" width="1000"></svg>
 
 @if (_searchResult != null && _searchResult.RankedLegislations.Any())
 {
-
-    <button type="button" class="btn btn-outline-secondary" @onclick="CopyGraphDataToClipboard">Copy Graph Data to Clipboard</button>
-
     <ul class="laws-and-policies">
         @foreach (var legislation in _searchResult.RankedLegislations.OrderBy(r => r.ConfidenceScore))
         {
@@ -108,17 +105,6 @@ else
         }
 
         _searching = false;
-    }
-
-    private async Task CopyGraphDataToClipboard()
-    {
-        if (clipboardService != null)
-        {
-            await clipboardService.WriteTextAsync(JsonSerializer.Serialize(_searchResult.Graph, new JsonSerializerOptions
-            {
-                WriteIndented = true,
-            }));
-        }
     }
 
     private async Task CopySearchResultToClipboard()
