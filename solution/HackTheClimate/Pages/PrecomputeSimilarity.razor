@@ -60,8 +60,8 @@ else{
 
                     if (!string.IsNullOrEmpty(key) && !processed.Contains(key))
                     {
-                        // var similarity = similarityService.CalculateSimilarity(outer, inner);
-                        var line = key + random.NextDouble(); // similarity.SimilarityScore;
+                        var similarity = similarityService.CalculateSimilarity(outer, inner);
+                        var line = key + similarity.SimilarityScore;
                         lines.Add(line);
                         processed.Add(key);
                         await file.WriteLineAsync(line);
