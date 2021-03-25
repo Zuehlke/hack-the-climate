@@ -2,6 +2,7 @@ using CurrieTechnologies.Razor.Clipboard;
 using HackTheClimate.Data;
 using HackTheClimate.Services;
 using HackTheClimate.Services.Search;
+using HackTheClimate.Services.Similarity;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -28,12 +29,15 @@ namespace HackTheClimate
 
             services.AddSingleton<LegislationService>();
             services.AddSingleton<SearchService>();
+
+            services.AddSingleton<EntityRecognitionService>();
             services.AddSingleton<SimilarityService>();
             services.AddSingleton<GraphService>();
 
             services.AddTransient<AzureSearchFacade>();
 
             services.Configure<AzureSearchConfiguration>(Configuration.GetSection(Constants.Configuration.Search));
+            services.Configure<AzureBlobEntitiesConfiguration>(Configuration.GetSection(Constants.Configuration.BlobEntities));
 
             services.AddClipboard();
         }

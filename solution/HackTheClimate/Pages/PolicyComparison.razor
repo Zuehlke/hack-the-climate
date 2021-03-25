@@ -1,0 +1,180 @@
+﻿@page "/compare/{id1}/{id2}"
+@using HackTheClimate.Data
+@using HackTheClimate.Services
+@using System.Text.RegularExpressions
+@inject LegislationService LegislationService
+@inject SimilarityService SimilarityService
+
+@if (_document1 == null || _document2 == null)
+{
+<p>
+    <em>Loading...</em>
+</p> }
+            else
+            {
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-sm">
+            <img src="@($"/flags/{_document1.GeographyIso.ToUpperInvariant()}.svg")" alt="@_document1.GeographyIso" />
+            @_document1.Geography
+
+            <hr />
+
+            <h2>@_document1.Title</h2>
+
+        </div>
+        <div class="col-sm">
+
+            <img src="@($"/flags/{_document2.GeographyIso.ToUpperInvariant()}.svg")" alt="@_document2.GeographyIso" />
+            @_document2.Geography
+
+            <hr />
+
+            <h2>@_document2.Title</h2>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm">
+            <div class="meta">
+                <div>
+                    <img src="@($"{_document1.Type.ToString().ToLowerInvariant()}.svg")" alt="@_document1.Type" />@_document1.Type
+                </div>
+
+                <div>
+                    @foreach (var d in _document1.DocumentTypes)
+                    {
+                <span>@(d), </span>}
+                </div>
+
+                @foreach (var framework in _document1.Frameworks)
+                {
+                <div>
+                     @(framework) Framework
+                </div>}
+            </div>
+        </div>
+        <div class="col-sm">
+            <div class="meta">
+                <div>
+                    <img src="@($"{_document2.Type.ToString().ToLowerInvariant()}.svg")" alt="@_document2.Type" />@_document2.Type
+                </div>
+
+                <div>
+                    @foreach (var d in _document2.DocumentTypes)
+                    {
+                <span>@(d), </span>}
+                        </div>
+
+                        @foreach (var framework in _document2.Frameworks)
+                        {
+                <div>
+                    @(framework) Framework
+                </div>}
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-sm">
+            <p>
+                @((MarkupString) _document1.Description)
+            </p>
+        </div>
+        <div class="col-sm">
+
+            <p>
+                @((MarkupString) _document2.Description)
+            </p>
+        </div>
+    </div>
+
+
+
+    <div class="row">
+        <div class="col-sm">
+            <h3>Timeline of Events</h3>
+            <table>
+                @foreach (var e in _document1.Events)
+                {
+        <tr>
+            <td style="width: 200px">@e.Date.ToString("MMMM yyyy")</td>
+            <td>@e.Description</td>
+        </tr>
+}
+            </table>
+        </div>
+        <div class="col-sm">
+            <h3>Timeline of Events</h3>
+            <table>
+                @foreach (var e in _document2.Events)
+                {
+        <tr>
+            <td style="width: 200px">@e.Date.ToString("MMMM yyyy")</td>
+            <td>@e.Description</td>
+        </tr>
+}
+            </table>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-sm">
+            <h3>Documents</h3>
+            <ul>
+                @foreach (var d in _document1.Documents)
+                {
+        <li><a href="@d.Uri.ToString()">@d.Description @(string.IsNullOrEmpty(d.Language) ? "" : "("+@d.Language+")")</a></li>
+}
+                <li><a href="@GetClimateLawUrl(_document1)">Climate Laws Website</a></li>
+            </ul>
+        </div>
+        <div class="col-sm">
+            <h3>Documents</h3>
+            <ul>
+                @foreach (var d in _document2.Documents)
+                {
+        <li><a href="@d.Uri.ToString()">@d.Description @(string.IsNullOrEmpty(d.Language) ? "" : "("+@d.Language+")")</a></li>
+}
+                <li><a href="@GetClimateLawUrl(_document1)">Climate Laws Website</a></li>
+            </ul>
+        </div>
+    </div>
+ </div>
+
+ }
+
+@code { [Parameter]
+    public string Id1 { get; set; }
+    [Parameter]
+    public string Id2 { get; set; }
+
+    private Legislation _document1;
+    private Legislation _document2;
+    private SimilarityResult _similarity;
+
+    protected override async Task OnInitializedAsync()
+    {
+        _document1 = LegislationService.GetLegislation(Id1);
+        _document2 = LegislationService.GetLegislation(Id2);
+        _similarity = SimilarityService.CalculateSimilarity(_document1, _document2);
+    }
+
+    /// <summary>
+    /// Creates URL like https://climate-laws.org/geographies/taiwan/laws/electricity-act
+    /// or https://climate-laws.org/geographies/afghanistan/policies/energy-sector-strategy-1387-1391-2007-8-2012-3
+    /// Tax Reform Act 2020 (Steuerreformgesetz 2020 – StRefG 2020 - 984/A)
+    /// becomes
+    /// tax-reform-act-2020-steuerreformgesetz-2020-strefg-2020-984-a
+    /// </summary>
+    /// <param name="legislation"></param>
+    /// <returns></returns>
+    private static string GetClimateLawUrl(Legislation legislation)
+    {
+        var titleIdRegex = new Regex("[^a-zA-Z0-9 -/]");
+        var title = titleIdRegex.Replace(legislation.Title, string.Empty).Replace("/", "-").Replace(" ", "-").Replace("(", string.Empty).Replace(")", string.Empty).ToLowerInvariant();
+
+        var type = legislation.Type == LegislationType.Legislative ? "laws" : "policies"; // no idea whether that's correct
+
+        return $"https://climate-laws.org/geographies/{legislation.Geography.ToLower()}/{type}/{title}";
+    } }

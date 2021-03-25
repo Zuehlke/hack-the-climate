@@ -13,6 +13,7 @@
 
   <ItemGroup>
     <PackageReference Include="Azure.Search.Documents" Version="11.2.0" />
+    <PackageReference Include="Azure.Storage.Blobs" Version="12.8.0" />
     <PackageReference Include="BlazorPagination" Version="0.2.12" />
     <PackageReference Include="CsvHelper" Version="26.0.1" />
     <PackageReference Include="CurrieTechnologies.Razor.Clipboard" Version="1.3.1" />
