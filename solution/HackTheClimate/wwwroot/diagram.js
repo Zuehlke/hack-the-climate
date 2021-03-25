@@ -15,6 +15,10 @@
 
     const svg = d3.select(element);
     svg.selectAll("*").remove();
+    svg.call(d3.zoom().on("zoom",
+        function() {
+            svg.attr("transform", d3.event.transform)
+        }));
 
     const link = svg.append("g")
         .attr("stroke", "#999")
