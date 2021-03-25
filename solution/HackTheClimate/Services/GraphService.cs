@@ -25,7 +25,7 @@ namespace HackTheClimate.Services
             _legislationService = legislationService;
         }
 
-        public async Task<SearchResult> SearchAsync(string searchTerm)
+        public async Task<SearchResult> SearchAsync(string searchTerm, SimilarityWeights weights)
         {
             var fake = searchTerm == "fake";
 
@@ -64,7 +64,7 @@ namespace HackTheClimate.Services
                 {
                     var similarity = fake
                         ? fakeSimilarityService.CalculateSimilarity(outer.Legislation, inner.Legislation)
-                        : _similarityService.CalculateSimilarity(outer.Legislation, inner.Legislation);
+                        : _similarityService.CalculateSimilarity(outer.Legislation, inner.Legislation, weights);
                     calculatedCombinations.Add(outer.Legislation.Id + inner.Legislation.Id);
                     calculatedCombinations.Add(inner.Legislation.Id + outer.Legislation.Id);
 

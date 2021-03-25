@@ -47,75 +47,38 @@ namespace HackTheClimate.Services
                 .Select(p => (p.Key, p.Value));
         }
 
-        public SimilarityResult CalculateSimilarity(Legislation a, Legislation b)
+        public SimilarityResult CalculateSimilarity(Legislation a, Legislation b, SimilarityWeights weights)
         {
-            double keywordWeight = 1;
             var keywordSimilarity = ListSimilarity(a.Keywords, b.Keywords);
-
-            double sectorsWeight = 1;
             var sectorSimilarity = ListSimilarity(a.Sectors, b.Sectors);
-
-            double frameworksWeight = 1;
             var frameworksSimilarity = ListSimilarity(a.Frameworks, b.Frameworks);
-
-            double instrumentsWeight = 1;
             var instrumentsSimilarity = ListSimilarity(a.Instruments, b.Instruments);
-
-            double naturalHazardsWeight = 1;
             var naturalHazardsSimilarity = ListSimilarity(a.NaturalHazards, b.NaturalHazards);
-
-            double documentTypesWeight = 1;
             var documentTypesSimilarity = ListSimilarity(a.DocumentTypes, b.DocumentTypes);
-
-            double responsesWeight = 1;
             var responsesSimilarity = ListSimilarity(a.Responses, b.Responses);
-
-            var locationWeight = 0.3;
             var locationSimilarity = PropertySimilarity(a.Geography, b.Geography);
-
-            var typeWeight = 0.2;
             var typeSimilarity = PropertySimilarity(a.Type, b.Type);
-
-            double entitySkillWeight = 1;
             var entitySkillSimilarity = EntityCategorySimilarity(a, b, "Skill");
-
-            double entityProductWeight = 2;
             var entityProductSimilarity = EntityCategorySimilarity(a, b, "Product");
-
-            double entityEventWeight = 1;
             var entityEventSimilarity = EntityCategorySimilarity(a, b, "Event");
-
-            var entityLocationWeight = 0.5;
             var entityLocationSimilarity = EntityCategorySimilarity(a, b, "Location");
 
             return new SimilarityResult
             {
-                SimilarityScore = (keywordWeight * keywordSimilarity.Score
-                                   + sectorsWeight * sectorSimilarity.Score
-                                   + frameworksWeight * frameworksSimilarity.Score
-                                   + instrumentsWeight * instrumentsSimilarity.Score
-                                   + naturalHazardsWeight * naturalHazardsSimilarity.Score
-                                   + documentTypesWeight * documentTypesSimilarity.Score
-                                   + responsesWeight * responsesSimilarity.Score
-                                   + locationWeight * locationSimilarity
-                                   + typeWeight * typeSimilarity
-                                   + entityProductWeight * entityProductSimilarity
-                                   + entitySkillWeight * entitySkillSimilarity
-                                   + entityEventWeight * entityEventSimilarity
-                                   + entityLocationWeight * entityLocationSimilarity)
-                                  / (keywordWeight
-                                     + sectorsWeight
-                                     + frameworksWeight
-                                     + instrumentsWeight
-                                     + naturalHazardsWeight
-                                     + documentTypesWeight
-                                     + responsesWeight
-                                     + locationWeight
-                                     + typeWeight
-                                     + entityProductWeight
-                                     + entitySkillWeight
-                                     + entityEventWeight
-                                     + entityLocationWeight),
+                SimilarityScore = (weights.KeywordWeight * keywordSimilarity.Score
+                                   + weights.SectorWeight * sectorSimilarity.Score
+                                   + weights.FrameworkWeight * frameworksSimilarity.Score
+                                   + weights.InstrumentWeight * instrumentsSimilarity.Score
+                                   + weights.NaturalHazardWeight * naturalHazardsSimilarity.Score
+                                   + weights.DocumentTypeWeight * documentTypesSimilarity.Score
+                                   + weights.ResponseWeight * responsesSimilarity.Score
+                                   + weights.LocationWeight * locationSimilarity
+                                   + weights.TypeWeight * typeSimilarity
+                                   + weights.EntityProductWeight * entityProductSimilarity
+                                   + weights.EntitySkillWeight * entitySkillSimilarity
+                                   + weights.EntityEventWeight * entityEventSimilarity
+                                   + weights.EntityLocationWeight * entityLocationSimilarity)
+                                  / weights.TotalWeight(),
                 KeywordSimilarity = keywordSimilarity,
                 SectorsSimilarity = keywordSimilarity,
                 FrameworksSimilarity = frameworksSimilarity,

@@ -173,7 +173,7 @@
     {
         _document1 = LegislationService.GetLegislation(Id1);
         _document2 = LegislationService.GetLegislation(Id2);
-        _similarity = SimilarityService.CalculateSimilarity(_document1, _document2);
+        _similarity = SimilarityService.CalculateSimilarity(_document1, _document2, SimilarityWeights.DefaultWeights());
     }
 
     /// <summary>

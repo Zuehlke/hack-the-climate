@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Radzen;
 
 namespace HackTheClimate
 {
@@ -26,6 +27,7 @@ namespace HackTheClimate
         {
             services.AddRazorPages();
             services.AddServerSideBlazor();
+            services.AddScoped<DialogService>();
 
             services.AddSingleton<LegislationService>();
             services.AddSingleton<SearchService>();
