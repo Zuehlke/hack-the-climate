@@ -4,6 +4,8 @@
 }
 
 export async function renderDiagram(element, data) {
+    const nodeColor = "#3a0647";
+
     console.log(data);
 
     const height = 900;
@@ -18,6 +20,7 @@ export async function renderDiagram(element, data) {
     const smallestSimilarityScore = data.links.map(l => l.similarityScore).reduce((a, b) => Math.min(a, b));
     const largestSimilarityScore = data.links.map(l => l.similarityScore).reduce((a, b) => Math.max(a, b));
     const linkColorScale = d3.scaleSequential([smallestSimilarityScore - ((largestSimilarityScore - smallestSimilarityScore) / 3), largestSimilarityScore], d3.interpolateBlues);
+    const selectedLinkColorScale = d3.scaleSequential([smallestSimilarityScore - ((largestSimilarityScore - smallestSimilarityScore) / 3), largestSimilarityScore], d3.interpolateYlOrBr);
     const linkWidthScale = d3.scaleLinear([smallestSimilarityScore, largestSimilarityScore], [5, 10]);
 
     const simulation = d3.forceSimulation()
@@ -27,10 +30,6 @@ export async function renderDiagram(element, data) {
 
     const svg = d3.select(element);
     svg.selectAll("*").remove();
-    svg.call(d3.zoom().on("zoom",
-        function() {
-            svg.attr("transform", d3.event.transform)
-        }));
 
     const link = svg.append("g")
         // .attr("stroke-opacity", 0.6)
@@ -47,13 +46,37 @@ export async function renderDiagram(element, data) {
         .data(data.nodes)
         .enter().append("g");
 
+    const toggleColor = (function () {
+        return function (node) {
+            // nodes
+            d3.select(this.farthestViewportElement).selectAll("circle").attr("fill", d => {
+                if (d.id === node.id) {
+                    return "#662506";
+                } else {
+                    return nodeColor;
+                }
+            });
+
+            // links
+            d3.select(this.farthestViewportElement).selectAll("line").attr("stroke", d => {
+                if (d.source.id === node.id || d.target.id === node.id) {
+                    return selectedLinkColorScale(d.similarityScore);
+                } else {
+                    return linkColorScale(d.similarityScore);
+                }
+            });
+        }
+    })();
+
     const circles = node.append("circle")
         .attr("r", d => radiusScale(d.confidenceScore))
-        .attr("fill", "#3a0647")
+        .attr("fill", nodeColor)
+        .on("click", toggleColor)
         .call(d3.drag()
             .on("start", d => dragstarted(d, simulation))
             .on("drag", d => dragged(d))
             .on("end", d => dragended(d, simulation)));
+            
 
     node.append("title")
         .text(d => d.title);
@@ -83,6 +106,9 @@ export async function renderDiagram(element, data) {
             .attr("cy", function (d) { return d.y = Math.max(radius, Math.min(height - radius, d.y)); });
     }
 }
+
+
+
 
 function dragstarted(d, simulation) {
     if (!d3.event.active) simulation.alphaTarget(0.3).restart();
