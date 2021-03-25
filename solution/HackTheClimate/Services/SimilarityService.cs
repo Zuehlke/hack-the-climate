@@ -59,7 +59,7 @@ namespace HackTheClimate.Services
             var frameworksSimilarity = ListSimilarity(a.Frameworks, b.Frameworks);
 
             double instrumentsWeight = 1;
-            var instrumentsSimilarity = ListSimilarity(a.Frameworks, b.Frameworks);
+            var instrumentsSimilarity = ListSimilarity(a.Instruments, b.Instruments);
 
             double naturalHazardsWeight = 1;
             var naturalHazardsSimilarity = ListSimilarity(a.NaturalHazards, b.NaturalHazards);
@@ -90,13 +90,13 @@ namespace HackTheClimate.Services
 
             return new SimilarityResult
             {
-                SimilarityScore = (keywordWeight * keywordSimilarity
-                                   + sectorsWeight * sectorSimilarity
-                                   + frameworksWeight * frameworksSimilarity
-                                   + instrumentsWeight * instrumentsSimilarity
-                                   + naturalHazardsWeight * naturalHazardsSimilarity
-                                   + documentTypesWeight * documentTypesSimilarity
-                                   + responsesWeight * responsesSimilarity
+                SimilarityScore = (keywordWeight * keywordSimilarity.Score
+                                   + sectorsWeight * sectorSimilarity.Score
+                                   + frameworksWeight * frameworksSimilarity.Score
+                                   + instrumentsWeight * instrumentsSimilarity.Score
+                                   + naturalHazardsWeight * naturalHazardsSimilarity.Score
+                                   + documentTypesWeight * documentTypesSimilarity.Score
+                                   + responsesWeight * responsesSimilarity.Score
                                    + locationWeight * locationSimilarity
                                    + typeWeight * typeSimilarity
                                    + entityProductWeight * entityProductSimilarity
@@ -115,7 +115,14 @@ namespace HackTheClimate.Services
                                      + entityProductWeight
                                      + entitySkillWeight
                                      + entityEventWeight
-                                     + entityLocationWeight)
+                                     + entityLocationWeight),
+                KeywordSimilarity = keywordSimilarity,
+                SectorsSimilarity = keywordSimilarity,
+                FrameworksSimilarity = frameworksSimilarity,
+                InstrumentsSimilarity = instrumentsSimilarity,
+                NaturalHazardsSimilarity = naturalHazardsSimilarity,
+                DocumentTypesSimilarity = documentTypesSimilarity,
+                ResponsesSimilarity = responsesSimilarity
             };
         }
 
@@ -127,7 +134,7 @@ namespace HackTheClimate.Services
             // As there is usually a big number of entities, the similarities are usually very low.
             // Thus boosting the value, in case of matches.
             // See https://www.wolframalpha.com/input/?i=plot+1-e%5E%28-5x%29+where+x%3D0+to+1
-            return 1 - Math.Pow(Math.E, -4 * rawListSimilarity);
+            return 1 - Math.Pow(Math.E, -4 * rawListSimilarity.Score);
         }
 
         private static int PropertySimilarity<T>(T a, T b)
@@ -135,33 +142,50 @@ namespace HackTheClimate.Services
             return a.Equals(b) ? 1 : 0;
         }
 
-        private static double ListSimilarity<T>(ICollection<T> a, ICollection<T> b)
+        private static ListSimilarityResult<T> ListSimilarity<T>(ICollection<T> a, ICollection<T> b)
         {
-            var matches = 0;
-            matches += CountMatchingEntries(a, b);
-            matches += CountMatchingEntries(b, a);
+            var matches = GetMatchingEntries(a, b);
 
             double totalEntries = a.Count + b.Count;
-            return totalEntries > 0 ? matches / totalEntries : 0;
+            var score = totalEntries > 0 ? matches.Count * 2 / totalEntries : 0;
+
+            return new ListSimilarityResult<T>
+            {
+                Score = score,
+                Overlap = matches,
+                NoMatchA = a.Count - matches.Count,
+                NoMatchB = b.Count - matches.Count
+            };
         }
 
-        private static int CountMatchingEntries<T>(ICollection<T> a, ICollection<T> b)
+        private static ICollection<T> GetMatchingEntries<T>(ICollection<T> a, ICollection<T> b)
         {
-            var matches = 0;
+            var matches = new List<T>();
             foreach (var keyword in a)
                 if (b.Contains(keyword))
-                    matches++;
+                    matches.Add(keyword);
 
             return matches;
         }
     }
 
+    public class ListSimilarityResult<T>
+    {
+        public double Score { get; set; }
+        public IEnumerable<T> Overlap { get; set; }
+        public int NoMatchA { get; set; }
+        public int NoMatchB { get; set; }
+    }
+
     public class SimilarityResult
     {
         public double SimilarityScore { get; set; }
-
-        // which keyword match
-        // which ... match
-        // this additional information
+        public ListSimilarityResult<string> KeywordSimilarity { get; set; }
+        public ListSimilarityResult<string> SectorsSimilarity { get; set; }
+        public ListSimilarityResult<Frameworks> FrameworksSimilarity { get; set; }
+        public ListSimilarityResult<string> InstrumentsSimilarity { get; set; }
+        public ListSimilarityResult<string> NaturalHazardsSimilarity { get; set; }
+        public ListSimilarityResult<string> DocumentTypesSimilarity { get; set; }
+        public ListSimilarityResult<string> ResponsesSimilarity { get; set; }
     }
 }
