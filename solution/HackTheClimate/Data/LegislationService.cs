@@ -50,13 +50,15 @@ namespace HackTheClimate.Data
             {
                 if (_legislations != null) return _legislations;
 
+                Console.WriteLine("Parsing CSV");
+
                 var assembly = Assembly.GetExecutingAssembly();
 
                 using var stream = assembly.GetManifestResourceStream("HackTheClimate.Data.laws_and_policies.csv");
                 using var reader = new StreamReader(stream, Encoding.UTF8);
                 using var csv = new CsvReader(reader, CultureInfo.InvariantCulture);
 
-                _legislations = csv.GetRecords<LawAndPoliciesRow>().ToList().Select(CreateLegislation);
+                _legislations = csv.GetRecords<LawAndPoliciesRow>().ToList().Select(CreateLegislation).ToList();
 
                 return _legislations;
             }

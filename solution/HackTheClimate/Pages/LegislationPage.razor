@@ -1,7 +1,9 @@
 ﻿@page "/legislation/{id}"
 @using HackTheClimate.Data
 @using System.Text.RegularExpressions
+@using HackTheClimate.Services
 @inject LegislationService LegislationService
+@inject SimilarityService SimilarityService;
 
 @if (_legislation == null)
 {
@@ -60,6 +62,29 @@ else
         }
         <li><a href="@GetClimateLawUrl(_legislation)">Climate Laws Website</a></li>
     </ul>
+
+
+    <h2>Similar Legislations</h2>
+    @if (_similarLegislations != null && _similarLegislations.Any() && _legislation.Geography.StartsWith("A")) 
+    {
+        <ul>
+            @foreach (var l in _similarLegislations)
+            {
+                <li class="@GetSimilarityClass(@l.Id)">
+                    <a href="/legislation/@l.Id" title="@l.Title">@l.Title</a>
+                    <img src="@($"/flags/{@l.GeographyIso.ToUpperInvariant()}.svg")" alt="@l.Geography"/> @l.Events.First().Date.Year <span class="oi oi-align-left" title="@l.ShortenedDescription"></span>
+                </li>
+            }
+        </ul>
+    }
+    else
+    {
+        <div class="alert alert-secondary" role="alert">
+            No similarities available for country <em>@_legislation.Geography</em>.<br /> 
+            Please use a country whose name starts with <em>A</em>.<br/>
+            For the hackathon, only a small number of similarities were prepared.
+        </div>
+    }
 }
 
 @code {
@@ -68,10 +93,19 @@ else
     public string Id { get; set; }
 
     private Legislation _legislation;
+    private IEnumerable<Legislation> _similarLegislations;
+    private IEnumerable<(string Id, double SimilarityScore)> _similarScores;
 
     protected override async Task OnInitializedAsync()
     {
         _legislation = LegislationService.GetLegislation(Id);
+        _similarScores = await SimilarityService.GetMostSimilarLegislationIds(_legislation);
+        _similarLegislations = _similarScores.OrderBy(e => e.SimilarityScore).Select(e =>
+        {
+            var ids = e.Id.Split(",");
+            var otherId = ids[0] == Id ? ids[1] : ids[0];
+            return LegislationService.GetLegislation(otherId);
+        });
     }
 
     /// <summary>
@@ -91,6 +125,43 @@ else
         var type = legislation.Type == LegislationType.Legislative ? "laws" : "policies"; // no idea whether that's correct
 
         return $"https://climate-laws.org/geographies/{legislation.Geography.ToLower()}/{type}/{title}";
+    }
+
+    private string GetSimilarityClass(string lId)
+    {
+        var score = _similarScores.First(e => e.Id.Contains(lId)).SimilarityScore;
+        switch (score)
+        {
+            case < 0.1:
+                return "similarity-10";
+
+            case < 0.2:
+                return "similarity-20";
+
+            case < 0.3:
+                return "similarity-30";
+
+            case < 0.4:
+                return "similarity-40";
+
+            case < 0.5:
+                return "similarity-50";
+
+            case < 0.6:
+                return "similarity-60";
+
+            case < 0.7:
+                return "similarity-70";
+
+            case < 0.8:
+                return "similarity-80";
+
+            case < 0.9:
+                return "similarity-90";
+
+            default:
+                return "similarity-100";
+        }
     }
 
 }

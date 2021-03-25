@@ -1,0 +1,75 @@
+﻿@page "/precomputeSimilarity"
+@using HackTheClimate.Data
+@using HackTheClimate.Services
+@using System.IO
+@inject LegislationService legislationService
+@inject SimilarityService similarityService
+
+@if (_processing)
+{
+    <p>
+        <em>Processing ...</em>
+        Writing to @($"{Path.GetTempPath()}precomputedSimilarities.csv")
+    </p>
+}
+else{
+    <p>
+        <em @onclick="OnProcess">@($"Click here to start and see file {Path.GetTempPath()}precomputedSimilarities.csv grow.")</em>
+    </p>
+}
+
+@code {
+
+    [Parameter]
+    public string Really { get; set; }
+
+    protected bool _processing;
+
+    protected async Task OnProcess()
+    {
+        _processing = true;
+
+        var lines = new List<string>();
+        var processed = new HashSet<string>();
+        var legislations = legislationService.Legislations.ToList();
+        var index = 0;
+        var random = new Random();
+        using StreamWriter file = new StreamWriter($"{Path.GetTempPath()}precomputedSimilarities.csv", append: true);
+
+        foreach (var outer in legislations)
+        {
+            if (outer.Geography.StartsWith("A"))
+            {
+                foreach (var inner in legislations)
+                {
+                    string key;
+                    switch (string.Compare(outer.Id, inner.Id, StringComparison.Ordinal))
+                    {
+                        case 0:
+                            key = string.Empty;
+                            break;
+
+                        case > 0:
+                            key = $"{outer.Id},{inner.Id},";
+                            break;
+
+                        default:
+                            key = $"{inner.Id},{outer.Id},";
+                            break;
+                    }
+
+                    if (!string.IsNullOrEmpty(key) && !processed.Contains(key))
+                    {
+                        // var similarity = similarityService.CalculateSimilarity(outer, inner);
+                        var line = key + random.NextDouble(); // similarity.SimilarityScore;
+                        lines.Add(line);
+                        processed.Add(key);
+                        await file.WriteLineAsync(line);
+                    }
+                }
+            }
+        }
+        _processing = false;
+    }
+
+}

@@ -73,6 +73,7 @@ else
             RowCount = _lawsAndPolicies.Count(),
             Results = _lawsAndPolicies.Skip((currentPage - 1) * pageSize).Take(pageSize).ToArray()
         };
+
         StateHasChanged();
     }
 
