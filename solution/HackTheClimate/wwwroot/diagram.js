@@ -3,6 +3,12 @@
     const width = 600;
     const color = d3.scaleOrdinal(d3.schemeCategory10);
 
+    const smallestConfidenceScore = data.nodes.map(n => n.confidenceScore).reduce((a, b) => Math.min(a, b));
+    const largestConfidenceScore = data.nodes.map(n => n.confidenceScore).reduce((a, b) => Math.max(a, b));
+    const radiusScale = d3.scaleLinear()
+        .domain([smallestConfidenceScore, largestConfidenceScore])
+        .range([3, 10]);
+
     const index = new Map(data.nodes.map(d => [d.id, d]));
     const links = data.links.map(d => Object.assign(Object.create(d), {
         source: index.get(d.source),
@@ -33,12 +39,12 @@
         .selectAll("circle")
         .data(data.nodes)
         .enter().append("circle")
-        .attr("r", 5)
-        .attr("fill", d => color(d.confidenceScore))
+        .attr("r", d => radiusScale(d.confidenceScore))
+        .attr("fill", "#3a0647")
         .call(layout.drag);
 
     node.append("title")
-        .text(d => d.id);
+        .text(d => d.title);
 
     layout.on("tick", () => {
         link

@@ -47,7 +47,8 @@ namespace HackTheClimate.Services
                 {
                     var rankedLegislation = new RankedLegislation(rank, legislation);
                     rankedLegislations.Add(rankedLegislation);
-                    graph.Nodes.Add(new Node(legislation.Id, rank));
+                    graph.Nodes.Add(new Node(legislation.Id, rank,
+                        $"{legislation.Title} [{legislation.GeographyIso.ToUpperInvariant()}] "));
                 }
                 else
                 {
