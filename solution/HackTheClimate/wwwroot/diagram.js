@@ -37,7 +37,8 @@ export async function renderDiagram(element, data) {
         .data(data.links)
         .enter().append("line")
         .attr("stroke-width", d => linkWidthScale(d.similarityScore))
-        .attr("stroke", d => linkColorScale(d.similarityScore));
+        .attr("stroke", d => linkColorScale(d.similarityScore))
+        .on("click", function(d) { window.location.href = "/compare/" + d.source.id + "/" + d.target.id });
 
     const node = svg.append("g")
         .attr("stroke", "#fff")
