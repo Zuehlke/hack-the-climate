@@ -33,7 +33,7 @@ namespace HackTheClimate.Services
                 using var reader = new StreamReader(stream, Encoding.UTF8);
                 {
                     var result = await reader.ReadToEndAsync();
-                    var lines = result.Split(Environment.NewLine);
+                    var lines = result.Split("\n");
                     foreach (var line in lines)
                         if (!string.IsNullOrEmpty(line))
                         {
