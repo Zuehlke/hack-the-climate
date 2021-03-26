@@ -121,7 +121,10 @@ export async function renderDiagram(element, data) {
         }
     })();
 
-
+    svg.on('mouseleave',
+        function () {
+            nodeInformationDiv.transition().duration(200).style("opacity", 0);
+        });
 
     const circles = node.append("circle")
         .attr("r", d => radiusScale(d.confidenceScore))
