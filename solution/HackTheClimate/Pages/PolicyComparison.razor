@@ -2,19 +2,17 @@
 @using HackTheClimate.Data
 @using HackTheClimate.Services
 @using System.Text.RegularExpressions
-@using System.Globalization
-@using Azure.Search.Documents.Indexes.Models
 @inject LegislationService LegislationService
 @inject SimilarityService SimilarityService
 
 @if (_document1 == null || _document2 == null)
 {
-<p>
-    <em>Loading...</em>
-</p> }
+    <p>
+        <em>Loading...</em>
+    </p>
+}
 else
 {
-
 <div class="container-fluid comparison-container">
     <div class="row">
         <div class="col-sm">
@@ -31,7 +29,7 @@ else
         <div class="col-sm">
             <span class="oi oi-eye" style="font-size: 60px"></span>
             <br />
-            <h1>@((int)(_similarity.SimilarityScore * 100))%</h1>
+            <h1>@((int) (_similarity.SimilarityScore * 100))%</h1>
         </div>
         <div class="col-sm">
             <h3>@_document2.Title</h3>
@@ -45,53 +43,60 @@ else
             </p>
         </div>
     </div>
-    
 
-    <div class="row">
-        <div class="col-sm" />
-        <div class="col-sm">
-            <h2>Location (@(_similarity.LocationSimilarity * 100)%)</h2>
-        </div>
-        <div class="col-sm"/>
-    </div>
-    @if (_similarity.LocationSimilarity > 0)
-    {
-        <div class="row">
-            <div class="col-sm">
-                <img src="@($"/flags/{_document1.GeographyIso.ToUpperInvariant()}.svg")" alt="@_document1.GeographyIso" />
-                &nbsp;
-                @_document1.Geography
-            </div>
-            <div class="col-sm">
-                <h2>Type (@(_similarity.TypeSimilarity * 100)%)</h2>
-            </div>
-            <div class="col-sm">
-                <img src="@($"/flags/{_document2.GeographyIso.ToUpperInvariant()}.svg")" alt="@_document2.GeographyIso" />
-                &nbsp;
-                @_document2.Geography
-            </div>
-        </div>
-    }
+    <!-- Default Weight 4-->
+    <ListSimilarityResultComponent Title="Product Entities" Similarity="@_similarity.ProductEntitiesSimilarity" />
 
+    <!-- Default Weight 3-->
     <ListSimilarityResultComponent Title="Keywords" Similarity="@_similarity.KeywordSimilarity" />
     <ListSimilarityResultComponent Title="Sectors" Similarity="@_similarity.SectorsSimilarity" />
+    <ListSimilarityResultComponent Title="Skill Entities" Similarity="@_similarity.SkillEntitiesSimilarity" />
+    <ListSimilarityResultComponent Title="Event Entities" Similarity="@_similarity.EventEntitiesSimilarity" />
     <ListSimilarityResultComponent Title="Frameworks" Similarity="@_similarity.FrameworksSimilarity.ToStringResult()" />
     <ListSimilarityResultComponent Title="Instruments" Similarity="@_similarity.InstrumentsSimilarity" />
     <ListSimilarityResultComponent Title="Natural Hazards" Similarity="@_similarity.NaturalHazardsSimilarity" />
-    <ListSimilarityResultComponent Title="Document Types" Similarity="@_similarity.DocumentTypesSimilarity" />
     <ListSimilarityResultComponent Title="Responses" Similarity="@_similarity.ResponsesSimilarity" />
-    <ListSimilarityResultComponent Title="Skill Entities" Similarity="@_similarity.SkillEntitiesSimilarity" />
-    <ListSimilarityResultComponent Title="Product Entities" Similarity="@_similarity.ProductEntitiesSimilarity" />
-    <ListSimilarityResultComponent Title="Event Entities" Similarity="@_similarity.EventEntitiesSimilarity" />
+
+    <!-- Default Weight 2-->
+    @if (_similarity.LocationSimilarity > 0)
+        {
+    <div class="row">
+        <div class="col-sm" />
+        <div class="col-sm">
+            <img src="@($"/flags/{_document1.GeographyIso.ToUpperInvariant()}.svg")" alt="@_document1.GeographyIso" />
+            &nbsp;
+            @_document1.Geography
+        </div>
+        <div class="col-sm" />
+    </div>
+        }
+
+    <!-- Default Weight 1-->
+
+    @if (_similarity.TypeSimilarity > 0)
+        {
+    <div class="row">
+        <div class="col-sm" />
+        <div class="col-sm">
+            <h2>Type (@(_similarity.TypeSimilarity * 100)%)</h2>
+        </div>
+        <div class="col-sm" />
+    </div>
+        }
+
     <ListSimilarityResultComponent Title="Location Entities" Similarity="@_similarity.LocationEntitiesSimilarity" />
+    <ListSimilarityResultComponent Title="Document Types" Similarity="@_similarity.DocumentTypesSimilarity" />
 
 </div>
 }
 
-@code { [Parameter]
-        public string Id1 { get; set; }
-        [Parameter]
-        public string Id2 { get; set; }
+@code {
+
+    [Parameter]
+    public string Id1 { get; set; }
+
+    [Parameter]
+    public string Id2 { get; set; }
 
     private Legislation _document1;
     private Legislation _document2;
@@ -102,24 +107,5 @@ else
         _document1 = LegislationService.GetLegislation(Id1);
         _document2 = LegislationService.GetLegislation(Id2);
         _similarity = SimilarityService.CalculateSimilarity(_document1, _document2, SimilarityWeights.DefaultWeights());
-    }
-
-    /// <summary>
-    /// Creates URL like https://climate-laws.org/geographies/taiwan/laws/electricity-act
-    /// or https://climate-laws.org/geographies/afghanistan/policies/energy-sector-strategy-1387-1391-2007-8-2012-3
-    /// Tax Reform Act 2020 (Steuerreformgesetz 2020 – StRefG 2020 - 984/A)
-    /// becomes
-    /// tax-reform-act-2020-steuerreformgesetz-2020-strefg-2020-984-a
-    /// </summary>
-    /// <param name="legislation"></param>
-    /// <returns></returns>
-    private static string GetClimateLawUrl(Legislation legislation)
-    {
-        var titleIdRegex = new Regex("[^a-zA-Z0-9 -/]");
-        var title = titleIdRegex.Replace(legislation.Title, string.Empty).Replace("/", "-").Replace(" ", "-").Replace("(", string.Empty).Replace(")", string.Empty).ToLowerInvariant();
-
-        var type = legislation.Type == LegislationType.Legislative ? "laws" : "policies"; // no idea whether that's correct
-
-        return $"https://climate-laws.org/geographies/{legislation.Geography.ToLower()}/{type}/{title}";
     }
 }

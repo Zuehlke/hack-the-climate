@@ -234,6 +234,10 @@ app {
     font-size: 100px;
 }
 
+.comparison-container .badge {
+    margin-left: 0.25em;
+}
+
 div.node-information {
     position: absolute;
     text-align: center;
