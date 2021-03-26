@@ -38,7 +38,9 @@ export async function renderDiagram(element, data) {
         .enter().append("line")
         .attr("stroke-width", d => linkWidthScale(d.similarityScore))
         .attr("stroke", d => linkColorScale(d.similarityScore))
-        .on("click", function(d) { window.location.href = "/compare/" + d.source.id + "/" + d.target.id });
+        .on("click", function(d) { window.open("/compare/" + d.source.id + "/" + d.target.id, '_blank') })
+            .on("mouseover", function(d) { d3.select(this).style("cursor", "pointer"); })
+        .on("mouseout", function(d) { d3.select(this).style("cursor", "default"); });
 
     const node = svg.append("g")
         .attr("stroke", "#fff")
