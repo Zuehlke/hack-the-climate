@@ -51,10 +51,6 @@ export async function renderDiagram(element, data) {
         .attr("class", "node-information")
         .style("opacity", 0);
 
-    svg.on("click", function() {
-        nodeInformationDiv.transition().duration(200).style("opacity", 0);
-    })
-
         const onMouseOver = (function () {
         return function(node) {
 
@@ -131,7 +127,10 @@ export async function renderDiagram(element, data) {
         .attr("r", d => radiusScale(d.confidenceScore))
         .attr("fill", nodeColor)
         .on("click", toggleColor)
-        .on("mouseover", onMouseOver)
+        .on("mouseenter", onMouseOver)
+        .on("mouseleave", function() {
+            nodeInformationDiv.transition().duration(200).style("opacity", 0);
+        })
         .call(d3.drag()
             .on("start", d => dragstarted(d, simulation))
             .on("drag", d => dragged(d))
