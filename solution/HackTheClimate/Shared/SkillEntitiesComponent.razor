@@ -1,0 +1,42 @@
+﻿@using HackTheClimate.Services
+@using HackTheClimate.Data
+<div class="row">
+    <div class="col-sm">
+    </div>
+    <div class="col-sm">
+        <h2>@Title (@((int)(Similarity.Score * 100))%)</h2>
+    </div>
+    <div class="col-sm">
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-sm">
+        +@Similarity.NoMatchA
+    </div>
+    <div class="col-sm">
+        <ul>
+            @if (Similarity.Overlap.Count() > 0)
+            {
+                while (i < Similarity.Overlap.Count() && i < 5)
+                {
+                    <li>@Similarity.Overlap.ElementAt(i)</li>
+                    i++;
+                }
+            }
+            <li>+@(Similarity.Overlap.Count() - i)</li>
+        </ul>
+    </div>
+    <div class="col-sm">
+        +@Similarity.NoMatchB
+    </div>
+</div>
+@code {
+    [Parameter]
+    public ListSimilarityResult<string> Similarity { get; set; }
+
+    [Parameter]
+    public string Title { get; set; }
+
+    private int i = 0;
+}

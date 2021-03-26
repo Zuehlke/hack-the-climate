@@ -74,22 +74,29 @@ namespace HackTheClimate.Services
                                    + weights.ResponseWeight * responsesSimilarity.Score
                                    + weights.LocationWeight * locationSimilarity
                                    + weights.TypeWeight * typeSimilarity
-                                   + weights.EntityProductWeight * entityProductSimilarity
-                                   + weights.EntitySkillWeight * entitySkillSimilarity
-                                   + weights.EntityEventWeight * entityEventSimilarity
-                                   + weights.EntityLocationWeight * entityLocationSimilarity)
+                                   + weights.EntityProductWeight * entityProductSimilarity.Score
+                                   + weights.EntitySkillWeight * entitySkillSimilarity.Score
+                                   + weights.EntityEventWeight * entityEventSimilarity.Score
+                                   + weights.EntityLocationWeight * entityLocationSimilarity.Score)
                                   / weights.TotalWeight(),
+
                 KeywordSimilarity = keywordSimilarity,
                 SectorsSimilarity = keywordSimilarity,
                 FrameworksSimilarity = frameworksSimilarity,
                 InstrumentsSimilarity = instrumentsSimilarity,
                 NaturalHazardsSimilarity = naturalHazardsSimilarity,
                 DocumentTypesSimilarity = documentTypesSimilarity,
-                ResponsesSimilarity = responsesSimilarity
+                ResponsesSimilarity = responsesSimilarity,
+                TypeSimilarity = typeSimilarity,
+                LocationSimilarity = locationSimilarity,
+                SkillEntitiesSimilarity = entitySkillSimilarity,
+                ProductEntitiesSimilarity = entityProductSimilarity,
+                EventEntitiesSimilarity = entityEventSimilarity,
+                LocationEntitiesSimilarity = entityLocationSimilarity
             };
         }
 
-        private double EntityCategorySimilarity(Legislation a, Legislation b, string category)
+        private ListSimilarityResult<string> EntityCategorySimilarity(Legislation a, Legislation b, string category)
         {
             var entitiesSkillA = _entityRecognitionService.GetEntitiesForCategory(a, category);
             var entitiesSkillB = _entityRecognitionService.GetEntitiesForCategory(b, category);
@@ -97,7 +104,8 @@ namespace HackTheClimate.Services
             // As there is usually a big number of entities, the similarities are usually very low.
             // Thus boosting the value, in case of matches.
             // See https://www.wolframalpha.com/input/?i=plot+1-e%5E%28-5x%29+where+x%3D0+to+1
-            return 1 - Math.Pow(Math.E, -4 * rawListSimilarity.Score);
+            rawListSimilarity.Score = 1 - Math.Pow(Math.E, -4 * rawListSimilarity.Score);
+            return rawListSimilarity;
         }
 
         private static int PropertySimilarity<T>(T a, T b)
@@ -161,5 +169,11 @@ namespace HackTheClimate.Services
         public ListSimilarityResult<string> NaturalHazardsSimilarity { get; set; }
         public ListSimilarityResult<string> DocumentTypesSimilarity { get; set; }
         public ListSimilarityResult<string> ResponsesSimilarity { get; set; }
+        public ListSimilarityResult<string> SkillEntitiesSimilarity { get; set; }
+        public ListSimilarityResult<string> ProductEntitiesSimilarity { get; set; }
+        public ListSimilarityResult<string> EventEntitiesSimilarity { get; set; }
+        public ListSimilarityResult<string> LocationEntitiesSimilarity { get; set; }
+        public int LocationSimilarity { get; set; }
+        public int TypeSimilarity { get; set; }
     }
 }
