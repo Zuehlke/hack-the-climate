@@ -239,13 +239,17 @@ else
     {
         _similarityClass = new Dictionary<string, string>();
 
+        var selfScore = _searchResult.Graph.Links.First(e => e.Source == id && e.Target == id);
+        var factor = selfScore.SimilarityScore / 1;
+
         foreach (var link in _searchResult.Graph.Links)
         {
             if (link.Source == id || link.Target == id)
             {
                 var key = link.Source == id ? link.Target : link.Source;
+
                 var value = "";
-                switch (link.SimilarityScore)
+                switch (link.SimilarityScore * factor)
                 {
                     case < 0.1:
                         value = "similarity-10";
@@ -279,7 +283,6 @@ else
                         value = "similarity-80";
                         break;
 
-
                     case < 0.9:
                         value = "similarity-90";
                         break;
@@ -288,7 +291,7 @@ else
                         value = "similarity-100";
                         break;
                 }
-
+                Console.WriteLine(value);
                 _similarityClass.Add(key, value);
             }
         }
