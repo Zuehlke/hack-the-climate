@@ -11,7 +11,7 @@ namespace HackTheClimate.Services
     /// </summary>
     public class GraphService
     {
-        private const double SimilarityThreshold = 0.5;
+        private const int MaxSimilarityThreshold = 100;
 
         private readonly LegislationService _legislationService;
         private readonly SearchService _searchService;
@@ -25,9 +25,11 @@ namespace HackTheClimate.Services
             _legislationService = legislationService;
         }
 
-        public async Task<SearchResult> SearchAsync(string searchTerm, SimilarityWeights weights)
+        public async Task<SearchResult> SearchAsync(string searchTerm, SimilarityWeights weights,
+            int similarityThreshold)
         {
             var fake = searchTerm == "fake";
+            var similarityThresholdFraction = similarityThreshold / (MaxSimilarityThreshold + 0.0);
 
             if (string.IsNullOrEmpty(searchTerm)) throw new Exception("Don't search for nothing.");
 
@@ -68,7 +70,7 @@ namespace HackTheClimate.Services
                     calculatedCombinations.Add(outer.Legislation.Id + inner.Legislation.Id);
                     calculatedCombinations.Add(inner.Legislation.Id + outer.Legislation.Id);
 
-                    if (similarity.SimilarityScore > SimilarityThreshold)
+                    if (similarity.SimilarityScore > similarityThresholdFraction)
                         graph.Links.Add(
                             new Link(outer.Legislation.Id, inner.Legislation.Id, similarity.SimilarityScore));
                 }

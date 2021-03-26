@@ -14,10 +14,12 @@ namespace HackTheClimate.Services
     {
         private static Dictionary<string, double> _precomputed;
         private readonly EntityRecognitionService _entityRecognitionService;
+        private readonly TopicBasedSimilarityService _topicBasedSimilarityService;
 
-        public SimilarityService(EntityRecognitionService entityRecognitionService)
+        public SimilarityService(EntityRecognitionService entityRecognitionService, TopicBasedSimilarityService topicBasedSimilarityService)
         {
             _entityRecognitionService = entityRecognitionService;
+            _topicBasedSimilarityService = topicBasedSimilarityService;
         }
 
         public async Task<IEnumerable<(string Id, double SimilarityScore)>> GetMostSimilarLegislationIds(Legislation a)
@@ -62,6 +64,7 @@ namespace HackTheClimate.Services
             var entityProductSimilarity = EntityCategorySimilarity(a, b, "Product");
             var entityEventSimilarity = EntityCategorySimilarity(a, b, "Event");
             var entityLocationSimilarity = EntityCategorySimilarity(a, b, "Location");
+            var topicSimilarity = _topicBasedSimilarityService.CalculateSimilarity(a, b);
 
             return new SimilarityResult
             {
@@ -77,7 +80,8 @@ namespace HackTheClimate.Services
                                    + weights.EntityProductWeight * entityProductSimilarity.Score
                                    + weights.EntitySkillWeight * entitySkillSimilarity.Score
                                    + weights.EntityEventWeight * entityEventSimilarity.Score
-                                   + weights.EntityLocationWeight * entityLocationSimilarity.Score)
+                                   + weights.EntityLocationWeight * entityLocationSimilarity.Score
+                                   + weights.TopicWeight * topicSimilarity.Score)
                                   / weights.TotalWeight(),
 
                 KeywordSimilarity = keywordSimilarity,
@@ -92,7 +96,8 @@ namespace HackTheClimate.Services
                 SkillEntitiesSimilarity = entitySkillSimilarity,
                 ProductEntitiesSimilarity = entityProductSimilarity,
                 EventEntitiesSimilarity = entityEventSimilarity,
-                LocationEntitiesSimilarity = entityLocationSimilarity
+                LocationEntitiesSimilarity = entityLocationSimilarity,
+                TopicSimilarity = topicSimilarity
             };
         }
 
@@ -173,6 +178,7 @@ namespace HackTheClimate.Services
         public ListSimilarityResult<string> ProductEntitiesSimilarity { get; set; }
         public ListSimilarityResult<string> EventEntitiesSimilarity { get; set; }
         public ListSimilarityResult<string> LocationEntitiesSimilarity { get; set; }
+        public ListSimilarityResult<string> TopicSimilarity { get; set; }
         public int LocationSimilarity { get; set; }
         public int TypeSimilarity { get; set; }
     }
