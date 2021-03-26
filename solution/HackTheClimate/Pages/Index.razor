@@ -89,6 +89,7 @@ else
     private static Action<string> _onNodeSelectedAction;
     private Dictionary<string, string> _similarityClass = new Dictionary<string, string>();
     protected SimilarityWeights _similarityWeights = SimilarityWeights.DefaultWeights();
+    protected int SimilarityThreshold = 35; // default value
     protected List<Legislation> _sortedLegislations;
 
     private static readonly List<string> GenericSearchUpdates = new List<string> {"Performing a full text search in 2128 documents", "Performing a full text search in 2128 metadata (keywords, summary, ...)", "Calculating similarity of legislations based on metadata", "Calculating similarity of legislations based on text-analysis", "... wait for it", "... almost there", "... just one last thing"};
@@ -206,7 +207,7 @@ else
 
         await diagramModule.InvokeVoidAsync("clearDiagram", _renderTo);
 
-        _searchResult = await graphService.SearchAsync(SearchTerm, _similarityWeights);
+        _searchResult = await graphService.SearchAsync(SearchTerm, _similarityWeights, SimilarityThreshold);
         timer.Stop();
         timer.Dispose();
 
@@ -270,7 +271,15 @@ else
 
     async Task ShowInlineDialog() => await dialogService.OpenAsync("Similarity Weights", ds =>
         @<div>
-            <h6>Metadata Simiarities Weigths</h6>
+            <div class="row">
+                <span class="col-4">Similarity Threshold</span>
+                <div class="col-6">
+                    <RadzenSlider @bind-Value=SimilarityThreshold TValue="int" Min="0" Max="100"/>
+                </div>
+                <input class="form-control col-2" type="text" @bind="SimilarityThreshold" disabled>
+            </div>
+            
+            <h6>Metadata</h6>
 
             <div class="row">
                 <span class="col-4">Keyword</span>
