@@ -16,19 +16,19 @@ else
     <div class="row">
         <div class="col-sm">
             <h3>@_document1.Title</h3>
-            <img src="@($"/flags/{_document1.GeographyIso.ToUpperInvariant()}.svg")" alt="@_document1.GeographyIso" />
+            <img src="@($"/flags/{_document1.GeographyIso.ToUpperInvariant()}.svg")" alt="@_document1.GeographyIso"/>
             &nbsp;
             @_document1.Geography
-            <img src="@($"{_document1.Type.ToString().ToLowerInvariant()}.svg")" alt="@_document1.Type" />@_document1.Type
+            <img src="@($"{_document1.Type.ToString().ToLowerInvariant()}.svg")" alt="@_document1.Type"/>@_document1.Type
             <p>
                 @_document1.ShortenedDescription
                 <a href="/legislation/@_document1.Id">more</a>
             </p>
         </div>
         <div class="col-sm">
-            <h3>Scores</h3>
-            <h1>@((int) (_similarity.SimilarityScore * 100))</h1>
-            <h3>out of 100</h3>
+            <span id="comparison-title-scores">Scores</span>
+            <span id="comparison-title-score">@((int) (_similarity.SimilarityScore * 100))</span>
+            <span id="comparison-title-out-of">out of 100</span>
         </div>
         <div class="col-sm">
             <h3>@_document2.Title</h3>
@@ -78,6 +78,7 @@ else
         <div class="row">
             <div class="col-sm" />
             <div class="col-sm">
+                <br />
                 <h2>Type </h2>
                 <span class="badge badge-warning">Metadata</span>
                 <h3>scores @(_similarity.TypeSimilarity * 100)</h3>

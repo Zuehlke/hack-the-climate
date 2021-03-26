@@ -227,7 +227,12 @@ app {
 }
 
 .comparison-container .row div:nth-child(2) h2 {
+    margin-top: 20px;
     display: inline;
+}
+
+.comparison-container .row div:nth-child(2) h3 {
+    margin-bottom: 0px;
 }
 
 .comparison-container .row div:nth-child(3) {
@@ -253,4 +258,22 @@ div.node-information {
     border-radius: 8px;
     pointer-events: none;
     font-size: 1.3rem;
+}
+
+#comparison-title-scores, #comparison-title-score, #comparison-title-out-of {
+    display: block;
+    font-weight: bolder;
+}
+
+#comparison-title-scores {
+    font-size: 45px;
+}
+
+#comparison-title-score {
+    font-size: 150px;
+    line-height: 90px;
+}
+
+#comparison-title-out-of {
+    font-size: 35px;
 }
