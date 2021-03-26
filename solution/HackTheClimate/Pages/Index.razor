@@ -1,11 +1,8 @@
 ﻿@page "/"
 @using HackTheClimate.Services
 @using CurrieTechnologies.Razor.Clipboard
-@using System.Timers
-@using System.Text.Json
-@using System.Diagnostics
-@using System.Diagnostics.Eventing.Reader
 @using HackTheClimate.Data
+@using System.Text.Json
 @inject IJSRuntime JS;
 @inject GraphService graphService;
 @inject ClipboardService clipboardService;
@@ -18,60 +15,61 @@
 
 @if (_searching)
 {
-<div class="spinner-border" role="status">
-    <span class="sr-only">Loading...</span>
-</div>
-<br />
-<br />
-<div class="alert alert-primary" role="alert">
-    <ul>
-        @foreach (var info in _searchUpdates)
-            {
-        <li>@info</li>
-            }
-    </ul>
-</div>
+    <div class="spinner-border" role="status">
+        <span class="sr-only">Loading...</span>
+    </div>
+    <br/>
+    <br/>
+    <div class="alert alert-primary" role="alert">
+        <ul>
+            <li>Searching for '@SearchTerm'</li>
+            <li>Performing a full text search in 2128 documents</li>
+            <li>Performing a full text search in all metadata (keywords, summary, ...)</li>
+            <li>Calculating similarity of legislations based on AI text-analysis</li>
+            <li>Calculating similarity of legislations based on metadata</li>
+        </ul>
+    </div>
 }
 else
 {
-<div class="input-group">
-    <input @bind="SearchTerm" type="text" class="form-control" placeholder="Search laws and policies" @onkeyup="OnInputKeyUp" @oninput="OnInput">
-    <div class="input-group-append">
-        <button class="btn btn-secondary" type="button" @onclick="Search">
-            <i class="oi oi-magnifying-glass"></i>
-        </button>
-        <button type="button" @onclick="(()=>switchModal=!switchModal)" class="btn btn-light" data-bs-dismiss="modal">Similarity Weights</button>
+    <div class="input-group">
+        <input @bind="SearchTerm" type="text" class="form-control" placeholder="Search laws and policies" @onkeyup="OnInputKeyUp" @oninput="OnInput">
+        <div class="input-group-append">
+            <button class="btn btn-secondary" type="button" @onclick="Search">
+                <i class="oi oi-magnifying-glass"></i>
+            </button>
+            <button type="button" @onclick="() => switchModal = !switchModal" class="btn btn-light" data-bs-dismiss="modal">Similarity Weights</button>
+        </div>
     </div>
-</div>
 }
 
 <div style="display: flex;">
     <div style="flex: 0 0 900px">
         <svg @ref="_renderTo" height="900" width="900"></svg>
     </div>
-    <div style="flex: 1; overflow-y: scroll; height: 900px">
+    <div style="flex: 1; height: 900px; overflow-y: scroll;">
         @if (!_searching && _searchResult != null && _searchResult.RankedLegislations.Any())
         {
-        <ul class="search-results">
-            @foreach (var legislation in _sortedLegislations) {
-                
-            <li class="@GetSimilarityClass(@legislation.Id)">
-                <a href="/legislation/@legislation.Id" title="@legislation.Title">@legislation.Title</a>
-                <img src="@($"/flags/{legislation.GeographyIso.ToUpperInvariant()}.svg")" alt="@legislation.Geography" /> @legislation.Events.First().Date.Year <span class="oi oi-align-left" title="@legislation.ShortenedDescription"></span>
-            </li>
+            <ul class="search-results">
+                @foreach (var legislation in _sortedLegislations)
+                {
+                    <li class="@GetSimilarityClass(legislation.Id)">
+                        <a href="/legislation/@legislation.Id" title="@legislation.Title">@legislation.Title</a>
+                        <img src="@($"/flags/{legislation.GeographyIso.ToUpperInvariant()}.svg")" alt="@legislation.Geography"/> @legislation.Events.First().Date.Year <span class="oi oi-align-left" title="@legislation.ShortenedDescription"></span>
+                    </li>
                 }
-        </ul>
+            </ul>
 
-        <!--
-        <button type="button" class="btn btn-outline-secondary" @onclick="CopySearchResultToClipboard">Copy Search Result Data to Clipboard</button>
-        -->
+            <!--
+            <button type="button" class="btn btn-outline-secondary" @onclick="CopySearchResultToClipboard">Copy Search Result Data to Clipboard</button>
+            -->
         }
 
         @if (!_searching && _searchResult != null && !_searchResult.RankedLegislations.Any())
         {
-        <p>
-            No data found
-        </p>
+            <p>
+                No data found
+            </p>
         }
     </div>
 </div>
@@ -84,7 +82,7 @@ else
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="exampleModalLabel">Similarity Weights</h5>
-                    <button type="button" @onclick="(() => switchModal = !switchModal)" class="btn-close" aria-label="Close">
+                    <button type="button" @onclick="() => switchModal = !switchModal" class="btn-close" aria-label="Close">
                     </button>
                 </div>
                 <div class="modal-body">
@@ -193,18 +191,18 @@ else
                             <input class="form-control col-1" type="text" @bind="_similarityWeights.EntityLocationWeight" disabled>
                         </div>
                     </div>
-                        <h6>Semantic Topics<span class="badge badge-warning">AI</span></h6>
+                    <h6>Semantic Topics<span class="badge badge-warning">AI</span></h6>
                     <div class="row">
                         <span class="col-4">Topic</span>
                         <div class="col-6">
-                            <RadzenSlider @bind-Value=_similarityWeights.TopicWeight TValue="int" Min="0" Max="10" />
+                            <RadzenSlider @bind-Value=_similarityWeights.TopicWeight TValue="int" Min="0" Max="10"/>
                         </div>
                         <input class="form-control col-1" type="text" @bind="_similarityWeights.TopicWeight" disabled>
                     </div>
-                    
+
                 </div>
                 <div class="modal-footer">
-                    <button type="button" @onclick="(()=>switchModal=!switchModal)" class="btn btn-primary" data-bs-dismiss="modal">Apply</button>
+                    <button type="button" @onclick="() => switchModal = !switchModal" class="btn btn-primary" data-bs-dismiss="modal">Apply</button>
                 </div>
             </div>
         </div>
@@ -225,9 +223,9 @@ else
     protected SimilarityWeights _similarityWeights = SimilarityWeights.DefaultWeights();
     protected int SimilarityThreshold = 22; // default value
     protected List<Legislation> _sortedLegislations;
-    public bool switchModal { get; set; } = false;
+    public bool switchModal { get; set; }
 
-    private static readonly List<string> GenericSearchUpdates = new List<string> {"Performing a full text search in 2128 documents", "Performing a full text search in all metadata (keywords, summary, ...)", "Calculating similarity of legislations based on AI text-analysis", "Calculating similarity of legislations based on metadata",  "... wait for it", "... almost there", "... just one last thing", "... to be honest, we have not yet started optimizing the performance, but there is potential"};
+    // private static readonly List<string> GenericSearchUpdates = new List<string> {"Performing a full text search in 2128 documents", "Performing a full text search in all metadata (keywords, summary, ...)", "Calculating similarity of legislations based on AI text-analysis", "Calculating similarity of legislations based on metadata",  "... wait for it", "... almost there", "... just one last thing", "... to be honest, we have not yet started optimizing the performance, but there is potential"};
 
     private static Func<string, Task<DocumentDetails>> _getDetailsAsyncAction;
 
@@ -246,7 +244,7 @@ else
             if (link.Source == id || link.Target == id)
             {
                 var key = link.Source == id ? link.Target : link.Source;
-                string value = "";
+                var value = "";
                 switch (link.SimilarityScore)
                 {
                     case < 0.1:
@@ -295,8 +293,8 @@ else
             }
         }
 
-        // does not work.... :-(
-        // _sortedLegislations = _searchResult.RankedLegislations.Select(r => r.Legislation).OrderBy(l => _searchResult.Graph.Links.First(link => link.Source == l.Id || link.Target == l.Id).SimilarityScore).ToList();
+    // does not work.... :-(
+    // _sortedLegislations = _searchResult.RankedLegislations.Select(r => r.Legislation).OrderBy(l => _searchResult.Graph.Links.First(link => link.Source == l.Id || link.Target == l.Id).SimilarityScore).ToList();
 
         StateHasChanged();
     }
@@ -324,6 +322,7 @@ else
         _similarityClass = new Dictionary<string, string>();
         _sortedLegislations = new List<Legislation>();
 
+    /*
         var timer = new Timer(3000);
         timer.Elapsed += (sender, args) =>
         {
@@ -336,6 +335,7 @@ else
         };
         timer.AutoReset = true;
         timer.Enabled = true;
+*/
 
         var diagramModule = await JS
             .InvokeAsync<IJSObjectReference>("import", "/diagram.js");
@@ -343,8 +343,10 @@ else
         await diagramModule.InvokeVoidAsync("clearDiagram", _renderTo);
 
         _searchResult = await graphService.SearchAsync(SearchTerm, _similarityWeights, SimilarityThreshold);
+    /*
         timer.Stop();
         timer.Dispose();
+*/
 
         if (_searchResult.RankedLegislations.Any())
         {
@@ -392,15 +394,10 @@ else
             if (_similarityClass.TryGetValue(legislationId, out var clazz))
             {
                 return clazz;
-            } else
-            {
-                return "similarity-10";
             }
+            return "similarity-10";
         }
-        else
-        {
-            return string.Empty;
-        }
-
+        return string.Empty;
     }
+
 }

@@ -3,6 +3,7 @@
 @using HackTheClimate.Services
 @using System.Text.RegularExpressions
 @using Sdcb.WordClouds
+@using System.Drawing.Imaging
 @using System.IO
 @inject LegislationService LegislationService
 @inject SimilarityService SimilarityService
@@ -74,14 +75,6 @@ else
             </li>
         </ul>
 
-        @if (_topic != null && _topic.Words.Any())
-        {
-            <h2>Topics <span class="badge badge-warning">AI</span></h2>
-            <img src="@String.Format("data:image/png;base64,{0}", Convert.ToBase64String(@GetWordCloud()))"/>
-            <br/>
-        }
-
-
         <h2>Similar Legislations</h2>
         @if (_similarLegislations != null && _similarLegislations.Any() && _legislation.Geography.StartsWith("A"))
         {
@@ -106,6 +99,14 @@ else
                 Please use a country whose name starts with <em>A</em>.<br/>
                 For the hackathon, only a small number of similarities were prepared.
             </div>
+        }
+
+
+        @if (_topic != null && _topic.Words.Any())
+        {
+            <h2>Topics <span class="badge badge-warning">AI</span></h2>
+            <img src="@string.Format("data:image/png;base64,{0}", Convert.ToBase64String(GetWordCloud()))"/>
+            <br/>
         }
     </div>
 }
@@ -193,15 +194,14 @@ else
 
     private byte[] GetWordCloud()
     {
-
         var wc = new WordCloud(1000, 200);
-        var freqs = _topic.Words.Select(x => (int)x.Score).ToList();
+        var freqs = _topic.Words.Select(x => (int) x.Score).ToList();
         var words = _topic.Words.Select(x => x.Word).ToList();
 
         var image = wc.Draw(words, freqs);
         using (var stream = new MemoryStream())
         {
-            image.Save(stream, System.Drawing.Imaging.ImageFormat.Png);
+            image.Save(stream, ImageFormat.Png);
             return stream.ToArray();
         }
     }
