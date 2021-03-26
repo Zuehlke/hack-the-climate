@@ -222,7 +222,12 @@ app {
 }
 
 .comparison-container .row div:nth-child(2) {
-    text-align: center
+    text-align: center;
+    padding-top: 6px;
+}
+
+.comparison-container .row div:nth-child(2) h2 {
+    display: inline;
 }
 
 .comparison-container .row div:nth-child(3) {

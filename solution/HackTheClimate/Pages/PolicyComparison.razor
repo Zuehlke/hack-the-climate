@@ -45,13 +45,13 @@ else
     </div>
 
     <!-- Default Weight 4-->
-    <ListSimilarityResultComponent Title="Product Entities" Similarity="@_similarity.ProductEntitiesSimilarity" />
+    <ListSimilarityResultComponent Title="Product Entities" Similarity="@_similarity.ProductEntitiesSimilarity" Badge="AI"/>
 
     <!-- Default Weight 3-->
     <ListSimilarityResultComponent Title="Keywords" Similarity="@_similarity.KeywordSimilarity" />
     <ListSimilarityResultComponent Title="Sectors" Similarity="@_similarity.SectorsSimilarity" />
-    <ListSimilarityResultComponent Title="Skill Entities" Similarity="@_similarity.SkillEntitiesSimilarity" />
-    <ListSimilarityResultComponent Title="Event Entities" Similarity="@_similarity.EventEntitiesSimilarity" />
+    <ListSimilarityResultComponent Title="Skill Entities" Similarity="@_similarity.SkillEntitiesSimilarity" Badge="AI" />
+    <ListSimilarityResultComponent Title="Event Entities" Similarity="@_similarity.EventEntitiesSimilarity" Badge="AI" />
     <ListSimilarityResultComponent Title="Frameworks" Similarity="@_similarity.FrameworksSimilarity.ToStringResult()" />
     <ListSimilarityResultComponent Title="Instruments" Similarity="@_similarity.InstrumentsSimilarity" />
     <ListSimilarityResultComponent Title="Natural Hazards" Similarity="@_similarity.NaturalHazardsSimilarity" />
@@ -84,7 +84,7 @@ else
     </div>
         }
 
-    <ListSimilarityResultComponent Title="Location Entities" Similarity="@_similarity.LocationEntitiesSimilarity" />
+    <ListSimilarityResultComponent Title="Location Entities" Similarity="@_similarity.LocationEntitiesSimilarity" Badge="AI"/>
     <ListSimilarityResultComponent Title="Document Types" Similarity="@_similarity.DocumentTypesSimilarity" />
 
 </div>
