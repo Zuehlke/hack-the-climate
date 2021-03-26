@@ -296,7 +296,7 @@ else
         }
 
         // does not work.... :-(
-        _sortedLegislations = _searchResult.RankedLegislations.Select(r => r.Legislation).OrderBy(l => _searchResult.Graph.Links.First(link => link.Source == l.Id || link.Target == l.Id).SimilarityScore).ToList();
+        // _sortedLegislations = _searchResult.RankedLegislations.Select(r => r.Legislation).OrderBy(l => _searchResult.Graph.Links.First(link => link.Source == l.Id || link.Target == l.Id).SimilarityScore).ToList();
 
         StateHasChanged();
     }
