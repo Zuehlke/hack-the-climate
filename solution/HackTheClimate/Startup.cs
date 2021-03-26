@@ -35,6 +35,7 @@ namespace HackTheClimate
             services.AddSingleton<EntityRecognitionService>();
             services.AddSingleton<SimilarityService>();
             services.AddSingleton<TopicBasedSimilarityService>();
+            services.AddSingleton<TopicService>();
 
             services.AddSingleton<GraphService>();
             services.AddTransient<DocumentService>();
@@ -42,7 +43,8 @@ namespace HackTheClimate
             services.AddTransient<AzureSearchFacade>();
 
             services.Configure<AzureSearchConfiguration>(Configuration.GetSection(Constants.Configuration.Search));
-            services.Configure<AzureBlobEntitiesConfiguration>(Configuration.GetSection(Constants.Configuration.BlobEntities));
+            services.Configure<AzureBlobEntitiesConfiguration>(
+                Configuration.GetSection(Constants.Configuration.BlobEntities));
 
             services.AddClipboard();
         }
