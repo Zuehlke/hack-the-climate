@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using HackTheClimate.Data;
 using HackTheClimate.Services.Search;
@@ -60,6 +61,7 @@ namespace HackTheClimate.Services
 
             // calculate similarities and add edges
             var calculatedCombinations = new HashSet<string>();
+            var links = new List<Link>();
             foreach (var outer in rankedLegislations)
             foreach (var inner in rankedLegislations)
                 if (!calculatedCombinations.Contains(outer.Legislation.Id + inner.Legislation.Id))
@@ -69,11 +71,17 @@ namespace HackTheClimate.Services
                         : _similarityService.CalculateSimilarity(outer.Legislation, inner.Legislation, weights);
                     calculatedCombinations.Add(outer.Legislation.Id + inner.Legislation.Id);
                     calculatedCombinations.Add(inner.Legislation.Id + outer.Legislation.Id);
-
-                    if (similarity.SimilarityScore > similarityThresholdFraction)
-                        graph.Links.Add(
-                            new Link(outer.Legislation.Id, inner.Legislation.Id, similarity.SimilarityScore));
+                    links.Add(new Link(outer.Legislation.Id, inner.Legislation.Id, similarity.SimilarityScore));
                 }
+
+            // strip down links for a nice graph
+            var legislationsCount = rankedLegislations.Count;
+            var maxNumberOfLinks =
+                legislationsCount * (legislationsCount + 1) /
+                2; // https://www.arndt-bruenner.de/mathe/Allgemein/summenformel1.htm
+            var usedNumberOfLinks = (int) (maxNumberOfLinks * similarityThresholdFraction);
+            var orderedLinks = links.OrderByDescending(l => l.SimilarityScore);
+            foreach (var link in orderedLinks.Take(usedNumberOfLinks)) graph.Links.Add(link);
 
             return new SearchResult
             {

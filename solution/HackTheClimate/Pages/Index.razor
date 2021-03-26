@@ -89,10 +89,10 @@ else
     private static Action<string> _onNodeSelectedAction;
     private Dictionary<string, string> _similarityClass = new Dictionary<string, string>();
     protected SimilarityWeights _similarityWeights = SimilarityWeights.DefaultWeights();
-    protected int SimilarityThreshold = 35; // default value
+    protected int SimilarityThreshold = 22; // default value
     protected List<Legislation> _sortedLegislations;
 
-    private static readonly List<string> GenericSearchUpdates = new List<string> {"Performing a full text search in 2128 documents", "Performing a full text search in all metadata (keywords, summary, ...)", "Calculating similarity of legislations based on AI text-analysis", "Calculating similarity of legislations based on metadata", "... wait for it", "... almost there", "... just one last thing"};
+    private static readonly List<string> GenericSearchUpdates = new List<string> {"Performing a full text search in 2128 documents", "Performing a full text search in all metadata (keywords, summary, ...)", "Calculating similarity of legislations based on AI text-analysis", "Calculating similarity of legislations based on metadata",  "... wait for it", "... almost there", "... just one last thing", "... to be honest, we have not yet started optimizing the performance, but there is potential"};
 
     private static Func<string, Task<DocumentDetails>> _getDetailsAsyncAction;
 
