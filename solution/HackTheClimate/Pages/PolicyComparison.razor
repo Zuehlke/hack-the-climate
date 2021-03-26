@@ -62,10 +62,14 @@ else
         <div class="row">
             <div class="col-sm" />
             <div class="col-sm">
+                <br />
+                <h2>Location </h2>
+                <span class="badge badge-warning">Metadata</span>
+                <h3>scores @(_similarity.LocationSimilarity * 100)</h3>
                 <img src="@($"/flags/{_document1.GeographyIso.ToUpperInvariant()}.svg")" alt="@_document1.GeographyIso" />
                 &nbsp;
                 @_document1.Geography
-                <span class="badge badge-warning">Metadata</span>
+
             </div>
             <div class="col-sm" />
         </div>
