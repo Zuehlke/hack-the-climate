@@ -42,6 +42,20 @@ else
             <button type="button" @onclick="() => switchModal = !switchModal" class="btn btn-light" data-bs-dismiss="modal">Similarity Weights</button>
         </div>
     </div>
+    @if (_searchResult == null)
+    {
+        <br/>
+        <br/>
+        <div class="alert alert-primary" role="alert">
+            <ul>
+                <li>Search for single terms: <a href="#" @onclick="@(_ => @SearchTerm = "hydrogen")">hydrogen</a></li>
+                <li>Search for multiple terms: <a href="#" @onclick="@(_ => @SearchTerm = "wind europe")">wind europe</a></li>
+                <li>Search conditionally (+): <a href="#" @onclick="@(_ => @SearchTerm = "coal +solar")">coal +solar</a></li>
+                <li>Search conditionally (-): <a href="#" @onclick="@(_ => @SearchTerm = "energy -nuclear")">energy -nuclear</a></li>
+                <li>For a fast but fake result: <a href="#" @onclick="@(_ => @SearchTerm = "fake")">fake</a></li>
+            </ul>
+        </div>
+    }
 }
 
 <div style="display: flex;">
@@ -241,8 +255,8 @@ else
     {
         _similarityClass = new Dictionary<string, string>();
 
-        var selfScore = _searchResult.Graph.Links.First(e => e.Source == id && e.Target == id);
-        var factor = selfScore.SimilarityScore / 1;
+        var selfScore = _searchResult.Graph.Links.FirstOrDefault(e => e.Source == id && e.Target == id);
+        var factor = selfScore != null ? (selfScore.SimilarityScore / 1) : 1;
 
         foreach (var link in _searchResult.Graph.Links)
         {
@@ -293,8 +307,12 @@ else
                         value = "similarity-100";
                         break;
                 }
-                Console.WriteLine(value);
                 _similarityClass.Add(key, value);
+            }
+
+            if (!_similarityClass.ContainsKey(id))
+            {
+                _similarityClass.Add(id, "similarity-100");
             }
         }
 
