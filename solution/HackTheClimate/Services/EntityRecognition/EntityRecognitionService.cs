@@ -13,7 +13,6 @@ namespace HackTheClimate.Services.Similarity
 {
     public class EntityRecognitionService
     {
-        private readonly BlobServiceClient _blobServiceClient;
         private readonly BlobContainerClient _blobContainerClient;
         private readonly Dictionary<string, HashSet<string>> _cache = new();
 
