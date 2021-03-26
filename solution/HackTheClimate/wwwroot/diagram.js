@@ -104,7 +104,7 @@ export async function renderDiagram(element, data) {
             d3.select(this.farthestViewportElement).selectAll("circle").attr("fill", d => {
                 let connectedNode = connectedNodes.find(l => d.id === l.id);
                 if (d.id === node.id) {
-                    return "blue";
+                    return "#08316D";
                 } else if (connectedNode) {
                     return selectedLinkColorScale(connectedNode.similarityScore);
                 } else {
