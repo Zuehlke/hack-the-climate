@@ -15,10 +15,11 @@
         public int EntityProductWeight { get; set; }
         public int EntityEventWeight { get; set; }
         public int EntityLocationWeight { get; set; }
+        public int TopicWeight { get; set; }
 
         public SimilarityWeights(int keywordWeight, int sectorWeight, int frameworkWeight, int instrumentWeight,
             int naturalHazardWeight, int documentTypeWeight, int responseWeight, int locationWeight, int typeWeight,
-            int entitySkillWeight, int entityProductWeight, int entityEventWeight, int entityLocationWeight)
+            int entitySkillWeight, int entityProductWeight, int entityEventWeight, int entityLocationWeight, int topicWeight)
         {
             KeywordWeight = keywordWeight;
             SectorWeight = sectorWeight;
@@ -33,11 +34,12 @@
             EntityProductWeight = entityProductWeight;
             EntityEventWeight = entityEventWeight;
             EntityLocationWeight = entityLocationWeight;
+            TopicWeight = topicWeight;
         }
 
         public static SimilarityWeights DefaultWeights()
         {
-            return new SimilarityWeights(3, 3, 3, 3, 3, 1, 3, 2, 1, 3, 4, 3, 1);
+            return new SimilarityWeights(3, 3, 3, 3, 3, 1, 3, 2, 1, 3, 4, 3, 1, 1);
         }
 
         public int TotalWeight()
@@ -54,7 +56,8 @@
                    + EntitySkillWeight
                    + EntityProductWeight
                    + EntityEventWeight
-                   + EntityLocationWeight;
+                   + EntityLocationWeight
+                   + TopicWeight;
         }
     }
 }

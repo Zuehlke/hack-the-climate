@@ -25,7 +25,9 @@ namespace HackTheClimate.Services
         public async Task<DocumentDetails> GetDetailsAsync(string id)
         {
             var legislation = _legislationService.GetLegislation(id);
-            var topicWords = _topics.SingleOrDefault(x => x.DocumentId == id)?.TopicWords ?? new string[0];
+            var topicWords =
+                _topics.SingleOrDefault(x => x.DocumentId == id)?.Words.OrderByDescending(x => x.Score)
+                    .Select(x => x.Word).ToArray() ?? new string[0];
 
             return new DocumentDetails
             {
