@@ -7,11 +7,12 @@
     <div class="col-sm">
     </div>
     <div class="col-sm">
-        <h2>@Title (@((int) (Similarity.Score * 100))%)</h2>
+        <h2>@Title </h2>
         @if (!string.IsNullOrEmpty(Badge))
         {
-    <span class="badge badge-warning">@Badge</span>
+            <span class="badge badge-warning">@Badge</span>
         }
+        <h3>scores @((int) (Similarity.Score * 100))</h3>
     </div>
     <div class="col-sm">
     </div>

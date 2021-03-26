@@ -26,9 +26,9 @@ else
             </p>
         </div>
         <div class="col-sm">
-            <span class="oi oi-eye" style="font-size: 60px"></span>
-            <br />
-            <h1>@((int) (_similarity.SimilarityScore * 100))%</h1>
+            <h3>Scores</h3>
+            <h1>@((int) (_similarity.SimilarityScore * 100))</h1>
+            <h3>out of 100</h3>
         </div>
         <div class="col-sm">
             <h3>@_document2.Title</h3>
@@ -78,8 +78,9 @@ else
         <div class="row">
             <div class="col-sm" />
             <div class="col-sm">
-                <h2>Type (@(_similarity.TypeSimilarity * 100)%)</h2>
+                <h2>Type </h2>
                 <span class="badge badge-warning">Metadata</span>
+                <h3>scores @(_similarity.TypeSimilarity * 100)</h3>
             </div>
             <div class="col-sm" />
         </div>
