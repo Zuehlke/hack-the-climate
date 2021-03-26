@@ -8,6 +8,7 @@
 @inject ClipboardService clipboardService;
 @inject DialogService dialogService;
 @inject DocumentService documentService;
+@inject NavigationManager NavigationManager
 
 <div class="row justify-content-between">
     <h1 class="col-3">Search</h1>
@@ -18,8 +19,8 @@
     <div class="spinner-border" role="status">
         <span class="sr-only">Loading...</span>
     </div>
-    <br/>
-    <br/>
+    <br />
+    <br />
     <div class="alert alert-primary" role="alert">
         <ul>
             <li>Searching for '@SearchTerm'</li>
@@ -55,7 +56,7 @@ else
                 {
                     <li class="@GetSimilarityClass(legislation.Id)">
                         <a href="/legislation/@legislation.Id" title="@legislation.Title">@legislation.Title</a>
-                        <img src="@($"/flags/{legislation.GeographyIso.ToUpperInvariant()}.svg")" alt="@legislation.Geography"/> @legislation.Events.First().Date.Year <span class="oi oi-align-left" title="@legislation.ShortenedDescription"></span>
+                        <img src="@($"/flags/{legislation.GeographyIso.ToUpperInvariant()}.svg")" alt="@legislation.Geography" /> @legislation.Events.First().Date.Year <span class="oi oi-align-left" title="@legislation.ShortenedDescription"></span>
                     </li>
                 }
             </ul>
@@ -90,7 +91,7 @@ else
                         <div class="row">
                             <span class="col-4">Similarity Threshold</span>
                             <div class="col-6">
-                                <RadzenSlider @bind-Value=SimilarityThreshold TValue="int" Min="0" Max="100"/>
+                                <RadzenSlider @bind-Value=SimilarityThreshold TValue="int" Min="0" Max="100" />
                             </div>
                             <input class="form-control col-1" type="text" @bind="SimilarityThreshold" disabled>
                         </div>
@@ -100,63 +101,63 @@ else
                         <div class="row">
                             <span class="col-4">Keyword</span>
                             <div class="col-6">
-                                <RadzenSlider @bind-Value=_similarityWeights.KeywordWeight TValue="int" Min="0" Max="10"/>
+                                <RadzenSlider @bind-Value=_similarityWeights.KeywordWeight TValue="int" Min="0" Max="10" />
                             </div>
                             <input class="form-control col-1" type="text" @bind="_similarityWeights.KeywordWeight" disabled>
                         </div>
                         <div class="row">
                             <span class="col-4">Sector</span>
                             <div class="col-6">
-                                <RadzenSlider @bind-Value=_similarityWeights.SectorWeight TValue="int" Min="0" Max="10"/>
+                                <RadzenSlider @bind-Value=_similarityWeights.SectorWeight TValue="int" Min="0" Max="10" />
                             </div>
                             <input class="form-control col-1" type="text" @bind="_similarityWeights.SectorWeight" disabled>
                         </div>
                         <div class="row">
                             <span class="col-4">Framework</span>
                             <div class="col-6">
-                                <RadzenSlider @bind-Value=_similarityWeights.FrameworkWeight TValue="int" Min="0" Max="10"/>
+                                <RadzenSlider @bind-Value=_similarityWeights.FrameworkWeight TValue="int" Min="0" Max="10" />
                             </div>
                             <input class="form-control col-1" type="text" @bind="_similarityWeights.FrameworkWeight" disabled>
                         </div>
                         <div class="row">
                             <span class="col-4">Instrument</span>
                             <div class="col-6">
-                                <RadzenSlider @bind-Value=_similarityWeights.InstrumentWeight TValue="int" Min="0" Max="10"/>
+                                <RadzenSlider @bind-Value=_similarityWeights.InstrumentWeight TValue="int" Min="0" Max="10" />
                             </div>
                             <input class="form-control col-1" type="text" @bind="_similarityWeights.InstrumentWeight" disabled>
                         </div>
                         <div class="row">
                             <span class="col-4">Natural Hazard</span>
                             <div class="col-6">
-                                <RadzenSlider @bind-Value=_similarityWeights.NaturalHazardWeight TValue="int" Min="0" Max="10"/>
+                                <RadzenSlider @bind-Value=_similarityWeights.NaturalHazardWeight TValue="int" Min="0" Max="10" />
                             </div>
                             <input class="form-control col-1" type="text" @bind="_similarityWeights.NaturalHazardWeight" disabled>
                         </div>
                         <div class="row">
                             <span class="col-4">Response</span>
                             <div class="col-6">
-                                <RadzenSlider @bind-Value=_similarityWeights.ResponseWeight TValue="int" Min="0" Max="10"/>
+                                <RadzenSlider @bind-Value=_similarityWeights.ResponseWeight TValue="int" Min="0" Max="10" />
                             </div>
                             <input class="form-control col-1" type="text" @bind="_similarityWeights.ResponseWeight" disabled>
                         </div>
                         <div class="row">
                             <span class="col-4">Location</span>
                             <div class="col-6">
-                                <RadzenSlider @bind-Value=_similarityWeights.LocationWeight TValue="int" Min="0" Max="10"/>
+                                <RadzenSlider @bind-Value=_similarityWeights.LocationWeight TValue="int" Min="0" Max="10" />
                             </div>
                             <input class="form-control col-1" type="text" @bind="_similarityWeights.LocationWeight" disabled>
                         </div>
                         <div class="row">
                             <span class="col-4">Document Type</span>
                             <div class="col-6">
-                                <RadzenSlider @bind-Value=_similarityWeights.DocumentTypeWeight TValue="int" Min="0" Max="10"/>
+                                <RadzenSlider @bind-Value=_similarityWeights.DocumentTypeWeight TValue="int" Min="0" Max="10" />
                             </div>
                             <input class="form-control col-1" type="text" @bind="_similarityWeights.DocumentTypeWeight" disabled>
                         </div>
                         <div class="row">
                             <span class="col-4">Type</span>
                             <div class="col-6">
-                                <RadzenSlider @bind-Value=_similarityWeights.TypeWeight TValue="int" Min="0" Max="10"/>
+                                <RadzenSlider @bind-Value=_similarityWeights.TypeWeight TValue="int" Min="0" Max="10" />
                             </div>
                             <input class="form-control col-1" type="text" @bind="_similarityWeights.TypeWeight" disabled>
                         </div>
@@ -165,28 +166,28 @@ else
                         <div class="row">
                             <span class="col-4">Category Product</span>
                             <div class="col-6">
-                                <RadzenSlider @bind-Value=_similarityWeights.EntityProductWeight TValue="int" Min="0" Max="10"/>
+                                <RadzenSlider @bind-Value=_similarityWeights.EntityProductWeight TValue="int" Min="0" Max="10" />
                             </div>
                             <input class="form-control col-1" type="text" @bind="_similarityWeights.EntityProductWeight" disabled>
                         </div>
                         <div class="row">
                             <span class="col-4">Category Event</span>
                             <div class="col-6">
-                                <RadzenSlider @bind-Value=_similarityWeights.EntityEventWeight TValue="int" Min="0" Max="10"/>
+                                <RadzenSlider @bind-Value=_similarityWeights.EntityEventWeight TValue="int" Min="0" Max="10" />
                             </div>
                             <input class="form-control col-1" type="text" @bind="_similarityWeights.EntityEventWeight" disabled>
                         </div>
                         <div class="row">
                             <span class="col-4">Category Skill</span>
                             <div class="col-6">
-                                <RadzenSlider @bind-Value=_similarityWeights.EntitySkillWeight TValue="int" Min="0" Max="10"/>
+                                <RadzenSlider @bind-Value=_similarityWeights.EntitySkillWeight TValue="int" Min="0" Max="10" />
                             </div>
                             <input class="form-control col-1" type="text" @bind="_similarityWeights.EntitySkillWeight" disabled>
                         </div>
                         <div class="row">
                             <span class="col-4">Category Location</span>
                             <div class="col-6">
-                                <RadzenSlider @bind-Value=_similarityWeights.EntityLocationWeight TValue="int" Min="0" Max="10"/>
+                                <RadzenSlider @bind-Value=_similarityWeights.EntityLocationWeight TValue="int" Min="0" Max="10" />
                             </div>
                             <input class="form-control col-1" type="text" @bind="_similarityWeights.EntityLocationWeight" disabled>
                         </div>
@@ -195,7 +196,7 @@ else
                     <div class="row">
                         <span class="col-4">Topic</span>
                         <div class="col-6">
-                            <RadzenSlider @bind-Value=_similarityWeights.TopicWeight TValue="int" Min="0" Max="10"/>
+                            <RadzenSlider @bind-Value=_similarityWeights.TopicWeight TValue="int" Min="0" Max="10" />
                         </div>
                         <input class="form-control col-1" type="text" @bind="_similarityWeights.TopicWeight" disabled>
                     </div>
@@ -233,6 +234,7 @@ else
     {
         _onNodeSelectedAction = OnNodeSelectedCallback;
         _getDetailsAsyncAction = GetDetailsPrivate;
+        SearchTerm = new Uri(NavigationManager.Uri).Query.Replace("?", "");
     }
 
     private void OnNodeSelectedCallback(string id)
@@ -296,8 +298,8 @@ else
             }
         }
 
-    // does not work.... :-(
-    // _sortedLegislations = _searchResult.RankedLegislations.Select(r => r.Legislation).OrderBy(l => _searchResult.Graph.Links.First(link => link.Source == l.Id || link.Target == l.Id).SimilarityScore).ToList();
+        // does not work.... :-(
+        // _sortedLegislations = _searchResult.RankedLegislations.Select(r => r.Legislation).OrderBy(l => _searchResult.Graph.Links.First(link => link.Source == l.Id || link.Target == l.Id).SimilarityScore).ToList();
 
         StateHasChanged();
     }
@@ -312,33 +314,33 @@ else
 
     private void OnInput(ChangeEventArgs e)
     {
-        SearchTerm = (string) e.Value;
+        SearchTerm = (string)e.Value;
     }
 
     private async Task Search()
     {
         var searchTerm = SearchTerm;
         _searching = true;
-        _searchUpdates = new List<string> {"Searching for '" + SearchTerm + "'"};
+        _searchUpdates = new List<string> { "Searching for '" + SearchTerm + "'" };
         _searchUpdatesIndex = 0;
         _searchResult = null;
         _similarityClass = new Dictionary<string, string>();
         _sortedLegislations = new List<Legislation>();
 
-    /*
-        var timer = new Timer(3000);
-        timer.Elapsed += (sender, args) =>
-        {
-            if (_searchUpdatesIndex < GenericSearchUpdates.Count)
+        /*
+            var timer = new Timer(3000);
+            timer.Elapsed += (sender, args) =>
             {
-                _searchUpdates.Add(GenericSearchUpdates[_searchUpdatesIndex]);
-            }
-            _searchUpdatesIndex++;
-            InvokeAsync(StateHasChanged);
-        };
-        timer.AutoReset = true;
-        timer.Enabled = true;
-*/
+                if (_searchUpdatesIndex < GenericSearchUpdates.Count)
+                {
+                    _searchUpdates.Add(GenericSearchUpdates[_searchUpdatesIndex]);
+                }
+                _searchUpdatesIndex++;
+                InvokeAsync(StateHasChanged);
+            };
+            timer.AutoReset = true;
+            timer.Enabled = true;
+    */
 
         var diagramModule = await JS
             .InvokeAsync<IJSObjectReference>("import", "/diagram.js");
@@ -346,10 +348,10 @@ else
         await diagramModule.InvokeVoidAsync("clearDiagram", _renderTo);
 
         _searchResult = await graphService.SearchAsync(SearchTerm, _similarityWeights, SimilarityThreshold);
-    /*
-        timer.Stop();
-        timer.Dispose();
-*/
+        /*
+            timer.Stop();
+            timer.Dispose();
+    */
 
         if (_searchResult.RankedLegislations.Any())
         {
