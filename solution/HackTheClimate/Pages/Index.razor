@@ -270,109 +270,112 @@ else
     }
 
     async Task ShowInlineDialog() => await dialogService.OpenAsync("Similarity Weights", ds =>
-        @<div>
+        @<div class="p-1">
             <div class="row">
                 <span class="col-4">Similarity Threshold</span>
                 <div class="col-6">
                     <RadzenSlider @bind-Value=SimilarityThreshold TValue="int" Min="0" Max="100"/>
                 </div>
-                <input class="form-control col-2" type="text" @bind="SimilarityThreshold" disabled>
+                <input class="form-control col-1" type="text" @bind="SimilarityThreshold" disabled>
             </div>
             
-            <h6>Metadata</h6>
+            <h6>Metadata <span class="badge bg-info">Metadata</span></h6>
 
             <div class="row">
                 <span class="col-4">Keyword</span>
                 <div class="col-6">
                     <RadzenSlider @bind-Value=_similarityWeights.KeywordWeight TValue="int" Min="0" Max="10"/>
                 </div>
-                <input class="form-control col-2" type="text" @bind="_similarityWeights.KeywordWeight" disabled>
+                <input class="form-control col-1" type="text" @bind="_similarityWeights.KeywordWeight" disabled>
             </div>
             <div class="row">
                 <span class="col-4">Sector</span>
                 <div class="col-6">
                     <RadzenSlider @bind-Value=_similarityWeights.SectorWeight TValue="int" Min="0" Max="10"/>
                 </div>
-                <input class="form-control col-2" type="text" @bind="_similarityWeights.SectorWeight" disabled>
+                <input class="form-control col-1" type="text" @bind="_similarityWeights.SectorWeight" disabled>
             </div>
             <div class="row">
                 <span class="col-4">Framework</span>
                 <div class="col-6">
                     <RadzenSlider @bind-Value=_similarityWeights.FrameworkWeight TValue="int" Min="0" Max="10"/>
                 </div>
-                <input class="form-control col-2" type="text" @bind="_similarityWeights.FrameworkWeight" disabled>
+                <input class="form-control col-1" type="text" @bind="_similarityWeights.FrameworkWeight" disabled>
             </div>
             <div class="row">
                 <span class="col-4">Instrument</span>
                 <div class="col-6">
                     <RadzenSlider @bind-Value=_similarityWeights.InstrumentWeight TValue="int" Min="0" Max="10"/>
                 </div>
-                <input class="form-control col-2" type="text" @bind="_similarityWeights.InstrumentWeight" disabled>
+                <input class="form-control col-1" type="text" @bind="_similarityWeights.InstrumentWeight" disabled>
             </div>
             <div class="row">
                 <span class="col-4">Natural Hazard</span>
                 <div class="col-6">
                     <RadzenSlider @bind-Value=_similarityWeights.NaturalHazardWeight TValue="int" Min="0" Max="10"/>
                 </div>
-                <input class="form-control col-2" type="text" @bind="_similarityWeights.NaturalHazardWeight" disabled>
+                <input class="form-control col-1" type="text" @bind="_similarityWeights.NaturalHazardWeight" disabled>
             </div>
             <div class="row">
                 <span class="col-4">Response</span>
                 <div class="col-6">
                     <RadzenSlider @bind-Value=_similarityWeights.ResponseWeight TValue="int" Min="0" Max="10"/>
                 </div>
-                <input class="form-control col-2" type="text" @bind="_similarityWeights.ResponseWeight" disabled>
+                <input class="form-control col-1" type="text" @bind="_similarityWeights.ResponseWeight" disabled>
             </div>
             <div class="row">
                 <span class="col-4">Location</span>
                 <div class="col-6">
                     <RadzenSlider @bind-Value=_similarityWeights.LocationWeight TValue="int" Min="0" Max="10"/>
                 </div>
-                <input class="form-control col-2" type="text" @bind="_similarityWeights.LocationWeight" disabled>
+                <input class="form-control col-1" type="text" @bind="_similarityWeights.LocationWeight" disabled>
             </div>
             <div class="row">
                 <span class="col-4">Document Type</span>
                 <div class="col-6">
                     <RadzenSlider @bind-Value=_similarityWeights.DocumentTypeWeight TValue="int" Min="0" Max="10"/>
                 </div>
-                <input class="form-control col-2" type="text" @bind="_similarityWeights.DocumentTypeWeight" disabled>
+                <input class="form-control col-1" type="text" @bind="_similarityWeights.DocumentTypeWeight" disabled>
             </div>
             <div class="row">
                 <span class="col-4">Type</span>
                 <div class="col-6">
                     <RadzenSlider @bind-Value=_similarityWeights.TypeWeight TValue="int" Min="0" Max="10"/>
                 </div>
-                <input class="form-control col-2" type="text" @bind="_similarityWeights.TypeWeight" disabled>
+                <input class="form-control col-1" type="text" @bind="_similarityWeights.TypeWeight" disabled>
             </div>
 
-            <h6>Entitiy Recognition Simiarities Weigths</h6>
+            <h6>Entitiy Recognition <span class="badge badge-warning">AI</span></h6>
             <div class="row">
                 <span class="col-4">Category Product</span>
                 <div class="col-6">
                     <RadzenSlider @bind-Value=_similarityWeights.EntityProductWeight TValue="int" Min="0" Max="10"/>
                 </div>
-                <input class="form-control col-2" type="text" @bind="_similarityWeights.EntityProductWeight" disabled>
+                <input class="form-control col-1" type="text" @bind="_similarityWeights.EntityProductWeight" disabled>
             </div>
             <div class="row">
                 <span class="col-4">Category Event</span>
                 <div class="col-6">
                     <RadzenSlider @bind-Value=_similarityWeights.EntityEventWeight TValue="int" Min="0" Max="10"/>
                 </div>
-                <input class="form-control col-2" type="text" @bind="_similarityWeights.EntityEventWeight" disabled>
+                <input class="form-control col-1" type="text" @bind="_similarityWeights.EntityEventWeight" disabled>
             </div>
             <div class="row">
                 <span class="col-4">Category Skill</span>
                 <div class="col-6">
                     <RadzenSlider @bind-Value=_similarityWeights.EntitySkillWeight TValue="int" Min="0" Max="10"/>
                 </div>
-                <input class="form-control col-2" type="text" @bind="_similarityWeights.EntitySkillWeight" disabled>
+                <input class="form-control col-1" type="text" @bind="_similarityWeights.EntitySkillWeight" disabled>
             </div>
             <div class="row">
                 <span class="col-4">Category Location</span>
                 <div class="col-6">
                     <RadzenSlider @bind-Value=_similarityWeights.EntityLocationWeight TValue="int" Min="0" Max="10"/>
                 </div>
-                <input class="form-control col-2" type="text" @bind="_similarityWeights.EntityLocationWeight" disabled>
+                <input class="form-control col-1" type="text" @bind="_similarityWeights.EntityLocationWeight" disabled>
+            </div>
+            <div class="row justify-content-end m-1">
+                <RadzenButton Click="() => ds.Close(false)" Text="Apply" ButtonStyle="ButtonStyle.Secondary" />
             </div>
         </div>);
 }
