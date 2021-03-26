@@ -48,14 +48,14 @@ else
     <ListSimilarityResultComponent Title="Product Entities" Similarity="@_similarity.ProductEntitiesSimilarity" Badge="AI"/>
 
     <!-- Default Weight 3-->
-    <ListSimilarityResultComponent Title="Keywords" Similarity="@_similarity.KeywordSimilarity" />
-    <ListSimilarityResultComponent Title="Sectors" Similarity="@_similarity.SectorsSimilarity" />
+    <ListSimilarityResultComponent Title="Keywords" Similarity="@_similarity.KeywordSimilarity" Badge="Metadata" />
+    <ListSimilarityResultComponent Title="Sectors" Similarity="@_similarity.SectorsSimilarity" Badge="Metadata" />
     <ListSimilarityResultComponent Title="Skill Entities" Similarity="@_similarity.SkillEntitiesSimilarity" Badge="AI" />
     <ListSimilarityResultComponent Title="Event Entities" Similarity="@_similarity.EventEntitiesSimilarity" Badge="AI" />
-    <ListSimilarityResultComponent Title="Frameworks" Similarity="@_similarity.FrameworksSimilarity.ToStringResult()" />
-    <ListSimilarityResultComponent Title="Instruments" Similarity="@_similarity.InstrumentsSimilarity" />
-    <ListSimilarityResultComponent Title="Natural Hazards" Similarity="@_similarity.NaturalHazardsSimilarity" />
-    <ListSimilarityResultComponent Title="Responses" Similarity="@_similarity.ResponsesSimilarity" />
+    <ListSimilarityResultComponent Title="Frameworks" Similarity="@_similarity.FrameworksSimilarity.ToStringResult()" Badge="Metadata" />
+    <ListSimilarityResultComponent Title="Instruments" Similarity="@_similarity.InstrumentsSimilarity" Badge="Metadata" />
+    <ListSimilarityResultComponent Title="Natural Hazards" Similarity="@_similarity.NaturalHazardsSimilarity" Badge="Metadata" />
+    <ListSimilarityResultComponent Title="Responses" Similarity="@_similarity.ResponsesSimilarity" Badge="Metadata" />
 
     <!-- Default Weight 2-->
     @if (_similarity.LocationSimilarity > 0)
@@ -66,6 +66,7 @@ else
             <img src="@($"/flags/{_document1.GeographyIso.ToUpperInvariant()}.svg")" alt="@_document1.GeographyIso" />
             &nbsp;
             @_document1.Geography
+            <span class="badge badge-warning">Metadata</span>
         </div>
         <div class="col-sm" />
     </div>
@@ -79,13 +80,14 @@ else
         <div class="col-sm" />
         <div class="col-sm">
             <h2>Type (@(_similarity.TypeSimilarity * 100)%)</h2>
+            <span class="badge badge-warning">Metadata</span>
         </div>
         <div class="col-sm" />
     </div>
         }
 
     <ListSimilarityResultComponent Title="Location Entities" Similarity="@_similarity.LocationEntitiesSimilarity" Badge="AI"/>
-    <ListSimilarityResultComponent Title="Document Types" Similarity="@_similarity.DocumentTypesSimilarity" />
+    <ListSimilarityResultComponent Title="Document Types" Similarity="@_similarity.DocumentTypesSimilarity" Badge="Metadata" />
 
 </div>
 }
