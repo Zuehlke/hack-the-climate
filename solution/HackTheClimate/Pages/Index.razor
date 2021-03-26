@@ -4,6 +4,7 @@
 @using System.Timers
 @using System.Text.Json
 @using System.Diagnostics
+@using System.Diagnostics.Eventing.Reader
 @using HackTheClimate.Data
 @inject IJSRuntime JS;
 @inject GraphService graphService;
@@ -52,11 +53,11 @@ else
         @if (!_searching && _searchResult != null && _searchResult.RankedLegislations.Any())
         {
         <ul class="search-results">
-            @foreach (var legislation in _searchResult.RankedLegislations.OrderBy(r => r.ConfidenceScore))
-                {
-            <li class="@GetSimilarityClass(@legislation.Legislation.Id)">
-                <a href="/legislation/@legislation.Legislation.Id" title="@legislation.Legislation.Title">@legislation.Legislation.Title</a>
-                <img src="@($"/flags/{legislation.Legislation.GeographyIso.ToUpperInvariant()}.svg")" alt="@legislation.Legislation.Geography" /> @legislation.Legislation.Events.First().Date.Year <span class="oi oi-align-left" title="@legislation.Legislation.ShortenedDescription"></span>
+            @foreach (var legislation in _sortedLegislations) {
+                
+            <li class="@GetSimilarityClass(@legislation.Id)">
+                <a href="/legislation/@legislation.Id" title="@legislation.Title">@legislation.Title</a>
+                <img src="@($"/flags/{legislation.GeographyIso.ToUpperInvariant()}.svg")" alt="@legislation.Geography" /> @legislation.Events.First().Date.Year <span class="oi oi-align-left" title="@legislation.ShortenedDescription"></span>
             </li>
                 }
         </ul>
@@ -88,6 +89,7 @@ else
     private static Action<string> _onNodeSelectedAction;
     private Dictionary<string, string> _similarityClass = new Dictionary<string, string>();
     protected SimilarityWeights _similarityWeights = SimilarityWeights.DefaultWeights();
+    protected List<Legislation> _sortedLegislations;
 
     private static readonly List<string> GenericSearchUpdates = new List<string> {"Performing a full text search in 2128 documents", "Performing a full text search in 2128 metadata (keywords, summary, ...)", "Calculating similarity of legislations based on metadata", "Calculating similarity of legislations based on text-analysis", "... wait for it", "... almost there", "... just one last thing"};
 
@@ -157,6 +159,9 @@ else
             }
         }
 
+        // does not work.... :-(
+        _sortedLegislations = _searchResult.RankedLegislations.Select(r => r.Legislation).OrderBy(l => _searchResult.Graph.Links.First(link => link.Source == l.Id || link.Target == l.Id).SimilarityScore).ToList();
+
         StateHasChanged();
     }
 
@@ -181,6 +186,7 @@ else
         _searchUpdatesIndex = 0;
         _searchResult = null;
         _similarityClass = new Dictionary<string, string>();
+        _sortedLegislations = new List<Legislation>();
 
         var timer = new Timer(3000);
         timer.Elapsed += (sender, args) =>
@@ -204,10 +210,10 @@ else
         timer.Stop();
         timer.Dispose();
 
-
         if (_searchResult.RankedLegislations.Any())
         {
             await diagramModule.InvokeVoidAsync("renderDiagram", _renderTo, _searchResult.Graph);
+            _sortedLegislations = _searchResult.RankedLegislations.OrderBy(l => l.ConfidenceScore).Select(r => r.Legislation).ToList();
         }
 
         SearchTerm = searchTerm;
