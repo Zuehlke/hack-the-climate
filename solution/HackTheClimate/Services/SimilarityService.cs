@@ -22,7 +22,7 @@ namespace HackTheClimate.Services
 
         public async Task<IEnumerable<(string Id, double SimilarityScore)>> GetMostSimilarLegislationIds(Legislation a)
         {
-            if (_precomputed == null)
+            if (_precomputed == null || !_precomputed.Any())
             {
                 _precomputed = new Dictionary<string, double>();
                 var assembly = Assembly.GetExecutingAssembly();
