@@ -48,7 +48,7 @@ else
     <div style="flex: 0 0 900px">
         <svg @ref="_renderTo" height="900" width="900"></svg>
     </div>
-    <div style="flex: 1;">
+    <div style="flex: 1; overflow-y: scroll; height: 900px">
         @if (!_searching && _searchResult != null && _searchResult.RankedLegislations.Any())
         {
         <ul class="search-results">
@@ -89,7 +89,7 @@ else
     private Dictionary<string, string> _similarityClass = new Dictionary<string, string>();
     protected SimilarityWeights _similarityWeights = SimilarityWeights.DefaultWeights();
 
-    private static readonly List<string> GenericSearchUpdates = new List<string> {"Performing a full text search in 2128 documents", "Calculating Similarity of legislations based on metadata", "Calculating Similarity of legislations based on text-analysis", "... wait for it", "... almost there", "... just one last thing"};
+    private static readonly List<string> GenericSearchUpdates = new List<string> {"Performing a full text search in 2128 documents", "Performing a full text search in 2128 metadata (keywords, summary, ...)", "Calculating similarity of legislations based on metadata", "Calculating similarity of legislations based on text-analysis", "... wait for it", "... almost there", "... just one last thing"};
 
     private static Func<string, Task<DocumentDetails>> _getDetailsAsyncAction;
 
@@ -112,44 +112,44 @@ else
                 switch (link.SimilarityScore)
                 {
                     case < 0.1:
-                        value = "Similarity-10";
+                        value = "similarity-10";
                         break;
 
                     case < 0.2:
-                        value = "Similarity-20";
+                        value = "similarity-20";
                         break;
 
                     case < 0.3:
-                        value = "Similarity-30";
+                        value = "similarity-30";
                         break;
 
                     case < 0.4:
-                        value = "Similarity-40";
+                        value = "similarity-40";
                         break;
 
                     case < 0.5:
-                        value = "Similarity-50";
+                        value = "similarity-50";
                         break;
 
                     case < 0.6:
-                        value = "Similarity-60";
+                        value = "similarity-60";
                         break;
 
                     case < 0.7:
-                        value = "Similarity-70";
+                        value = "similarity-70";
                         break;
 
                     case < 0.8:
-                        value = "Similarity-80";
+                        value = "similarity-80";
                         break;
 
 
                     case < 0.9:
-                        value = "Similarity-90";
+                        value = "similarity-90";
                         break;
 
                     default:
-                        value = "Similarity-100";
+                        value = "similarity-100";
                         break;
                 }
 
@@ -252,7 +252,7 @@ else
                 return clazz;
             } else
             {
-                return "Similarity-10";
+                return "similarity-10";
             }
         }
         else

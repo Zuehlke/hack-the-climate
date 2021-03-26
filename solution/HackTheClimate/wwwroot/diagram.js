@@ -136,10 +136,6 @@ export async function renderDiagram(element, data) {
             .on("start", d => dragstarted(d, simulation))
             .on("drag", d => dragged(d))
             .on("end", d => dragended(d, simulation)));
-            
-
-    node.append("title")
-        .text(d => d.title);
 
     simulation
         .nodes(data.nodes)
