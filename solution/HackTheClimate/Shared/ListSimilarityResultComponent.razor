@@ -1,31 +1,47 @@
 ﻿@using HackTheClimate.Services
 @using HackTheClimate.Data
-<div class="row">
-    <div class="col-sm">
-    </div>
-    <div class="col-sm">
-        <h2>@Title (@((int)(Similarity.Score * 100))%)</h2>
-    </div>
-    <div class="col-sm">
-    </div>
-</div>
+@using Microsoft.EntityFrameworkCore.Internal
 
 <div class="row">
     <div class="col-sm">
-        +@Similarity.NoMatchA
     </div>
     <div class="col-sm">
-        <ul>
-            @foreach (var k in Similarity.Overlap)
-            {
-                <li>@k</li>
-            }
-        </ul>
+        <h2>@Title (@((int) (Similarity.Score * 100))%)</h2>
     </div>
     <div class="col-sm">
-        +@Similarity.NoMatchB
     </div>
 </div>
+@if (Similarity.Score > 0)
+{
+    <div class="row">
+        <div class="col-sm">
+            <span class="badge badge-danger">@(Similarity.NoMatchA == 0 ? "0" : "+" + Similarity.NoMatchA)</span>
+        </div>
+        <div class="col-sm">
+            @if (Similarity.Overlap.Count() > 0)
+            {
+                while (i < Similarity.Overlap.Count() && i < Max)
+                {
+                    <span class="badge badge-success">@Similarity.Overlap.ElementAt(i)</span>
+                    i++;
+                }
+                if (Similarity.Overlap.Count() >= Max)
+                {
+                    var arr = Similarity.Overlap.ToArray();
+                    Array.Sort(arr);
+                    <span class="badge badge-success" title="@(arr.Join(","))">+@(Similarity.Overlap.Count() - i)</span>
+                }
+            }
+            else
+            {
+                <span class="badge badge-danger">0</span>
+            }
+        </div>
+        <div class="col-sm">
+            <span class="badge badge-danger">@(Similarity.NoMatchB == 0 ? "0" : "+" + Similarity.NoMatchB)</span>
+        </div>
+    </div>
+}
 
 @code {
 
@@ -34,5 +50,9 @@
 
     [Parameter]
     public string Title { get; set; }
+
+    private int i = 0;
+
+        private const int Max = 10;
 
 }

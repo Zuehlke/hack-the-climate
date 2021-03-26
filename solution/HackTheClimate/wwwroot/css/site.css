@@ -218,6 +218,7 @@ app {
 
 .comparison-container .row div:nth-child(1) {
     background: linear-gradient(90deg, rgba(10,37,101,0.3) 0%, rgba(10,37,101,0.3) 33%, rgba(255,255,255,1) 100%);
+    text-align: right;
 }
 
 .comparison-container .row div:nth-child(2) {
@@ -226,6 +227,11 @@ app {
 
 .comparison-container .row div:nth-child(3) {
     background: linear-gradient(90deg, rgba(255,255,255,1) 0%, rgba(58,6,64,0.3) 66%, rgba(58,6,71,0.3) 100%);
+    text-align: left;
+}
+
+.comparison-container h1 {
+    font-size: 100px;
 }
 
 div.node-information {

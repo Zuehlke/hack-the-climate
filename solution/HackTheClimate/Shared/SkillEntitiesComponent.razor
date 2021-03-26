@@ -12,23 +12,25 @@
 
 <div class="row">
     <div class="col-sm">
-        +@Similarity.NoMatchA
+        <span class="badge badge-danger">+@Similarity.NoMatchA</span>
     </div>
     <div class="col-sm">
-        <ul>
-            @if (Similarity.Overlap.Count() > 0)
+        @if (Similarity.Overlap.Count() > 0)
+        {
+            while (i < Similarity.Overlap.Count() && i < 5)
             {
-                while (i < Similarity.Overlap.Count() && i < 5)
-                {
-                    <li>@Similarity.Overlap.ElementAt(i)</li>
-                    i++;
-                }
+                <span class="badge badge-success">@Similarity.Overlap.ElementAt(i)</span>
+                i++;
             }
-            <li>+@(Similarity.Overlap.Count() - i)</li>
-        </ul>
+            <span class="badge badge-success">+@(Similarity.Overlap.Count() - i)</span>
+        }
+        else
+        {
+            <span class="badge badge-danger">0</span>
+        }
     </div>
     <div class="col-sm">
-        +@Similarity.NoMatchB
+        <span class="badge badge-danger">+@Similarity.NoMatchB</span>
     </div>
 </div>
 @code {

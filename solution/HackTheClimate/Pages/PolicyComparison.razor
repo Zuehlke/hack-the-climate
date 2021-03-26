@@ -19,7 +19,9 @@ else
     <div class="row">
         <div class="col-sm">
             <h3>@_document1.Title</h3>
-            <img src="@($"/flags/{_document1.GeographyIso.ToUpperInvariant()}.svg")" alt="@_document1.GeographyIso" /> @_document1.Geography
+            <img src="@($"/flags/{_document1.GeographyIso.ToUpperInvariant()}.svg")" alt="@_document1.GeographyIso" />
+            &nbsp;
+            @_document1.Geography
             <img src="@($"{_document1.Type.ToString().ToLowerInvariant()}.svg")" alt="@_document1.Type" />@_document1.Type
             <p>
                 @_document1.ShortenedDescription
@@ -27,13 +29,15 @@ else
             </p>
         </div>
         <div class="col-sm">
-            <span class="oi oi-eye" style="font-size: 100px"></span>
+            <span class="oi oi-eye" style="font-size: 60px"></span>
             <br />
             <h1>@((int)(_similarity.SimilarityScore * 100))%</h1>
         </div>
         <div class="col-sm">
             <h3>@_document2.Title</h3>
-            <img src="@($"/flags/{_document2.GeographyIso.ToUpperInvariant()}.svg")" alt="@_document2.GeographyIso" /> @_document2.Geography
+            <img src="@($"/flags/{_document2.GeographyIso.ToUpperInvariant()}.svg")" alt="@_document2.GeographyIso" />
+            &nbsp;
+            @_document2.Geography
             <img src="@($"{_document2.Type.ToString().ToLowerInvariant()}.svg")" alt="@_document2.Type" />@_document2.Type
             <p>
                 @_document2.ShortenedDescription
@@ -41,20 +45,34 @@ else
             </p>
         </div>
     </div>
+    
+
     <div class="row">
-        <div class="col-sm"/>
-        <div class="col-sm">
-            <h2>Location (@(_similarity.LocationSimilarity * 100) %)</h2>
-        </div>
         <div class="col-sm" />
-    </div>
-    <div class="row">
-        <div class="col-sm"/>
         <div class="col-sm">
-            <h2>Type (@(_similarity.TypeSimilarity * 100)%)</h2>
+            <h2>Location (@(_similarity.LocationSimilarity * 100)%)</h2>
         </div>
-        <div class="col-sm" />
+        <div class="col-sm"/>
     </div>
+    @if (_similarity.LocationSimilarity > 0)
+    {
+        <div class="row">
+            <div class="col-sm">
+                <img src="@($"/flags/{_document1.GeographyIso.ToUpperInvariant()}.svg")" alt="@_document1.GeographyIso" />
+                &nbsp;
+                @_document1.Geography
+            </div>
+            <div class="col-sm">
+                <h2>Type (@(_similarity.TypeSimilarity * 100)%)</h2>
+            </div>
+            <div class="col-sm">
+                <img src="@($"/flags/{_document2.GeographyIso.ToUpperInvariant()}.svg")" alt="@_document2.GeographyIso" />
+                &nbsp;
+                @_document2.Geography
+            </div>
+        </div>
+    }
+
     <ListSimilarityResultComponent Title="Keywords" Similarity="@_similarity.KeywordSimilarity" />
     <ListSimilarityResultComponent Title="Sectors" Similarity="@_similarity.SectorsSimilarity" />
     <ListSimilarityResultComponent Title="Frameworks" Similarity="@_similarity.FrameworksSimilarity.ToStringResult()" />
@@ -62,11 +80,10 @@ else
     <ListSimilarityResultComponent Title="Natural Hazards" Similarity="@_similarity.NaturalHazardsSimilarity" />
     <ListSimilarityResultComponent Title="Document Types" Similarity="@_similarity.DocumentTypesSimilarity" />
     <ListSimilarityResultComponent Title="Responses" Similarity="@_similarity.ResponsesSimilarity" />
-
-    <SkillEntitiesComponent Title="Skill Entities" Similarity="@_similarity.SkillEntitiesSimilarity" />
-    <SkillEntitiesComponent Title="Product Entities" Similarity="@_similarity.ProductEntitiesSimilarity" />
-    <SkillEntitiesComponent Title="Event Entities" Similarity="@_similarity.EventEntitiesSimilarity" />
-    <SkillEntitiesComponent Title="Location Entities" Similarity="@_similarity.LocationEntitiesSimilarity" />
+    <ListSimilarityResultComponent Title="Skill Entities" Similarity="@_similarity.SkillEntitiesSimilarity" />
+    <ListSimilarityResultComponent Title="Product Entities" Similarity="@_similarity.ProductEntitiesSimilarity" />
+    <ListSimilarityResultComponent Title="Event Entities" Similarity="@_similarity.EventEntitiesSimilarity" />
+    <ListSimilarityResultComponent Title="Location Entities" Similarity="@_similarity.LocationEntitiesSimilarity" />
 
 </div>
 }
