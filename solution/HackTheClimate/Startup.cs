@@ -34,6 +34,8 @@ namespace HackTheClimate
 
             services.AddSingleton<EntityRecognitionService>();
             services.AddSingleton<SimilarityService>();
+            services.AddSingleton<TopicBasedSimilarityService>();
+
             services.AddSingleton<GraphService>();
             services.AddTransient<DocumentService>();
 
