@@ -34,6 +34,7 @@
 else
 {
     <div class="input-group">
+        <input @bind="SearchTerm" type="text" class="form-control" placeholder="Search laws and policies" @onkeyup="OnInputKeyUp">
         <input @bind="SearchTerm" type="text" class="form-control" placeholder="Search laws and policies" @oninput="OnInput">
         <div class="input-group-append">
             <button class="btn btn-secondary" type="button" @onclick="Search">
@@ -329,12 +330,7 @@ else
             await Search();
         }
     }
-
-    private void OnInput(ChangeEventArgs e)
-    {
-        SearchTerm = (string)e.Value;
-    }
-
+    
     private async Task Search()
     {
         var searchTerm = SearchTerm;
