@@ -109,7 +109,7 @@ else
     {
         _legislation = LegislationService.GetLegislation(Id);
         _similarScores = await SimilarityService.GetMostSimilarLegislationIds(_legislation);
-        _similarLegislations = _similarScores.OrderBy(e => e.SimilarityScore).Select(e =>
+        _similarLegislations = _similarScores.OrderByDescending(e => e.SimilarityScore).Select(e =>
         {
             var ids = e.Id.Split(",");
             var otherId = ids[0] == Id ? ids[1] : ids[0];
@@ -138,8 +138,10 @@ else
 
     private string GetSimilarityClass(string lId)
     {
+        var highestSimilarityScore = _similarScores.Max(s => s.SimilarityScore);
+        var factor = 1 / highestSimilarityScore;
         var score = _similarScores.First(e => e.Id.Contains(lId)).SimilarityScore;
-        switch (score)
+        switch (score * factor)
         {
             case < 0.1:
                 return "similarity-10";
