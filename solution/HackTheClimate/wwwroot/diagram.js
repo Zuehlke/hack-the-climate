@@ -82,7 +82,7 @@ export async function renderDiagram(element, data) {
                         '">' +
                         data.title.substr(0, Math.min(data.title.length, 30)) +
                         '</a>';
-                    nodeInformationDiv.html('<div>' + flag + titleLink + '<div>' + topics.join() + '</div></div>')
+                    nodeInformationDiv.html('<div>' + flag + "&nbsp;"+titleLink + '<div>' + topics.join() + '</div></div>')
                         .style("left", (xCord) + "px")
                         .style("top", (yCord) + "px");
                 });

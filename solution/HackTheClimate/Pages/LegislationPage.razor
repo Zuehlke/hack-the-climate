@@ -1,7 +1,7 @@
 ﻿@page "/legislation/{id}"
 @using HackTheClimate.Data
-@using System.Text.RegularExpressions
 @using HackTheClimate.Services
+@using System.Text.RegularExpressions
 @inject LegislationService LegislationService
 @inject SimilarityService SimilarityService;
 
@@ -13,22 +13,22 @@
 }
 else
 {
-    <img src="@($"/flags/{_legislation.GeographyIso.ToUpperInvariant()}.svg")" alt="@_legislation.GeographyIso"/>
-    @_legislation.Geography
+    <img src="@($"/flags/{_legislation.GeographyIso.ToUpperInvariant()}.svg")" alt="@_legislation.GeographyIso" />
+    @:&nbsp;@_legislation.Geography
 
-    <hr/>
+    <hr />
 
     <h1>@_legislation.Title</h1>
 
     <div class="meta">
         <div>
-            <img src="@($"{_legislation.Type.ToString().ToLowerInvariant()}.svg")" alt="@_legislation.Type"/>@_legislation.Type
+            <img src="@($"{_legislation.Type.ToString().ToLowerInvariant()}.svg")" alt="@_legislation.Type" /> @_legislation.Type
         </div>
 
         <div>
             @foreach (var d in _legislation.DocumentTypes)
             {
-               <span>@(d), </span>
+                <span>@(d), </span>
             }
         </div>
 
@@ -49,7 +49,8 @@ else
         @foreach (var e in _legislation.Events)
         {
             <tr>
-                <td style="width: 200px">@e.Date.ToString("MMMM yyyy")</td><td>@e.Description</td>
+                <td style="width: 200px">@e.Date.ToString("MMMM yyyy")</td>
+                <td>@e.Description</td>
             </tr>
         }
     </table>
@@ -58,22 +59,29 @@ else
     <ul>
         @foreach (var d in _legislation.Documents)
         {
-            <li><a href="@d.Uri.ToString()">@d.Description @(string.IsNullOrEmpty(d.Language) ? "" : "("+@d.Language+")")</a></li>
+            <li>
+                <a href="@d.Uri.ToString()">@d.Description @(string.IsNullOrEmpty(d.Language) ? "" : "(" + d.Language + ")")</a>
+            </li>
         }
-        <li><a href="@GetClimateLawUrl(_legislation)">Climate Laws Website</a></li>
+        <li>
+            <a href="@GetClimateLawUrl(_legislation)">Climate Laws Website</a>
+        </li>
     </ul>
 
 
     <h2>Similar Legislations</h2>
-    @if (_similarLegislations != null && _similarLegislations.Any() && _legislation.Geography.StartsWith("A")) 
+    @if (_similarLegislations != null && _similarLegislations.Any() && _legislation.Geography.StartsWith("A"))
     {
         <ul>
             @foreach (var l in _similarLegislations)
             {
-                <li class="@GetSimilarityClass(@l.Id)">
+                <li class="@GetSimilarityClass(l.Id)">
                     <a href="/legislation/@l.Id" title="@l.ShortenedDescription">@l.Title</a>
                     <br />
-                    <img src="@($"/flags/{@l.GeographyIso.ToUpperInvariant()}.svg")" alt="@l.Geography"/> @l.Events.First().Date.Year <a href="/compare/@_legislation.Id/@l.Id"><span class="oi oi-eye" title="Compare"></span></a>
+                    <img src="@($"/flags/{l.GeographyIso.ToUpperInvariant()}.svg")" alt="@l.Geography" /> @l.Events.First().Date.Year
+                    <a href="/compare/@_legislation.Id/@l.Id">
+                        <span class="oi oi-eye" title="Compare"></span>
+                    </a>
                 </li>
             }
         </ul>
@@ -81,8 +89,8 @@ else
     else
     {
         <div class="alert alert-secondary" role="alert">
-            No similarities available for country <em>@_legislation.Geography</em>.<br /> 
-            Please use a country whose name starts with <em>A</em>.<br/>
+            No similarities available for country <em>@_legislation.Geography</em>.<br />
+            Please use a country whose name starts with <em>A</em>.<br />
             For the hackathon, only a small number of similarities were prepared.
         </div>
     }
@@ -110,11 +118,11 @@ else
     }
 
     /// <summary>
-    /// Creates URL like https://climate-laws.org/geographies/taiwan/laws/electricity-act
-    /// or https://climate-laws.org/geographies/afghanistan/policies/energy-sector-strategy-1387-1391-2007-8-2012-3
-    /// Tax Reform Act 2020 (Steuerreformgesetz 2020 – StRefG 2020 - 984/A)
-    /// becomes
-    /// tax-reform-act-2020-steuerreformgesetz-2020-strefg-2020-984-a
+    ///     Creates URL like https://climate-laws.org/geographies/taiwan/laws/electricity-act
+    ///     or https://climate-laws.org/geographies/afghanistan/policies/energy-sector-strategy-1387-1391-2007-8-2012-3
+    ///     Tax Reform Act 2020 (Steuerreformgesetz 2020 – StRefG 2020 - 984/A)
+    ///     becomes
+    ///     tax-reform-act-2020-steuerreformgesetz-2020-strefg-2020-984-a
     /// </summary>
     /// <param name="legislation"></param>
     /// <returns></returns>
