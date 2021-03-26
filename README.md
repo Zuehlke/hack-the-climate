@@ -2,6 +2,4 @@
 
 Hack The Climate Hackathon Repository
 
-## team
-
-abeggchr
+[Project Page](https://devpost.com/software/purple-penguins)
