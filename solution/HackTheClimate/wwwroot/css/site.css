@@ -217,7 +217,7 @@ app {
 .similarity-100 { opacity: 100% }
 
 .comparison-container .row div:nth-child(1) {
-    background: linear-gradient(90deg, lavender 0%, lavender 67%, rgba(255,255,255,1) 100%);
+    background: linear-gradient(90deg, rgba(10,37,101,0.3) 0%, rgba(10,37,101,0.3) 33%, rgba(255,255,255,1) 100%);
 }
 
 .comparison-container .row div:nth-child(2) {
@@ -225,7 +225,7 @@ app {
 }
 
 .comparison-container .row div:nth-child(3) {
-    background: linear-gradient(90deg, rgba(255,255,255,1) 0%, linen 33%, linen 100%);
+    background: linear-gradient(90deg, rgba(255,255,255,1) 0%, rgba(58,6,64,0.3) 66%, rgba(58,6,71,0.3) 100%);
 }
 
 div.node-information {
