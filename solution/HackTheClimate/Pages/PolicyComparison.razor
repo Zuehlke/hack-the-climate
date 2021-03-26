@@ -44,7 +44,7 @@ else
     </div>
 
     <!-- Default Weight 4-->
-    <ListSimilarityResultComponent Title="Product Entities" Similarity="@_similarity.ProductEntitiesSimilarity" Badge="AI"/>
+    <ListSimilarityResultComponent Title="Product Entities" Similarity="@_similarity.ProductEntitiesSimilarity" Badge="AI" />
 
     <!-- Default Weight 3-->
     <ListSimilarityResultComponent Title="Keywords" Similarity="@_similarity.KeywordSimilarity" />
@@ -58,34 +58,34 @@ else
 
     <!-- Default Weight 2-->
     @if (_similarity.LocationSimilarity > 0)
-        {
-    <div class="row">
-        <div class="col-sm" />
-        <div class="col-sm">
-            <img src="@($"/flags/{_document1.GeographyIso.ToUpperInvariant()}.svg")" alt="@_document1.GeographyIso" />
-            &nbsp;
-            @_document1.Geography
+    {
+        <div class="row">
+            <div class="col-sm" />
+            <div class="col-sm">
+                <img src="@($"/flags/{_document1.GeographyIso.ToUpperInvariant()}.svg")" alt="@_document1.GeographyIso" />
+                &nbsp;
+                @_document1.Geography
+            </div>
+            <div class="col-sm" />
         </div>
-        <div class="col-sm" />
-    </div>
-        }
+    }
 
     <!-- Default Weight 1-->
 
     @if (_similarity.TypeSimilarity > 0)
-        {
-    <div class="row">
-        <div class="col-sm" />
-        <div class="col-sm">
-            <h2>Type (@(_similarity.TypeSimilarity * 100)%)</h2>
+    {
+        <div class="row">
+            <div class="col-sm" />
+            <div class="col-sm">
+                <h2>Type (@(_similarity.TypeSimilarity * 100)%)</h2>
+            </div>
+            <div class="col-sm" />
         </div>
-        <div class="col-sm" />
-    </div>
-        }
+    }
 
-    <ListSimilarityResultComponent Title="Location Entities" Similarity="@_similarity.LocationEntitiesSimilarity" Badge="AI"/>
+    <ListSimilarityResultComponent Title="Location Entities" Similarity="@_similarity.LocationEntitiesSimilarity" Badge="AI" />
     <ListSimilarityResultComponent Title="Document Types" Similarity="@_similarity.DocumentTypesSimilarity" />
-
+    <ListSimilarityResultComponent Title="Semantic Topics" Similarity="@_similarity.TopicSimilarity" Badge="AI" />
 </div>
 }
 

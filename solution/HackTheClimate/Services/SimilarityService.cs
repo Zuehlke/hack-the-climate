@@ -96,7 +96,8 @@ namespace HackTheClimate.Services
                 SkillEntitiesSimilarity = entitySkillSimilarity,
                 ProductEntitiesSimilarity = entityProductSimilarity,
                 EventEntitiesSimilarity = entityEventSimilarity,
-                LocationEntitiesSimilarity = entityLocationSimilarity
+                LocationEntitiesSimilarity = entityLocationSimilarity,
+                TopicSimilarity = topicSimilarity
             };
         }
 
@@ -177,6 +178,7 @@ namespace HackTheClimate.Services
         public ListSimilarityResult<string> ProductEntitiesSimilarity { get; set; }
         public ListSimilarityResult<string> EventEntitiesSimilarity { get; set; }
         public ListSimilarityResult<string> LocationEntitiesSimilarity { get; set; }
+        public ListSimilarityResult<string> TopicSimilarity { get; set; }
         public int LocationSimilarity { get; set; }
         public int TypeSimilarity { get; set; }
     }
